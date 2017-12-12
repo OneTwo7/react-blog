@@ -1,0 +1,19 @@
+{
+  "name": "blog",
+  "version": "0.0.1",
+  "description": "A simple blog app based on node, react and express.",
+  "main": "server.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/OneTwo7/react-blog.git"
+  },
+  "author": "onetwo7",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/OneTwo7/react-blog/issues"
+  },
+  "homepage": "https://github.com/OneTwo7/react-blog#readme"
+}
