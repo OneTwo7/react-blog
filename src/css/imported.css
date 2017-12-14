@@ -1,0 +1,35 @@
+nav {
+  margin: 1rem 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+a.active {
+  color: #ffa500;
+}
+
+.post-wrapper {
+  padding: .5rem 0;
+}
+
+.post {
+  text-align: center;
+  border: 1px solid rgba(0,0,0,.125);
+  padding: .75rem 1.25rem;
+}
+
+.post p {
+  text-align: justify;
+}
+
+.post-controls {
+  text-align: right;
+}
+
+@media (min-width: 768px) {
+  .post-wrapper {
+    padding: .5rem;
+  }
+}
