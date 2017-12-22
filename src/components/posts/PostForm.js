@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/postActions';
 import PropTypes from 'prop-types';
 
-class NewPost extends React.Component {
+class PostForm extends React.Component {
   constructor (props) {
     super(props);
 
@@ -77,7 +77,7 @@ class NewPost extends React.Component {
   }
 }
 
-NewPost.propTypes = {
+PostForm.propTypes = {
   posts: PropTypes.array.isRequired,
   actions: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
@@ -107,4 +107,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewPost);
+export default connect(mapStateToProps, mapDispatchToProps)(PostForm);
