@@ -1,1 +1,4 @@
-export default 400;
+export default {
+  'develpment': 400,
+  'test': 10
+};

@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/postActions';
 import PropTypes from 'prop-types';
+import PostList from '../posts/PostList';
+import PostPreview from '../posts/PostPreview';
 
 class HomePage extends React.Component {
   constructor (props) {
@@ -20,34 +22,7 @@ class HomePage extends React.Component {
     const { posts } = this.props;
 
     return (
-      <div className="row">
-        {
-          posts.map(post => (
-            <div key={post.id} className="post-wrapper col-md-4">
-              <div className="post">
-                <h2><Link to={`/post/${post.id}`}>{post.title}</Link></h2>
-                <p>{post.content}</p>
-                <div className="post-controls">
-                  <Link
-                    to={`/post/edit/${post.id}`}
-                    className="btn btn-primary"
-                  >
-                    Edit
-                  </Link>
-                  <button
-                    id={`delete-${post.id}`}
-                    type="button"
-                    className="btn btn-danger"
-                    onClick={this.onDeleteClick}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))
-        }
-      </div>
+      <PostList posts={posts} onDeleteClick={this.onDeleteClick} />
     );
   }
 }

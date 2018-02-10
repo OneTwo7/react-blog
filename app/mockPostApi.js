@@ -1,7 +1,9 @@
-import delay from './delay';
+import delayObj from './delay';
+
+const env = process.env.NODE_ENV;
+const delay = delayObj[env];
 
 const posts = [];
-
 const content = Array.apply(null, Array(10)).map(
   String.prototype.valueOf,
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
