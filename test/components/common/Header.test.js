@@ -2,7 +2,7 @@ import React from 'react';
 import test from 'ava';
 import { MemoryRouter } from 'react-router-dom';
 import { mount } from 'enzyme';
-import Header from '../../src/components/common/Header';
+import Header from '../../../src/components/common/Header';
 
 test('Layout', t => {
   const wrapper = mount(

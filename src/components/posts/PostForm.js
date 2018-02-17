@@ -9,7 +9,8 @@ class PostForm extends React.Component {
     super(props);
 
     this.state = {
-      post: Object.assign({}, props.post)
+      post: Object.assign({}, props.post),
+      errors: {}
     };
 
     this.onChange = this.onChange.bind(this);
@@ -31,6 +32,9 @@ class PostForm extends React.Component {
 
   onClick (event) {
     event.preventDefault();
+    if (!this.postFormIsValid()) {
+      return;
+    }
     this.props.actions.savePost(this.state.post);
     this.redirect();
   }
@@ -39,8 +43,22 @@ class PostForm extends React.Component {
     this.props.history.push('/');
   }
 
+  postFormIsValid () {
+    let formIsValid = true;
+    let errors = {};
+
+    if (this.state.post.title.length < 4) {
+      errors.title = 'Title must be at least 4 characters.';
+      formIsValid = false;
+    }
+
+    this.setState({ errors: errors });
+    return formIsValid;
+  }
+
   render () {
     const { posts } = this.props;
+    const error = this.state.errors.title;
 
     return (
       <form>
@@ -55,6 +73,7 @@ class PostForm extends React.Component {
             value={this.state.post.title}
             className="form-control"
           />
+          {error && <div className="alert alert-danger">{error}</div>}
         </div>
         <div className="form-group">
           <label htmlFor="content">Content</label>
