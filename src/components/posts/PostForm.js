@@ -27,7 +27,7 @@ class PostForm extends React.Component {
     const name = event.target.name;
     const post = this.state.post;
     post[name] = event.target.value;
-    this.setState({ post: post });
+    this.setState({ post });
   }
 
   onClick (event) {

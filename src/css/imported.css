@@ -2,6 +2,10 @@ nav {
   margin: 1rem 0;
 }
 
+.login-btn {
+  padding: 0;
+}
+
 button {
   cursor: pointer;
 }
