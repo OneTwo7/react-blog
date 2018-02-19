@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { mount } from 'enzyme';
 import Header from '../../../src/components/common/Header';
 
-test('Layout', t => {
+test('layout', t => {
   const wrapper = mount(
     <MemoryRouter>
       <Header />
@@ -17,7 +17,7 @@ test('Layout', t => {
   t.is(wrapper.find('a[href="/new_post"]').text(), 'New Post');
 });
 
-test('Active links', t => {
+test('active links', t => {
   const wrapper = mount(
     <MemoryRouter initialEntries={[ '/' ]}>
       <Header />

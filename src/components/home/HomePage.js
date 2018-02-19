@@ -11,18 +11,35 @@ class HomePage extends React.Component {
   constructor (props) {
     super(props);
 
+    this.state = {
+      postsPerPage: 9,
+      page: 1
+    };
+
     this.onDeleteClick = this.onDeleteClick.bind(this);
+    this.loadMorePosts = this.loadMorePosts.bind(this);
   }
 
   onDeleteClick (event) {
     this.props.actions.deletePost(event.target.id.slice(7));
   }
 
+  loadMorePosts () {
+    this.setState({ page: this.state.page + 1 });
+  }
+
   render () {
     const { posts } = this.props;
+    const vPosts = posts.slice(0, this.state.page * this.state.postsPerPage);
+    const showButton = vPosts.length < posts.length;
 
     return (
-      <PostList posts={posts} onDeleteClick={this.onDeleteClick} />
+      <PostList
+        posts={vPosts}
+        onDeleteClick={this.onDeleteClick}
+        showButton={showButton}
+        loadMorePosts={this.loadMorePosts}
+      />
     );
   }
 }
