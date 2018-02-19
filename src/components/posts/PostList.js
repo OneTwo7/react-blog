@@ -9,7 +9,7 @@ const PostList = ({ posts, onDeleteClick, showButton, loadMorePosts }) => (
         <PostPreview key={post.id} post={post} onDeleteClick={onDeleteClick} />
       ))
     }
-    <div className="text-center">
+    <div className="col-12 text-center">
       {
         showButton &&
         <button

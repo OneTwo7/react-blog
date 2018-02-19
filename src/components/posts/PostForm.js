@@ -85,6 +85,28 @@ class PostForm extends React.Component {
             className="form-control"
           />
         </div>
+        <div className="form-group">
+          <label htmlFor="topic">Topic</label>
+          <input
+            id="topic"
+            name="topic"
+            type="text"
+            onChange={this.onChange}
+            value={this.state.post.topic}
+            className="form-control"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="tags">Tags</label>
+          <input
+            id="tags"
+            name="tags"
+            type="text"
+            onChange={this.onChange}
+            value={this.state.post.tags}
+            className="form-control"
+          />
+        </div>
         <input
           type="submit"
           onClick={this.onClick}
@@ -106,7 +128,9 @@ PostForm.propTypes = {
 const mapStateToProps = (state, ownProps) => {
   let post = {
     title: '',
-    text: ''
+    text: '',
+    topic: '',
+    tags: ''
   };
   const postId = ownProps.match.params.id;
 

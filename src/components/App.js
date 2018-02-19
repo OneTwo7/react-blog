@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router';
+import { Route } from 'react-router-dom';
 import Header from './common/Header';
 import HomePage from './home/HomePage';
 import PostForm from './posts/PostForm';
@@ -10,8 +10,8 @@ const App = () => (
     <Header />
     <Route exact path="/" component={HomePage} />
     <Route path="/new_post" component={PostForm} />
-    <Route exact path="/post/:id" component={Post} />
-    <Route exact path="/post/edit/:id" component={PostForm} />
+    <Route exact path="/posts/:id" component={Post} />
+    <Route exact path="/posts/:id/edit" component={PostForm} />
   </div>
 );
 

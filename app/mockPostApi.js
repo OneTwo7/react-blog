@@ -20,7 +20,9 @@ const generateId = (post) => {
 for (let i = 0; i < 10; i++) {
   posts.push({
     title: `Post ${i}`,
-    content: content
+    content: content,
+    topic: 'sample',
+    tags: 'sample loremipsum text default'
   });
   posts[i].id = generateId(posts[i]);
 }

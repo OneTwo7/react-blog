@@ -14,18 +14,28 @@ a.active {
   padding: .5rem 0;
 }
 
-.post {
+.post-preview {
+  display: flex;
+  align-items: flex-end;
   text-align: center;
   border: 1px solid rgba(0,0,0,.125);
-  padding: .75rem 1.25rem;
+  height: 15rem;
 }
 
-.post p {
-  text-align: justify;
+.post-title {
+  flex-basis: 100%;
+  margin-bottom: 0;
+  padding: 1rem 0;
+  border-top: 1px solid rgba(0,0,0,.125);
 }
 
 .post-controls {
   text-align: right;
+  margin: .2rem;
+}
+
+.post-controls button {
+  margin-left: .2rem;
 }
 
 @media (min-width: 768px) {

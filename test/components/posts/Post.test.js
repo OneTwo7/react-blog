@@ -39,5 +39,5 @@ const wrapper = mount(
 test('layout', t => {
   t.is(wrapper.find('.post').length, 1);
   t.is(wrapper.find('h1').text(), 'First');
-  t.is(wrapper.find('p').text(), 'Content 1');
+  t.is(wrapper.find('#post-content').text(), 'Content 1');
 });
