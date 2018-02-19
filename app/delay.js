@@ -1,4 +1,4 @@
 export default {
-  'develpment': 400,
+  'development': 400,
   'test': 10
 };

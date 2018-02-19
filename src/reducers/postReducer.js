@@ -14,7 +14,7 @@ const postReducer = (state = [], action) => {
       idx = posts.findIndex(a => a.id == action.post.id);
       posts.splice(idx, 1, Object.assign({}, action.post));
       return posts;
-    case types.DELETE_POST:
+    case types.DELETE_POST_SUCCESS:
       return [...state.filter(post => post.id !== action.id)];
     default:
       return state;

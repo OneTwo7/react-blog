@@ -1,6 +1,6 @@
 import delayObj from './delay';
 
-const env = process.env.NODE_ENV;
+const env = process.env.NODE_ENV || 'development';
 const delay = delayObj[env];
 
 const posts = [];

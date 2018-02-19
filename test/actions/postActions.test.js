@@ -41,14 +41,14 @@ test('updatePostSuccess', t => {
   t.deepEqual(action, expectedAction);
 });
 
-test('deletePost', t => {
+test('deletePostSuccess', t => {
   const id = Math.random();
   const expectedAction = {
-    type: types.DELETE_POST,
+    type: types.DELETE_POST_SUCCESS,
     id
   };
 
-  const action = postActions.deletePost(id);
+  const action = postActions.deletePostSuccess(id);
 
   t.deepEqual(action, expectedAction);
 });

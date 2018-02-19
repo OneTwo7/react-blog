@@ -62,7 +62,7 @@ test('update post', t => {
 
 test('delete post', t => {
   const action = {
-    type: types.DELETE_POST,
+    type: types.DELETE_POST_SUCCESS,
     id: 1
   };
 

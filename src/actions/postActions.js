@@ -22,9 +22,9 @@ export const updatePostSuccess = (post) => {
   };
 };
 
-export const deletePost = (id) => {
+export const deletePostSuccess = (id) => {
   return {
-    type: types.DELETE_POST,
+    type: types.DELETE_POST_SUCCESS,
     id
   };
 };
@@ -45,6 +45,16 @@ export const savePost = (post) => {
     return PostApi.savePost(post).then(post => {
       postId ? dispatch(updatePostSuccess(post)) :
         dispatch(createPostSuccess(post));
+    }).catch(error => {
+      throw(error);
+    });
+  });
+};
+
+export const deletePost = (id) => {
+  return (dispatch => {
+    return PostApi.deletePost(id).then(() => {
+      dispatch(deletePostSuccess(id));
     }).catch(error => {
       throw(error);
     });
