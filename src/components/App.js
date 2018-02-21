@@ -9,7 +9,7 @@ import Footer from './common/Footer';
 const App = () => (
   <div>
     <Header />
-    <div className="container">
+    <div id="main" className="container">
       <Route exact path="/" component={HomePage} />
       <Route path="/new_post" component={PostForm} />
       <Route exact path="/posts/:id" component={Post} />

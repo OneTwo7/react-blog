@@ -57,12 +57,12 @@ class PostForm extends React.Component {
   }
 
   render () {
-    const { posts } = this.props;
+    const { posts, title } = this.props;
     const error = this.state.errors.title;
 
     return (
       <form>
-        <h1>New Post</h1>
+        <h1>{title}</h1>
         <div className="form-group">
           <label htmlFor="title">Title</label>
           <input
@@ -122,7 +122,8 @@ PostForm.propTypes = {
   posts: PropTypes.array.isRequired,
   actions: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
-  post: PropTypes.object
+  post: PropTypes.object,
+  title: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -133,15 +134,18 @@ const mapStateToProps = (state, ownProps) => {
     category: '',
     tags: ''
   };
+  let title = 'New Post';
   const postId = ownProps.match.params.id;
 
   if (postId && state.posts.length > 0) {
     post = state.posts.filter(post => post.id === postId)[0];
+    title = 'Edit Post';
   }
 
   return {
     posts: state.posts,
-    post
+    post,
+    title
   };
 };
 

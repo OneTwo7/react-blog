@@ -18,6 +18,8 @@ class HomePage extends React.Component {
 
     this.onDeleteClick = this.onDeleteClick.bind(this);
     this.loadMorePosts = this.loadMorePosts.bind(this);
+    this.onMouseEnter = this.onMouseEnter.bind(this);
+    this.onMouseLeave = this.onMouseLeave.bind(this);
   }
 
   onDeleteClick (event) {
@@ -26,6 +28,18 @@ class HomePage extends React.Component {
 
   loadMorePosts () {
     this.setState({ page: this.state.page + 1 });
+  }
+
+  onMouseEnter (event) {
+    let $el = $(event.target);
+    while (!$el.hasClass('post-preview')) {
+      $el = $el.parent();
+    }
+    $el.find('.post-controls').css('visibility', 'visible');
+  }
+
+  onMouseLeave (event) {
+    $('.post-controls').css('visibility', 'hidden');
   }
 
   render () {
@@ -39,6 +53,8 @@ class HomePage extends React.Component {
         onDeleteClick={this.onDeleteClick}
         showButton={showButton}
         loadMorePosts={this.loadMorePosts}
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
       />
     );
   }
