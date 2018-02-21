@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const LoginModal = ({ onChange, login }) => (
+const LoginModal = ({ onChange, onKeyDown, auth, login }) => (
   <div
     className="modal fade"
     id="login-modal"
@@ -30,9 +30,11 @@ const LoginModal = ({ onChange, login }) => (
               <input
                 type="email"
                 id="email"
+                value={auth.email}
                 className="form-control"
                 name="email"
                 onChange={onChange}
+                onKeyDown={onKeyDown}
               />
             </div>
             <div className="form-group">
@@ -40,9 +42,11 @@ const LoginModal = ({ onChange, login }) => (
               <input
                 type="password"
                 id="password"
+                value={auth.password}
                 className="form-control"
                 name="password"
                 onChange={onChange}
+                onKeyDown={onKeyDown}
               />
             </div>
           </form>
@@ -70,6 +74,8 @@ const LoginModal = ({ onChange, login }) => (
 
 LoginModal.propTypes = {
   onChange: PropTypes.func.isRequired,
+  onKeyDown: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
   login: PropTypes.func.isRequired
 };
 

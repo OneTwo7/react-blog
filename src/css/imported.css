@@ -1,17 +1,25 @@
-nav {
-  margin: 1rem 0;
-}
-
-.login-btn {
-  padding: 0;
+header {
+  margin-bottom: 2rem;
 }
 
 button {
   cursor: pointer;
 }
 
-a.active {
-  color: #ffa500;
+.btn-link.dropdown-toggle {
+  padding: 0;
+  margin: .5rem 0;
+  color: #fff;
+  border: 0;
+}
+
+.btn-link.dropdown-toggle:hover {
+  text-decoration: none;
+  color: #fff;
+}
+
+.navbar-dark .navbar-toggler {
+  border-color: rgba(255,255,255,.5);
 }
 
 .post-wrapper {

@@ -6,12 +6,14 @@ import PostForm from './posts/PostForm';
 import Post from './posts/Post';
 
 const App = () => (
-  <div className="container">
+  <div>
     <Header />
-    <Route exact path="/" component={HomePage} />
-    <Route path="/new_post" component={PostForm} />
-    <Route exact path="/posts/:id" component={Post} />
-    <Route exact path="/posts/:id/edit" component={PostForm} />
+    <div className="container">
+      <Route exact path="/" component={HomePage} />
+      <Route path="/new_post" component={PostForm} />
+      <Route exact path="/posts/:id" component={Post} />
+      <Route exact path="/posts/:id/edit" component={PostForm} />
+    </div>
   </div>
 );
 

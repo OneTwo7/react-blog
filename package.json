@@ -4,7 +4,7 @@
   "description": "A simple blog app based on node, react and express.",
   "main": "server.js",
   "scripts": {
-    "start": "concurrently \"npm run server\" \"npm run lint:watch\" \"npm run test:watch\"",
+    "start": "concurrently \"npm run server\" \"npm run lint:watch\"",
     "server": "node server.js",
     "lint": "esw webpack.config.* src",
     "lint:watch": "npm run lint -- --watch",

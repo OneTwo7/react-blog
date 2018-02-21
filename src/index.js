@@ -6,10 +6,12 @@ import configureStore from './store/configureStore';
 import { BrowserRouter as Router } from 'react-router-dom';
 import App from './components/App';
 import { loadPosts } from './actions/postActions';
+import { loadUsers } from './actions/userActions';
 import './css/imported.css';
 
 const store = configureStore();
 store.dispatch(loadPosts());
+store.dispatch(loadUsers());
 
 render(
   <Provider store={store}>

@@ -86,13 +86,13 @@ class PostForm extends React.Component {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="topic">Topic</label>
+          <label htmlFor="category">Category</label>
           <input
-            id="topic"
-            name="topic"
+            id="category"
+            name="category"
             type="text"
             onChange={this.onChange}
-            value={this.state.post.topic}
+            value={this.state.post.category}
             className="form-control"
           />
         </div>
@@ -127,9 +127,10 @@ PostForm.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   let post = {
+    author: state.auth ? state.auth.id : null,
     title: '',
     text: '',
-    topic: '',
+    category: '',
     tags: ''
   };
   const postId = ownProps.match.params.id;

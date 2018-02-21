@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/authActions';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import LoginModal from './LoginModal';
 import PropTypes from 'prop-types';
 
@@ -21,6 +21,7 @@ class Header extends Component {
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.renderContent = this.renderContent.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
   }
 
   componentDidMount () {
@@ -32,6 +33,12 @@ class Header extends Component {
     const auth = this.state.auth;
     auth[name] = event.target.value;
     this.setState({ auth });
+  }
+
+  onKeyDown (event) {
+    if (event.keyCode === 13) {
+      this.login();
+    }
   }
 
   login () {
@@ -53,41 +60,88 @@ class Header extends Component {
   }
 
   renderContent () {
-    if (this.props.auth) {
+    const { auth } = this.props;
+
+    if (auth) {
       return (
-        <button
-          type="button"
-          className="btn btn-link login-btn"
-          onClick={this.logout}
-        >
-          Logout
-        </button>
+        <li className="nav-item dropdown">
+          <button
+            className="btn btn-link dropdown-toggle"
+            id="navbarDropdown"
+            type="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            {auth.name}
+          </button>
+          <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+            <button
+              key="2"
+              type="button"
+              className="btn btn-link dropdown-item"
+              onClick={this.logout}
+            >
+              Logout
+            </button>
+          </div>
+        </li>
       );
     } else {
       return (
-        <button
-          type="button"
-          className="btn btn-link login-btn"
-          data-toggle="modal"
-          data-target="#login-modal"
-        >
-          Login
-        </button>
+        <li className="nav-item">
+          <button
+            type="button"
+            className="btn btn-outline-light"
+            data-toggle="modal"
+            data-target="#login-modal"
+          >
+            Login
+          </button>
+        </li>
       );
     }
   }
 
   render () {
     return (
-      <nav>
-        <NavLink exact to="/">Home</NavLink>
-        {" | "}
-        <NavLink to="/new_post">New Post</NavLink>
-        {" | "}
-        {this.renderContent()}
+      <header className="navbar navbar-expand-md navbar-dark bg-primary">
+        <nav className="container">
+          <Link className="navbar-brand" to="/">Home</Link>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarMenu"
+            aria-controls="navbarMenu"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon" />
+          </button>
 
-        <LoginModal onChange={this.onChange} login={this.login} />
-      </nav>
+          <div className="collapse navbar-collapse" id="navbarMenu">
+            <ul className="navbar-nav mr-auto">
+              <li className="nav-item mr-auto active">
+                <Link className="nav-link" to="/new_post">
+                  New Post
+                </Link>
+              </li>
+            </ul>
+            <ul className="navbar-nav">
+              {this.renderContent()}
+            </ul>
+          </div>
+
+
+          <LoginModal
+            onChange={this.onChange}
+            onKeyDown={this.onKeyDown}
+            auth={this.state.auth}
+            login={this.login}
+          />
+        </nav>
+      </header>
     );
   }
 }
