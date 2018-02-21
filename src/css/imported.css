@@ -2,6 +2,23 @@ header {
   margin-bottom: 2rem;
 }
 
+footer.navbar {
+  color: #fff;
+}
+
+.svg-inline--fa {
+  font-size: 1.5rem;
+}
+
+#copy {
+  font-size: .9rem;
+}
+
+#up-btn {
+  padding: .15rem .5rem;
+  visibility: hidden;
+}
+
 button {
   cursor: pointer;
 }
