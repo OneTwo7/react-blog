@@ -23,7 +23,8 @@ for (let i = 0; i < 10; i++) {
     title: `Post ${i}`,
     content: content,
     category: 'sample',
-    tags: 'sample loremipsum text default'
+    tags: 'sample loremipsum text default',
+    comments: 3
   });
   posts[i].id = generateId(posts[i]);
 }
@@ -52,6 +53,7 @@ class PostApi {
           posts.splice(existingPostIndex, 1, post);
         } else {
           post.id = generateId(post);
+          post.comments = 0;
           posts.push(post);
         }
 
@@ -67,6 +69,16 @@ class PostApi {
           post.id == postId;
         });
         posts.splice(indexOfpostToDelete, 1);
+        resolve();
+      }, delay);
+    });
+  }
+
+  static updateCommentsCount (id, diff) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const idx = posts.findIndex(p => p.id === id);
+        posts[idx].comments += diff;
         resolve();
       }, delay);
     });

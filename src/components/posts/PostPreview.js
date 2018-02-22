@@ -16,7 +16,7 @@ const PostPreview = ({ post, onDeleteClick, onMouseEnter, onMouseLeave }) => (
         </div>
         <div className="post-comments">
           <i className="far fa-comment" />
-          <span className="count">0</span>
+          <span className="count">{post.comments}</span>
         </div>
       </div>
       <div className="post-controls">

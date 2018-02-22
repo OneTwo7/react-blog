@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import * as actions from '../../actions/commentActions';
 import PostList from './PostList';
 import PropTypes from 'prop-types';
 
@@ -8,26 +9,99 @@ class Post extends React.Component {
     super(props);
 
     this.state = {
-      post: Object.assign({}, props.post)
+      comments: [],
+      comment: {
+        content: ''
+      }
     };
+
+    this.onChange = this.onChange.bind(this);
+    this.onClick = this.onClick.bind(this);
+    this.onEditClick = this.onEditClick.bind(this);
+    this.cancelEdit = this.cancelEdit.bind(this);
+    this.onDeleteClick = this.onDeleteClick.bind(this);
+  }
+
+  componentWillMount () {
+    const postId = this.props.post.id;
+    if (postId) {
+      this.loadComments(postId);
+    }
   }
 
   componentWillReceiveProps (nextProps) {
     if (this.props.post.id !== nextProps.post.id) {
-      this.setState({ post: Object.assign({}, nextProps.post) });
+      this.loadComments(nextProps.post.id);
+    }
+    if (this.props.comments !== nextProps.comments) {
+      this.setState({ comments: nextProps.comments });
     }
   }
 
+  loadComments (postId) {
+    this.props.loadComments(postId);
+  }
+
+  onChange (event) {
+    const comment = this.state.comment;
+    comment.content = event.target.value;
+    this.setState({ comment });
+  }
+
+  onClick (event) {
+    event.preventDefault();
+    const comment = Object.assign({}, this.state.comment);
+    if (comment.content.length === 0) {
+      return;
+    }
+    const { auth } = this.props;
+    comment.post_id = this.props.post.id;
+    if (!auth) {
+      $('#login-modal').modal('show');
+    } else {
+      comment.author = auth.id;
+      this.props.saveComment(comment);
+      this.setDefaultComment();
+    }
+  }
+
+  onEditClick (event) {
+    const commentId = this.getCommentId(event.target.id);
+    const comment = this.props.comments.find(c => c.id === commentId);
+    this.setState({ comment });
+    $(window).scrollTop($('#comments').offset().top);
+  }
+
+  cancelEdit () {
+    this.setDefaultComment();
+  }
+
+  onDeleteClick (event) {
+    const commentId = this.getCommentId(event.target.id);
+    if (commentId === this.state.comment.id) {
+      this.setDefaultComment();
+    }
+    this.props.deleteComment(commentId);
+  }
+
+  setDefaultComment () {
+    this.setState({ comment: { content: '' } });
+  }
+
+  getCommentId (btnId) {
+    return btnId.slice(btnId.indexOf('-') + 1);
+  }
+
   render () {
-    const { post, suggested, author } = this.props;
+    const { post, suggested, author, users } = this.props;
 
     return (
       <article className="post">
         <span>Author: {author.name}</span>
-        <h1>{this.state.post.title}</h1>
-        <p id="post-content">{this.state.post.content}</p>
-        <p>Category: {this.state.post.category}</p>
-        <p>Tags: {this.state.post.tags}</p>
+        <h1>{post.title}</h1>
+        <p id="post-content">{post.content}</p>
+        <p>Category: {post.category}</p>
+        <p>Tags: {post.tags}</p>
         {
           !!suggested.length &&
           <div className="row">
@@ -44,6 +118,61 @@ class Post extends React.Component {
             }
           </div>
         }
+        <div id="comments">
+          <h2>Comments ({post.comments})</h2>
+          <form>
+            <div className="form-group">
+              <textarea
+                id="content"
+                name="content"
+                value={this.state.comment.content}
+                onChange={this.onChange}
+                placeholder="Write a response..."
+                className="form-control"
+              />
+            </div>
+            <input
+              type="submit"
+              value="Submit"
+              onClick={this.onClick}
+              className="btn btn-primary"
+            />
+            {
+              this.state.comment.id &&
+              <button
+                type="button"
+                onClick={this.cancelEdit}
+                className="btn btn-secondary"
+              >
+                Cancel
+              </button>
+            }
+          </form>
+          {
+            this.state.comments.map(c => (
+              <div key={c.id}>
+                <p>Author: {users[c.author].name}</p>
+                <p>Content: {c.content}</p>
+                <button
+                  id={`edit-${c.id}`}
+                  type="button"
+                  onClick={this.onEditClick}
+                  className="btn btn-link"
+                >
+                  edit
+                </button>
+                <button
+                  id={`delete-${c.id}`}
+                  type="button"
+                  onClick={this.onDeleteClick}
+                  className="btn btn-link"
+                >
+                  delete
+                </button>
+              </div>
+            ))
+          }
+        </div>
       </article>
     );
   }
@@ -52,7 +181,13 @@ class Post extends React.Component {
 Post.propTypes = {
   post: PropTypes.object.isRequired,
   author: PropTypes.object.isRequired,
-  suggested: PropTypes.array
+  suggested: PropTypes.array,
+  users: PropTypes.object.isRequired,
+  loadComments: PropTypes.func.isRequired,
+  comments: PropTypes.array.isRequired,
+  auth: PropTypes.object,
+  saveComment: PropTypes.func.isRequired,
+  deleteComment: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -69,7 +204,8 @@ const mapStateToProps = (state, ownProps) => {
   let posts = [...state.posts];
   let postsLength = posts.length;
   const postId = ownProps.match.params.id;
-  const { users } = state;
+  const { users, comments, auth } = state;
+  let usersById = {};
 
   if (postId && postsLength > 0) {
     for (let i = 0; i < postsLength; i++) {
@@ -122,11 +258,18 @@ const mapStateToProps = (state, ownProps) => {
     author = users.filter(u => u.id === post.author)[0];
   }
 
+  for (let i = 0, l = users.length; i < l; i++) {
+    usersById[users[i].id] = users[i];
+  }
+
   return {
     post,
     suggested,
-    author
+    author,
+    comments,
+    auth,
+    users: usersById
   };
 };
 
-export default connect(mapStateToProps)(Post);
+export default connect(mapStateToProps, actions)(Post);
