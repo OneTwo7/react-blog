@@ -15,6 +15,7 @@ class PostForm extends React.Component {
 
     this.onChange = this.onChange.bind(this);
     this.onClick = this.onClick.bind(this);
+    this.onCancel = this.onCancel.bind(this);
   }
 
   componentWillReceiveProps (nextProps) {
@@ -39,6 +40,10 @@ class PostForm extends React.Component {
     this.redirect();
   }
 
+  onCancel () {
+    this.redirect();
+  }
+
   redirect () {
     this.props.history.push('/');
   }
@@ -57,12 +62,11 @@ class PostForm extends React.Component {
   }
 
   render () {
-    const { posts, title } = this.props;
-    const error = this.state.errors.title;
+    const { post, errors } = this.state;
 
     return (
       <form>
-        <h1>{title}</h1>
+        <h1>{post.id ? 'Edit Post' : 'New Post'}</h1>
         <div className="form-group">
           <label htmlFor="title">Title</label>
           <input
@@ -70,10 +74,13 @@ class PostForm extends React.Component {
             name="title"
             type="text"
             onChange={this.onChange}
-            value={this.state.post.title}
+            value={post.title}
             className="form-control"
           />
-          {error && <div className="alert alert-danger">{error}</div>}
+          {
+            errors.title &&
+            <div className="alert alert-danger">{errors.title}</div>
+          }
         </div>
         <div className="form-group">
           <label htmlFor="content">Content</label>
@@ -81,7 +88,7 @@ class PostForm extends React.Component {
             id="content"
             name="content"
             onChange={this.onChange}
-            value={this.state.post.content}
+            value={post.content}
             className="form-control"
           />
         </div>
@@ -92,7 +99,7 @@ class PostForm extends React.Component {
             name="category"
             type="text"
             onChange={this.onChange}
-            value={this.state.post.category}
+            value={post.category}
             className="form-control"
           />
         </div>
@@ -103,7 +110,7 @@ class PostForm extends React.Component {
             name="tags"
             type="text"
             onChange={this.onChange}
-            value={this.state.post.tags}
+            value={post.tags}
             className="form-control"
           />
         </div>
@@ -113,17 +120,23 @@ class PostForm extends React.Component {
           value="Save"
           className="btn btn-primary"
         />
+        <button
+          id="cancel-edit"
+          type="button"
+          onClick={this.onCancel}
+          className="btn btn-secondary"
+        >
+          Cancel
+        </button>
       </form>
     );
   }
 }
 
 PostForm.propTypes = {
-  posts: PropTypes.array.isRequired,
   actions: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
-  post: PropTypes.object,
-  title: PropTypes.string.isRequired
+  post: PropTypes.object
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -134,18 +147,15 @@ const mapStateToProps = (state, ownProps) => {
     category: '',
     tags: ''
   };
-  let title = 'New Post';
+  const { posts } = state;
   const postId = ownProps.match.params.id;
 
-  if (postId && state.posts.length > 0) {
-    post = state.posts.filter(post => post.id === postId)[0];
-    title = 'Edit Post';
+  if (postId && posts.length > 0) {
+    post = posts.filter(post => post.id === postId)[0];
   }
 
   return {
-    posts: state.posts,
-    post,
-    title
+    post
   };
 };
 

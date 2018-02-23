@@ -92,45 +92,74 @@ class Post extends React.Component {
     return btnId.slice(btnId.indexOf('-') + 1);
   }
 
+  onMouseEnter (event) {
+    let $el = $(event.target);
+    while (!$el.hasClass('comment')) {
+      $el = $el.parent();
+    }
+    $el.find('.comment-controls').css('visibility', 'visible');
+  }
+
+  onMouseLeave () {
+    $('.comment-controls').css('visibility', 'hidden');
+  }
+
   render () {
     const { post, suggested, author, users } = this.props;
 
     return (
-      <article className="post">
-        <span>Author: {author.name}</span>
-        <h1>{post.title}</h1>
-        <p id="post-content">{post.content}</p>
-        <p>Category: {post.category}</p>
-        <p>Tags: {post.tags}</p>
-        {
-          !!suggested.length &&
-          <div className="row">
-            <div className="col-12 text-center">
-              <h2>Related Posts</h2>
-            </div>
+      <div className="row">
+        <section id="post" className="col-md-8 offset-md-2">
+          <div className="post-top">
+            <div>{author.name}</div>
+            <div>{post.category}</div>
+          </div>
+          <h1 id="post-title">{post.title}</h1>
+          <p id="post-content">{post.content}</p>
+          <div id="post-tags">
             {
-              suggested.map(p => (
-                <div key={p.post.id} className="col-md-4 text-center">
-                  { p.type === 'tag' && <p>Also tagged {p.tag}</p> }
-                  <h3>{p.post.title}</h3>
+              post.tags.split(' ').map((tag, idx) => (
+                <div key={idx} className="tag">
+                  {tag}
                 </div>
               ))
             }
           </div>
-        }
-        <div id="comments">
-          <h2>Comments ({post.comments})</h2>
-          <form>
-            <div className="form-group">
-              <textarea
-                id="content"
-                name="content"
-                value={this.state.comment.content}
-                onChange={this.onChange}
-                placeholder="Write a response..."
-                className="form-control"
-              />
+          <div>{author.name}</div>
+        </section>
+        {
+          !!suggested.length &&
+          <section id="related-posts" className="col-md-10 offset-md-1">
+            <div className="row">
+              {
+                suggested.map(p => (
+                  <div key={p.post.id} className="col-md-4">
+                    <div className="related-post">
+                      {
+                        p.type === 'tag' &&
+                        <div>Also tagged {p.tag}</div>
+                      }
+                      <div className="bottom">
+                        <h3 className="title">{p.post.title}</h3>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              }
             </div>
+          </section>
+        }
+        <section id="comments" className="col-md-6 offset-md-3">
+          <h2>Comments ({post.comments})</h2>
+          <form id="comment-form">
+            <textarea
+              id="comment-content-input"
+              name="content"
+              value={this.state.comment.content}
+              onChange={this.onChange}
+              placeholder="Write a response..."
+              className="form-control"
+            />
             <input
               type="submit"
               value="Submit"
@@ -140,6 +169,7 @@ class Post extends React.Component {
             {
               this.state.comment.id &&
               <button
+                id="cancel-edit"
                 type="button"
                 onClick={this.cancelEdit}
                 className="btn btn-secondary"
@@ -150,30 +180,39 @@ class Post extends React.Component {
           </form>
           {
             this.state.comments.map(c => (
-              <div key={c.id}>
-                <p>Author: {users[c.author].name}</p>
-                <p>Content: {c.content}</p>
-                <button
-                  id={`edit-${c.id}`}
-                  type="button"
-                  onClick={this.onEditClick}
-                  className="btn btn-link"
-                >
-                  edit
-                </button>
-                <button
-                  id={`delete-${c.id}`}
-                  type="button"
-                  onClick={this.onDeleteClick}
-                  className="btn btn-link"
-                >
-                  delete
-                </button>
+              <div
+                key={c.id}
+                className="comment"
+                onMouseEnter={this.onMouseEnter}
+                onMouseLeave={this.onMouseLeave}
+              >
+                <div className="comment-wrapper">
+                  <div className="comment-author">{users[c.author].name}</div>
+                  <div className="comment-content">{c.content}</div>
+                </div>
+                <div className="comment-controls">
+                  <button
+                    id={`edit-${c.id}`}
+                    type="button"
+                    onClick={this.onEditClick}
+                    className="btn btn-link"
+                  >
+                    edit
+                  </button>
+                  <button
+                    id={`delete-${c.id}`}
+                    type="button"
+                    onClick={this.onDeleteClick}
+                    className="btn btn-link"
+                  >
+                    delete
+                  </button>
+                </div>
               </div>
             ))
           }
-        </div>
-      </article>
+        </section>
+      </div>
     );
   }
 }

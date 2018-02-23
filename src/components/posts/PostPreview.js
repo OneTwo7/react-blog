@@ -10,7 +10,7 @@ const PostPreview = ({ post, onDeleteClick, onMouseEnter, onMouseLeave }) => (
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <div className="post-top">
+      <div className="post-preview-top">
         <div className="post-category">
           {post.category}
         </div>
@@ -32,7 +32,7 @@ const PostPreview = ({ post, onDeleteClick, onMouseEnter, onMouseLeave }) => (
           Delete
         </button>
       </div>
-      <div className="post-bottom">
+      <div className="post-preview-bottom">
         <h2 className="post-title">
           <Link to={`/posts/${post.id}`}>{post.title}</Link>
         </h2>
