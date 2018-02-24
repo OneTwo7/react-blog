@@ -13,21 +13,53 @@ class HomePage extends React.Component {
 
     this.state = {
       postsPerPage: 9,
-      page: 1
+      page: 1,
+      postsLength: 0
     };
 
     this.onDeleteClick = this.onDeleteClick.bind(this);
-    this.loadMorePosts = this.loadMorePosts.bind(this);
+    this.loadPosts = this.loadPosts.bind(this);
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
+  }
+
+  componentDidMount () {
+    $(document).scroll(this.loadPosts);
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (this.props.postsLength !== nextProps.postsLength) {
+      this.setState({ postsLength: nextProps.postsLength });
+    }
+  }
+
+  componentDidUpdate () {
+    const { postsPerPage, postsLength } = this.state;
+    let page = this.state.page;
+    if (postsLength > 0) {
+      while (postsPerPage * page < postsLength) {
+        if ($(document).height() === $(window).height()) {
+          this.loadPosts();
+          page++;
+        } else {
+          break;
+        }
+      }
+    }
   }
 
   onDeleteClick (event) {
     this.props.actions.deletePost(event.target.id.slice(7));
   }
 
-  loadMorePosts () {
-    this.setState({ page: this.state.page + 1 });
+  loadPosts () {
+    const { postsPerPage, page, postsLength } = this.state;
+    if (postsPerPage * page < postsLength) {
+      const $d = $(document);
+      if ($d.height() - ($d.scrollTop() + $(window).height()) < 200) {
+        this.setState({ page: this.state.page + 1 });
+      }
+    }
   }
 
   onMouseEnter (event) {
@@ -43,16 +75,13 @@ class HomePage extends React.Component {
   }
 
   render () {
-    const { posts } = this.props;
-    const vPosts = posts.slice(0, this.state.page * this.state.postsPerPage);
-    const showButton = vPosts.length < posts.length;
+    const { page, postsPerPage } = this.state;
+    const posts = this.props.posts.slice(0, page * postsPerPage);
 
     return (
       <PostList
-        posts={vPosts}
+        posts={posts}
         onDeleteClick={this.onDeleteClick}
-        showButton={showButton}
-        loadMorePosts={this.loadMorePosts}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
       />
@@ -62,12 +91,17 @@ class HomePage extends React.Component {
 
 HomePage.propTypes = {
   posts: PropTypes.array,
+  postsLength: PropTypes.number.isRequired,
   actions: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => {
+  const { posts } = state;
+  const postsLength = posts.length;
+
   return {
-    posts: state.posts
+    posts,
+    postsLength
   };
 };
 
