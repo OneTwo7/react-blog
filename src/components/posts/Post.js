@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions/commentActions';
 import PostList from './PostList';
 import PropTypes from 'prop-types';
+import ConfirmationModal from '../common/ConfirmationModal';
 
 class Post extends React.Component {
   constructor (props) {
@@ -12,7 +13,8 @@ class Post extends React.Component {
       comments: [],
       comment: {
         content: ''
-      }
+      },
+      commentId: ''
     };
 
     this.onChange = this.onChange.bind(this);
@@ -20,6 +22,7 @@ class Post extends React.Component {
     this.onEditClick = this.onEditClick.bind(this);
     this.cancelEdit = this.cancelEdit.bind(this);
     this.onDeleteClick = this.onDeleteClick.bind(this);
+    this.confirm = this.confirm.bind(this);
   }
 
   componentWillMount () {
@@ -83,7 +86,13 @@ class Post extends React.Component {
     if (commentId === this.state.comment.id) {
       this.setDefaultComment();
     }
-    this.props.deleteComment(commentId);
+    this.setState({ commentId });
+    $('#confirmation-modal').modal('show');
+  }
+
+  confirm () {
+    this.props.deleteComment(this.state.commentId);
+    $('#confirmation-modal').modal('hide');
   }
 
   setDefaultComment () {
@@ -215,6 +224,7 @@ class Post extends React.Component {
             ))
           }
         </section>
+        <ConfirmationModal confirm={this.confirm} />
       </div>
     );
   }

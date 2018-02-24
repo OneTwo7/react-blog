@@ -12,7 +12,7 @@ const generateId = () => {
   return (++idCounter).toString();
 };
 
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 100; i++) {
   for (let j = 0; j < 3; j++) {
     comments.push({
       author: j % 2 + 1,
