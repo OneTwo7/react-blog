@@ -1,5 +1,6 @@
 import * as types from '../constants';
 import AuthApi from '../../app/mockAuthApi';
+import { beginAjaxCall, ajaxCallError } from './ajaxStatusActions';
 
 export const loginSuccess = (user) => {
   return {
@@ -23,9 +24,11 @@ export const getCurrentUserSuccess = (user) => {
 
 export const login = (email, password) => {
   return (dispatch => {
+    dispatch(beginAjaxCall());
     return AuthApi.login(email, password).then(user => {
       dispatch(loginSuccess(user));
     }).catch(error => {
+      dispatch(ajaxCallError());
       throw(error);
     });
   });
@@ -33,9 +36,11 @@ export const login = (email, password) => {
 
 export const logout = () => {
   return (dispatch => {
+    dispatch(beginAjaxCall());
     return AuthApi.logout().then(() => {
       dispatch(logoutSuccess());
     }).catch(error => {
+      dispatch(ajaxCallError());
       throw(error);
     });
   });
@@ -43,9 +48,11 @@ export const logout = () => {
 
 export const getCurrentUser = () => {
   return (dispatch => {
+    dispatch(beginAjaxCall());
     return AuthApi.getCurrentUser().then(user => {
       dispatch(getCurrentUserSuccess(user));
     }).catch(error => {
+      dispatch(ajaxCallError());
       throw(error);
     });
   });

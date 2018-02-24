@@ -13,7 +13,7 @@ const authReducer = (state = null, action) => {
       if (action.user) {
         currentUser = Object.assign({}, action.user);
       } else {
-        currentUser = null;
+        currentUser = {};
       }
       return currentUser;
     default:

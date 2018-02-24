@@ -36,8 +36,9 @@ class PostForm extends React.Component {
     if (!this.postFormIsValid()) {
       return;
     }
-    this.props.actions.savePost(this.state.post);
-    this.redirect();
+    this.props.actions.savePost(this.state.post).then(() => {
+      this.redirect();
+    });
   }
 
   onCancel () {

@@ -56,7 +56,7 @@ class Post extends React.Component {
     }
     const { auth } = this.props;
     comment.post_id = this.props.post.id;
-    if (!auth) {
+    if (!(auth && auth.id)) {
       $('#login-modal').modal('show');
     } else {
       comment.author = auth.id;
@@ -67,7 +67,9 @@ class Post extends React.Component {
 
   onEditClick (event) {
     const commentId = this.getCommentId(event.target.id);
-    const comment = this.props.comments.find(c => c.id === commentId);
+    const comment = Object.assign(
+      {}, this.props.comments.find(c => c.id === commentId)
+    );
     this.setState({ comment });
     $(window).scrollTop($('#comments').offset().top);
   }
@@ -118,6 +120,7 @@ class Post extends React.Component {
           <p id="post-content">{post.content}</p>
           <div id="post-tags">
             {
+              post.tags.length > 0 &&
               post.tags.split(' ').map((tag, idx) => (
                 <div key={idx} className="tag">
                   {tag}

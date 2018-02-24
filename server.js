@@ -18,6 +18,10 @@ app.use(webpackHotMiddleware(compiler));
 
 app.use(express.static(path.join(__dirname, 'src/css')));
 
+app.get('/favicon.ico', (req, res) => {
+  res.status(204);
+});
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'src/index.html'));
 });

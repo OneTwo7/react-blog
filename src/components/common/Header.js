@@ -62,7 +62,22 @@ class Header extends Component {
   renderContent () {
     const { auth } = this.props;
 
-    if (auth) {
+    if (!auth) {
+      return;
+    } else if (!auth.id) {
+      return (
+        <li className="nav-item">
+          <button
+            type="button"
+            className="btn btn-outline-light"
+            data-toggle="modal"
+            data-target="#login-modal"
+          >
+            Login
+          </button>
+        </li>
+      );
+    } else {
       return (
         <li className="nav-item dropdown">
           <button
@@ -85,19 +100,6 @@ class Header extends Component {
               Logout
             </button>
           </div>
-        </li>
-      );
-    } else {
-      return (
-        <li className="nav-item">
-          <button
-            type="button"
-            className="btn btn-outline-light"
-            data-toggle="modal"
-            data-target="#login-modal"
-          >
-            Login
-          </button>
         </li>
       );
     }

@@ -5,6 +5,7 @@ import HomePage from './home/HomePage';
 import PostForm from './posts/PostForm';
 import Post from './posts/Post';
 import Footer from './common/Footer';
+import ProgressBar from './common/ProgressBar';
 
 const App = () => (
   <div>
@@ -16,6 +17,7 @@ const App = () => (
       <Route exact path="/posts/:id/edit" component={PostForm} />
     </div>
     <Footer />
+    <ProgressBar />
   </div>
 );
 

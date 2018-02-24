@@ -1,5 +1,6 @@
 import * as types from '../constants';
 import PostApi from '../../app/mockPostApi';
+import { beginAjaxCall, ajaxCallError } from './ajaxStatusActions';
 
 export const loadPostsSuccess = (posts) => {
   return {
@@ -31,9 +32,11 @@ export const deletePostSuccess = (id) => {
 
 export const loadPosts = () => {
   return (dispatch => {
+    dispatch(beginAjaxCall());
     return PostApi.getAllPosts().then(posts => {
       dispatch(loadPostsSuccess(posts.reverse()));
     }).catch(error => {
+      dispatch(ajaxCallError());
       throw(error);
     });
   });
@@ -42,10 +45,12 @@ export const loadPosts = () => {
 export const savePost = (post) => {
   const postId = post.id;
   return (dispatch => {
+    dispatch(beginAjaxCall());
     return PostApi.savePost(post).then(post => {
       postId ? dispatch(updatePostSuccess(post)) :
         dispatch(createPostSuccess(post));
     }).catch(error => {
+      dispatch(ajaxCallError());
       throw(error);
     });
   });
@@ -53,9 +58,11 @@ export const savePost = (post) => {
 
 export const deletePost = (id) => {
   return (dispatch => {
+    dispatch(beginAjaxCall());
     return PostApi.deletePost(id).then(() => {
       dispatch(deletePostSuccess(id));
     }).catch(error => {
+      dispatch(ajaxCallError());
       throw(error);
     });
   });

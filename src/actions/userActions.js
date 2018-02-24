@@ -1,5 +1,6 @@
 import * as types from '../constants';
 import UserApi from '../../app/mockUserApi';
+import { beginAjaxCall, ajaxCallError } from './ajaxStatusActions';
 
 export const loadUsersSuccess = (users) => {
   return {
@@ -10,9 +11,11 @@ export const loadUsersSuccess = (users) => {
 
 export const loadUsers = () => {
   return (dispatch => {
+    dispatch(beginAjaxCall());
     return UserApi.getAllUsers().then(users => {
       dispatch(loadUsersSuccess(users));
     }).catch(error => {
+      dispatch(ajaxCallError());
       throw(error);
     });
   });

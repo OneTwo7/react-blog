@@ -1,5 +1,6 @@
 import * as types from '../constants';
 import CommentApi from '../../app/mockCommentApi';
+import { beginAjaxCall, ajaxCallError } from './ajaxStatusActions';
 
 export const loadPostCommentsSuccess = (comments) => {
   return {
@@ -43,10 +44,12 @@ export const loadComments = (id) => {
 export const saveComment = (comment) => {
   const commentId = comment.id;
   return (dispatch => {
+    dispatch(beginAjaxCall());
     return CommentApi.saveComment(comment).then(comment => {
       commentId ? dispatch(updateCommentSuccess(comment)) :
         dispatch(createCommentSuccess(comment));
     }).catch(error => {
+      dispatch(ajaxCallError());
       throw(error);
     });
   });
@@ -54,9 +57,11 @@ export const saveComment = (comment) => {
 
 export const deleteComment = (id) => {
   return (dispatch => {
+    dispatch(beginAjaxCall());
     return CommentApi.deleteComment(id).then(postId => {
       dispatch(deleteCommentSuccess(id, postId));
     }).catch(error => {
+      dispatch(ajaxCallError());
       throw(error);
     });
   });
