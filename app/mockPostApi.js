@@ -24,7 +24,8 @@ for (let i = 0; i < 100; i++) {
     content: content,
     category: 'sample',
     tags: 'sample loremipsum text default',
-    comments: 3
+    comments: 3,
+    created_at: new Date()
   });
   posts[i].id = generateId(posts[i]);
 }

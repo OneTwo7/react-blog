@@ -4,6 +4,8 @@ import * as actions from '../../actions/commentActions';
 import PostList from './PostList';
 import PropTypes from 'prop-types';
 import ConfirmationModal from '../common/ConfirmationModal';
+import { getRecommended } from '../../utils/selectors';
+import { fromNow } from '../../utils/formatDate';
 
 class Post extends React.Component {
   constructor (props) {
@@ -116,13 +118,16 @@ class Post extends React.Component {
   }
 
   render () {
-    const { post, suggested, author, users } = this.props;
+    const { post, recommended, author, users } = this.props;
 
     return (
       <div className="row">
         <section id="post" className="col-md-8 offset-md-2">
           <div className="post-top">
-            <div>{author.name}</div>
+            <div>
+              <div>{author.name}</div>
+              <div>{fromNow(post.created_at)}</div>
+            </div>
             <div>{post.category}</div>
           </div>
           <h1 id="post-title">{post.title}</h1>
@@ -140,11 +145,11 @@ class Post extends React.Component {
           <div>{author.name}</div>
         </section>
         {
-          !!suggested.length &&
+          !!recommended.length &&
           <section id="related-posts" className="col-md-10 offset-md-1">
             <div className="row">
               {
-                suggested.map(p => (
+                recommended.map(p => (
                   <div key={p.post.id} className="col-md-4">
                     <div className="related-post">
                       {
@@ -199,7 +204,10 @@ class Post extends React.Component {
                 onMouseLeave={this.onMouseLeave}
               >
                 <div className="comment-wrapper">
-                  <div className="comment-author">{users[c.author].name}</div>
+                  <div className="comment-top">
+                    <div>{users[c.author].name}</div>
+                    <div>{fromNow(c.created_at)}</div>
+                  </div>
                   <div className="comment-content">{c.content}</div>
                 </div>
                 <div className="comment-controls">
@@ -233,7 +241,7 @@ class Post extends React.Component {
 Post.propTypes = {
   post: PropTypes.object.isRequired,
   author: PropTypes.object.isRequired,
-  suggested: PropTypes.array,
+  recommended: PropTypes.array,
   users: PropTypes.object.isRequired,
   loadComments: PropTypes.func.isRequired,
   comments: PropTypes.array.isRequired,
@@ -249,9 +257,10 @@ const mapStateToProps = (state, ownProps) => {
     title: '',
     content: '',
     category: '',
-    tags: ''
+    tags: '',
+    created_at: ''
   };
-  let suggested = [];
+  let recommended = [];
   let author = {};
   let posts = [...state.posts];
   let postsLength = posts.length;
@@ -260,6 +269,7 @@ const mapStateToProps = (state, ownProps) => {
   let usersById = {};
 
   if (postId && postsLength > 0) {
+    // find the post and remove it from the list
     for (let i = 0; i < postsLength; i++) {
       if (posts[i].id === postId) {
         post = posts.splice(i, 1)[0];
@@ -267,43 +277,7 @@ const mapStateToProps = (state, ownProps) => {
         break;
       }
     }
-    // same category
-    for (let i = 0; i < postsLength; i++) {
-      if (posts[i].category === post.category) {
-        suggested.push({
-          type: 'category',
-          post: posts.splice(i, 1)[0]
-        });
-        postsLength--;
-        i--;
-      }
-    }
-    // same tags
-    let tags = post.tags;
-    if (suggested.length < 3 && tags) {
-      tags = post.tags.split(' ');
-      for (let i = 0, l = tags.length; i < l; i++) {
-        if (suggested.length === 3) {
-          break;
-        }
-        for (let j = 0; j < postsLength; j++) {
-          if (posts[j].tags.indexOf(tags[i]) !== -1) {
-            suggested.push({
-              type: 'tag',
-              tag: tags[i],
-              post: posts.splice(j, 1)[0]
-            });
-            postsLength--;
-            j--;
-            if (suggested.length === 3) {
-              break;
-            }
-          }
-        }
-      }
-    } else {
-      suggested = suggested.slice(0, 3);
-    }
+    recommended = getRecommended(post, posts, postsLength);
   }
 
   if (post.author && users.length > 0) {
@@ -316,7 +290,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     post,
-    suggested,
+    recommended,
     author,
     comments,
     auth,

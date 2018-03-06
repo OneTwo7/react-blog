@@ -17,7 +17,8 @@ for (let i = 0; i < 100; i++) {
     comments.push({
       author: j % 2 + 1,
       post_id: 'post-' + i,
-      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      created_at: new Date()
     });
     comments[i * 3 + j].id = generateId();
   }
