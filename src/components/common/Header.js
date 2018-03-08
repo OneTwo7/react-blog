@@ -50,9 +50,12 @@ class Header extends Component {
       email: '',
       password: ''
     };
-    $('#login-modal').modal('hide');
-    this.setState({ auth });
-    this.props.actions.login(email, password);
+    this.props.actions.login(email, password).then(() => {
+      $('#login-modal').modal('hide');
+      this.setState({ auth });
+    }).catch(error => {
+      return;
+    });
   }
 
   logout () {

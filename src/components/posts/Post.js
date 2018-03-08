@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions/commentActions';
 import PostList from './PostList';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import ConfirmationModal from '../common/ConfirmationModal';
 import { getRecommended } from '../../utils/selectors';
@@ -16,7 +17,8 @@ class Post extends React.Component {
       comment: {
         content: ''
       },
-      commentId: ''
+      commentId: '',
+      errors: {}
     };
 
     this.onChange = this.onChange.bind(this);
@@ -56,9 +58,20 @@ class Post extends React.Component {
   onClick (event) {
     event.preventDefault();
     const comment = Object.assign({}, this.state.comment);
+    const errors = {};
+    let formIsValid = true;
+
     if (comment.content.length === 0) {
+      errors.content = 'You must provide content.';
+      formIsValid = false;
+    }
+
+    this.setState({ errors });
+
+    if (!formIsValid) {
       return;
     }
+
     const { auth } = this.props;
     comment.post_id = this.props.post.id;
     if (!(auth && auth.id)) {
@@ -98,7 +111,7 @@ class Post extends React.Component {
   }
 
   setDefaultComment () {
-    this.setState({ comment: { content: '' } });
+    this.setState({ comment: { content: '' }, errors: {} });
   }
 
   getCommentId (btnId) {
@@ -119,6 +132,7 @@ class Post extends React.Component {
 
   render () {
     const { post, recommended, author, users } = this.props;
+    const { comment, errors } = this.state;
 
     return (
       <div className="row">
@@ -157,7 +171,11 @@ class Post extends React.Component {
                         <div>Also tagged {p.tag}</div>
                       }
                       <div className="bottom">
-                        <h3 className="title">{p.post.title}</h3>
+                        <h3 className="title">
+                          <Link to={`/posts/${p.post.id}`}>
+                            {p.post.title}
+                          </Link>
+                        </h3>
                       </div>
                     </div>
                   </div>
@@ -172,11 +190,17 @@ class Post extends React.Component {
             <textarea
               id="comment-content-input"
               name="content"
-              value={this.state.comment.content}
+              value={comment.content}
               onChange={this.onChange}
               placeholder="Write a response..."
               className="form-control"
             />
+            {
+              errors.content &&
+              <div className="alert alert-danger">
+                {errors.content}
+              </div>
+            }
             <input
               type="submit"
               value="Submit"
@@ -184,7 +208,7 @@ class Post extends React.Component {
               className="btn btn-primary"
             />
             {
-              this.state.comment.id &&
+              comment.id &&
               <button
                 id="cancel-edit"
                 type="button"

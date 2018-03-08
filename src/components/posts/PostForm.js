@@ -50,15 +50,24 @@ class PostForm extends React.Component {
   }
 
   postFormIsValid () {
+    const { title, content, category } = this.state.post;
     let formIsValid = true;
     let errors = {};
 
-    if (this.state.post.title.length < 4) {
+    if (title.length < 4) {
       errors.title = 'Title must be at least 4 characters.';
       formIsValid = false;
     }
+    if (!content) {
+      errors.content = 'You must provide content.';
+      formIsValid = false;
+    }
+    if (!category) {
+      errors.category = 'You must provide category';
+      formIsValid = false;
+    }
 
-    this.setState({ errors: errors });
+    this.setState({ errors });
     return formIsValid;
   }
 
@@ -92,6 +101,10 @@ class PostForm extends React.Component {
             value={post.content}
             className="form-control"
           />
+          {
+            errors.content &&
+            <div className="alert alert-danger">{errors.content}</div>
+          }
         </div>
         <div className="form-group">
           <label htmlFor="category">Category</label>
@@ -103,6 +116,10 @@ class PostForm extends React.Component {
             value={post.category}
             className="form-control"
           />
+          {
+            errors.category &&
+            <div className="alert alert-danger">{errors.category}</div>
+          }
         </div>
         <div className="form-group">
           <label htmlFor="tags">Tags</label>

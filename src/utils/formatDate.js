@@ -6,10 +6,14 @@ const periods = {
 };
 
 export const fromNow = (date) => {
-  const num = new Date() - date;
+  if (!(date instanceof Date)) {
+    return '';
+  }
 
-  if (num < 90 * periods.second) {
-    const seconds = Math.ceil(num / periods.second);
+  const time = new Date() - date;
+
+  if (time < 90 * periods.second) {
+    const seconds = Math.ceil(time / periods.second);
     switch (true) {
       case seconds < 15:
         return 'a few seconds ago';
@@ -20,18 +24,18 @@ export const fromNow = (date) => {
     }
   }
 
-  if (num < 90 * periods.minute) {
-    const minutes = Math.ceil(num / periods.minute);
+  if (time < 90 * periods.minute) {
+    const minutes = Math.ceil(time / periods.minute);
     return minutes < 45 ? minutes + ' minutes ago' : 'an hour ago';
   }
 
-  if (num < 35 * periods.hour) {
-    const hours = Math.ceil(num / periods.hour);
+  if (time < 35 * periods.hour) {
+    const hours = Math.ceil(time / periods.hour);
     return hours < 21 ? hours + ' hours ago' : 'a day ago';
   }
 
-  if (num < 547 * periods.day) {
-    const days = Math.ceil(num / periods.day);
+  if (time < 547 * periods.day) {
+    const days = Math.ceil(time / periods.day);
     switch (true) {
       case days < 25:
         return days + ' days ago';
@@ -44,5 +48,5 @@ export const fromNow = (date) => {
     }
   }
 
-  return Math.ceil(num / (periods.day * 365)) + ' years ago';
+  return Math.ceil(time / (periods.day * 365)) + ' years ago';
 };

@@ -45,8 +45,14 @@ class PostApi {
       setTimeout(() => {
         // Simulate server-side validation
         const minPostTitleLength = 4;
-        if (post.title.length < minPostTitleLength) {
+        if (!post.title || post.title.length < minPostTitleLength) {
           reject(`Title must be at least ${minPostTitleLength} characters.`);
+        }
+        if (!post.content) {
+          reject('You must provide content.');
+        }
+        if (!post.category) {
+          reject('You must provide category.');
         }
 
         if (post.id) {
