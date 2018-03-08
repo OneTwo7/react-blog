@@ -56,6 +56,10 @@ button {
   cursor: pointer;
 }
 
+.alert-danger {
+  margin-top: .3rem;
+}
+
 /* navbar */
 
 .btn-link.dropdown-toggle {

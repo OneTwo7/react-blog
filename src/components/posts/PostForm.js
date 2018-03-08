@@ -3,7 +3,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/postActions';
 import { NotificationManager } from 'react-notifications';
+import TextInput from '../common/TextInput';
+import TextareaInput from '../common/TextareaInput';
 import PropTypes from 'prop-types';
+
+import FIELDS from './formFields';
 
 class PostForm extends React.Component {
   constructor (props) {
@@ -53,20 +57,21 @@ class PostForm extends React.Component {
   }
 
   postFormIsValid () {
-    const { title, content, category } = this.state.post;
+    const { post } = this.state;
     let formIsValid = true;
     let errors = {};
 
-    if (title.length < 4) {
-      errors.title = 'Title must be at least 4 characters.';
-      formIsValid = false;
-    }
-    if (!content) {
-      errors.content = 'You must provide content.';
-      formIsValid = false;
-    }
-    if (!category) {
-      errors.category = 'You must provide category';
+    FIELDS.forEach(({ name }) => {
+      if (name !== 'tags') {
+        if (!post[name].trim()) {
+          errors[name] = 'You must provide a value!';
+          formIsValid = false;
+        }
+      }
+    });
+
+    if (!errors.title && post.title.trim().length < 4) {
+      errors.title = 'Title must be at least 4 characters!';
       formIsValid = false;
     }
 
@@ -74,67 +79,39 @@ class PostForm extends React.Component {
     return formIsValid;
   }
 
-  render () {
-    const { post, errors } = this.state;
+  renderInputs () {
+    return FIELDS.map(({ name, label }) => {
+      if (name === 'content') {
+        return (
+          <TextareaInput
+            key={name}
+            name={name}
+            label={label}
+            onChange={this.onChange}
+            value={this.state.post[name]}
+            error={this.state.errors[name]}
+          />
+        );
+      } else {
+        return (
+          <TextInput
+            key={name}
+            name={name}
+            label={label}
+            onChange={this.onChange}
+            value={this.state.post[name]}
+            error={this.state.errors[name]}
+          />
+        );
+      }
+    });
+  }
 
+  render () {
     return (
       <form>
-        <h1>{post.id ? 'Edit Post' : 'New Post'}</h1>
-        <div className="form-group">
-          <label htmlFor="title">Title</label>
-          <input
-            id="title"
-            name="title"
-            type="text"
-            onChange={this.onChange}
-            value={post.title}
-            className="form-control"
-          />
-          {
-            errors.title &&
-            <div className="alert alert-danger">{errors.title}</div>
-          }
-        </div>
-        <div className="form-group">
-          <label htmlFor="content">Content</label>
-          <textarea
-            id="content"
-            name="content"
-            onChange={this.onChange}
-            value={post.content}
-            className="form-control"
-          />
-          {
-            errors.content &&
-            <div className="alert alert-danger">{errors.content}</div>
-          }
-        </div>
-        <div className="form-group">
-          <label htmlFor="category">Category</label>
-          <input
-            id="category"
-            name="category"
-            type="text"
-            onChange={this.onChange}
-            value={post.category}
-            className="form-control"
-          />
-          {
-            errors.category &&
-            <div className="alert alert-danger">{errors.category}</div>
-          }
-        </div>
-        <div className="form-group">
-          <label htmlFor="tags">Tags</label>
-          <input
-            id="tags"
-            name="tags"
-            type="text"
-            onChange={this.onChange}
-            value={post.tags}
-            className="form-control"
-          />
-        </div>
+        <h1>{this.state.post.id ? 'Edit Post' : 'New Post'}</h1>
+        {this.renderInputs()}
         <input
           type="submit"
           onClick={this.onClick}
@@ -164,7 +141,7 @@ const mapStateToProps = (state, ownProps) => {
   let post = {
     author: state.auth ? state.auth.id : null,
     title: '',
-    text: '',
+    content: '',
     category: '',
     tags: ''
   };
@@ -180,10 +157,8 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    actions: bindActionCreators(actions, dispatch)
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(actions, dispatch)
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(PostForm);
