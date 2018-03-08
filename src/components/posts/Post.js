@@ -111,7 +111,11 @@ class Post extends React.Component {
   }
 
   confirm () {
-    this.props.deleteComment(this.state.commentId);
+    this.props.deleteComment(this.state.commentId).then(() => {
+      NotificationManager.success('Comment has been deleted.');
+    }).catch(error => {
+      NotificationManager.error(error);
+    });
     $('#confirmation-modal').modal('hide');
   }
 
@@ -121,18 +125,6 @@ class Post extends React.Component {
 
   getCommentId (btnId) {
     return btnId.slice(btnId.indexOf('-') + 1);
-  }
-
-  onMouseEnter (event) {
-    let $el = $(event.target);
-    while (!$el.hasClass('comment')) {
-      $el = $el.parent();
-    }
-    $el.find('.comment-controls').css('visibility', 'visible');
-  }
-
-  onMouseLeave () {
-    $('.comment-controls').css('visibility', 'hidden');
   }
 
   render () {
@@ -226,12 +218,7 @@ class Post extends React.Component {
           </form>
           {
             this.state.comments.map(c => (
-              <div
-                key={c.id}
-                className="comment"
-                onMouseEnter={this.onMouseEnter}
-                onMouseLeave={this.onMouseLeave}
-              >
+              <div key={c.id} className="comment">
                 <div className="comment-wrapper">
                   <div className="comment-top">
                     <div>{users[c.author].name}</div>

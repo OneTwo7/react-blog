@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import PostList from '../posts/PostList';
 import PostPreview from '../posts/PostPreview';
 import ConfirmationModal from '../common/ConfirmationModal';
+import { NotificationManager } from 'react-notifications';
 
 class HomePage extends React.Component {
   constructor (props) {
@@ -21,8 +22,6 @@ class HomePage extends React.Component {
 
     this.onDeleteClick = this.onDeleteClick.bind(this);
     this.loadPosts = this.loadPosts.bind(this);
-    this.onMouseEnter = this.onMouseEnter.bind(this);
-    this.onMouseLeave = this.onMouseLeave.bind(this);
     this.confirm = this.confirm.bind(this);
   }
 
@@ -57,7 +56,11 @@ class HomePage extends React.Component {
   }
 
   confirm () {
-    this.props.actions.deletePost(this.state.postId);
+    this.props.actions.deletePost(this.state.postId).then(() => {
+      NotificationManager.success('Post has been deleted.');
+    }).catch(error => {
+      NotificationManager.error(error);
+    });
     $('#confirmation-modal').modal('hide');
   }
 
@@ -71,18 +74,6 @@ class HomePage extends React.Component {
     }
   }
 
-  onMouseEnter (event) {
-    let $el = $(event.target);
-    while (!$el.hasClass('post-preview')) {
-      $el = $el.parent();
-    }
-    $el.find('.post-controls').css('visibility', 'visible');
-  }
-
-  onMouseLeave (event) {
-    $('.post-controls').css('visibility', 'hidden');
-  }
-
   render () {
     const { page, postsPerPage } = this.state;
     const posts = this.props.posts.slice(0, page * postsPerPage);
@@ -92,8 +83,6 @@ class HomePage extends React.Component {
         key="post-list"
         posts={posts}
         onDeleteClick={this.onDeleteClick}
-        onMouseEnter={this.onMouseEnter}
-        onMouseLeave={this.onMouseLeave}
       />,
       <ConfirmationModal key="confirmation-modal" confirm={this.confirm} />
     ];

@@ -2,7 +2,7 @@ import React from 'react';
 import PostPreview from './PostPreview';
 import PropTypes from 'prop-types';
 
-const PostList = ({ posts, onDeleteClick, onMouseEnter, onMouseLeave }) => (
+const PostList = ({ posts, onDeleteClick }) => (
   <div className="row">
     {
       posts.map(post => (
@@ -10,8 +10,6 @@ const PostList = ({ posts, onDeleteClick, onMouseEnter, onMouseLeave }) => (
           key={post.id}
           post={post}
           onDeleteClick={onDeleteClick}
-          onMouseEnter={onMouseEnter}
-          onMouseLeave={onMouseLeave}
         />
       ))
     }
@@ -20,9 +18,7 @@ const PostList = ({ posts, onDeleteClick, onMouseEnter, onMouseLeave }) => (
 
 PostList.propTypes = {
   posts: PropTypes.array,
-  onDeleteClick: PropTypes.func.isRequired,
-  onMouseEnter: PropTypes.func.isRequired,
-  onMouseLeave: PropTypes.func.isRequired
+  onDeleteClick: PropTypes.func.isRequired
 };
 
 export default PostList;

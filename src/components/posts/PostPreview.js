@@ -2,14 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-const PostPreview = ({ post, onDeleteClick, onMouseEnter, onMouseLeave }) => (
+const PostPreview = ({ post, onDeleteClick }) => (
   <div className="post-wrapper col-md-4">
-    <div
-      id={post.id}
-      className="post-preview"
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
+    <div id={post.id} className="post-preview">
       <div className="post-preview-top">
         <div className="post-category">
           {post.category}
@@ -21,7 +16,7 @@ const PostPreview = ({ post, onDeleteClick, onMouseEnter, onMouseLeave }) => (
       </div>
       <div className="post-controls">
         <Link to={`/posts/${post.id}/edit`}>
-          Edit
+          edit
         </Link>
         <button
           id={`delete-${post.id}`}
@@ -29,7 +24,7 @@ const PostPreview = ({ post, onDeleteClick, onMouseEnter, onMouseLeave }) => (
           className="btn btn-link"
           onClick={onDeleteClick}
         >
-          Delete
+          delete
         </button>
       </div>
       <div className="post-preview-bottom">
@@ -43,9 +38,7 @@ const PostPreview = ({ post, onDeleteClick, onMouseEnter, onMouseLeave }) => (
 
 PostPreview.propTypes = {
   post: PropTypes.object.isRequired,
-  onDeleteClick: PropTypes.func.isRequired,
-  onMouseEnter: PropTypes.func.isRequired,
-  onMouseLeave: PropTypes.func.isRequired
+  onDeleteClick: PropTypes.func.isRequired
 };
 
 export default PostPreview;
