@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import ConfirmationModal from '../common/ConfirmationModal';
 import { getRecommended } from '../../utils/selectors';
 import { fromNow } from '../../utils/formatDate';
+import { NotificationManager } from 'react-notifications';
 
 class Post extends React.Component {
   constructor (props) {
@@ -78,7 +79,11 @@ class Post extends React.Component {
       $('#login-modal').modal('show');
     } else {
       comment.author = auth.id;
-      this.props.saveComment(comment);
+      this.props.saveComment(comment).then(() => {
+        NotificationManager.success('Done!');
+      }).catch(error => {
+        NotificationManager.error(error);
+      });
       this.setDefaultComment();
     }
   }

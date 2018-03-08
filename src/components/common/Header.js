@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/authActions';
 import { Link } from 'react-router-dom';
 import LoginModal from './LoginModal';
+import { NotificationManager } from 'react-notifications';
 import PropTypes from 'prop-types';
 
 class Header extends Component {
@@ -53,7 +54,9 @@ class Header extends Component {
     this.props.actions.login(email, password).then(() => {
       $('#login-modal').modal('hide');
       this.setState({ auth });
+      NotificationManager.success('You are now logged in!');
     }).catch(error => {
+      NotificationManager.error('Invalid email/password combination!');
       return;
     });
   }

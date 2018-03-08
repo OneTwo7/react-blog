@@ -49,6 +49,7 @@ class CommentApi {
           comments.splice(idx, 1, comment);
         } else {
           comment.id = generateId().toString();
+          comment.created_at = new Date();
           comments.push(comment);
           PostApi.updateCommentsCount(comment.post_id, 1).catch(error => {
             throw(error);

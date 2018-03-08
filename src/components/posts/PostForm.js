@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/postActions';
+import { NotificationManager } from 'react-notifications';
 import PropTypes from 'prop-types';
 
 class PostForm extends React.Component {
@@ -38,6 +39,8 @@ class PostForm extends React.Component {
     }
     this.props.actions.savePost(this.state.post).then(() => {
       this.redirect();
+    }).catch(error => {
+      NotificationManager.error(error);
     });
   }
 

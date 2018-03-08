@@ -60,6 +60,7 @@ class PostApi {
           posts.splice(existingPostIndex, 1, post);
         } else {
           post.id = generateId(post);
+          post.created_at = new Date();
           post.comments = 0;
           posts.push(post);
         }

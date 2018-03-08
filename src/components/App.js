@@ -6,6 +6,7 @@ import PostForm from './posts/PostForm';
 import Post from './posts/Post';
 import Footer from './common/Footer';
 import ProgressBar from './common/ProgressBar';
+import { NotificationContainer } from 'react-notifications';
 
 const App = () => (
   <div>
@@ -18,6 +19,7 @@ const App = () => (
     </div>
     <Footer />
     <ProgressBar />
+    <NotificationContainer />
   </div>
 );
 
