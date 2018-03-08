@@ -2,25 +2,29 @@ import test from 'ava';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
-import configureStore from 'redux-mock-store';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import rootReducer from '../../../src/reducers';
 import { mount } from 'enzyme';
 import Post from '../../../src/components/posts/Post';
 
-const mockStore = configureStore();
 const post1 = {
   id:      'first',
   title:   'First',
-  content: 'Content 1'
+  content: 'Content 1',
+  tags:    ''
 };
 const post2 = {
   id:      'second',
   title:   'Second',
-  content: 'Content 2'
+  content: 'Content 2',
+  tags:    ''
 };
 const initialState = {
-  posts: [post1, post2]
+  posts: [post1, post2],
+  users: []
 };
-const store = mockStore(initialState);
+const store = createStore(rootReducer, initialState, applyMiddleware(thunk));
 const props = {
   match: {
     params: {
@@ -37,7 +41,7 @@ const wrapper = mount(
 );
 
 test('layout', t => {
-  t.is(wrapper.find('.post').length, 1);
+  t.is(wrapper.find('#post').length, 1);
   t.is(wrapper.find('h1').text(), 'First');
   t.is(wrapper.find('#post-content').text(), 'Content 1');
 });

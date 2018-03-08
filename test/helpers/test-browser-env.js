@@ -17,6 +17,11 @@ function copyProps (src, target) {
   Object.defineProperties(target, props);
 }
 
+global.$ = () => ({
+  scrollTop: () => {},
+  scroll: () => {},
+  resize: () => {}
+});
 global.window = window;
 global.document = window.document;
 global.navigator = {

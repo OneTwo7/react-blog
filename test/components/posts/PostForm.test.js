@@ -31,6 +31,6 @@ test('title length validation', t => {
   t.is(submitBtn.prop('type'), 'submit');
   submitBtn.simulate('click');
   const alert = wrapper.find('.alert');
-  t.is(alert.length, 1);
+  t.truthy(alert.length);
   t.is(alert.at(0).text(), 'Title must be at least 4 characters.');
 });

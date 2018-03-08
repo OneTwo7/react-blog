@@ -15,7 +15,7 @@ for (let i = start, char; i < stop; i++) {
   posts.push({
     id: char,
     title: char.toUpperCase(),
-    content: 'Content ' + char
+    content: 'Content'
   });
 }
 const store = mockStore({ posts });
@@ -30,9 +30,4 @@ const wrapper = mount(
 test('layout', t => {
   t.is(wrapper.find('h2').length, 9);
   t.is(wrapper.find('h2 a').at(3).text(), 'D');
-  const loadMorePostsBtn = wrapper.find('#load-more-posts-btn');
-  t.is(wrapper.find('#load-more-posts-btn').length, 1);
-  loadMorePostsBtn.simulate('click');
-  t.is(wrapper.find('h2').length, 10);
-  t.is(wrapper.find('#load-more-posts-btn').length, 0);
 });

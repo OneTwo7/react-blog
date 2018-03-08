@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/commentActions';
 import PostList from './PostList';
 import { Link } from 'react-router-dom';
@@ -47,7 +48,7 @@ class Post extends React.Component {
   }
 
   loadComments (postId) {
-    this.props.loadComments(postId);
+    this.props.actions.loadComments(postId);
   }
 
   onChange (event) {
@@ -79,7 +80,7 @@ class Post extends React.Component {
       $('#login-modal').modal('show');
     } else {
       comment.author = auth.id;
-      this.props.saveComment(comment).then(() => {
+      this.props.actions.saveComment(comment).then(() => {
         NotificationManager.success('Done!');
       }).catch(error => {
         NotificationManager.error(error);
@@ -111,7 +112,7 @@ class Post extends React.Component {
   }
 
   confirm () {
-    this.props.deleteComment(this.state.commentId).then(() => {
+    this.props.actions.deleteComment(this.state.commentId).then(() => {
       NotificationManager.success('Comment has been deleted.');
     }).catch(error => {
       NotificationManager.error(error);
@@ -259,11 +260,9 @@ Post.propTypes = {
   author: PropTypes.object.isRequired,
   recommended: PropTypes.array,
   users: PropTypes.object.isRequired,
-  loadComments: PropTypes.func.isRequired,
   comments: PropTypes.array.isRequired,
   auth: PropTypes.object,
-  saveComment: PropTypes.func.isRequired,
-  deleteComment: PropTypes.func.isRequired
+  actions: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -314,4 +313,8 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, actions)(Post);
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(actions, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Post);
