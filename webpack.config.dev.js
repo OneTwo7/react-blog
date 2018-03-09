@@ -23,7 +23,7 @@ module.exports = exports = {
   module: {
     rules: [
       { test: /\.js$/, include: path.join(__dirname, 'src'), loaders: ['babel-loader'] },
-      { test: /(\.css)$/, loaders: ['style-loader', 'css-loader'] },
+      { test: /\.(s*)css$/, loaders: ['style-loader', 'css-loader', 'sass-loader'] },
       { test: /\.(woff2?|svg)$/, loader: 'url-loader?limit=10000' },
       { test: /\.(ttf|eot)$/, loader: 'file-loader' }
     ]

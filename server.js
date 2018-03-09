@@ -16,7 +16,7 @@ app.use(webpackDevMiddleware(compiler, {
 
 app.use(webpackHotMiddleware(compiler));
 
-app.use(express.static(path.join(__dirname, 'src/css')));
+app.use(express.static(path.join(__dirname, 'src/styles')));
 
 app.get('/favicon.ico', (req, res) => {
   res.status(204);

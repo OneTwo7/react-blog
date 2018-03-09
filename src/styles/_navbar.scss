@@ -1,0 +1,20 @@
+header {
+  margin-bottom: 2rem;
+}
+
+.btn-link.dropdown-toggle {
+  padding: 0;
+  margin: .5rem 0;
+  color: $white;
+  border: 0;
+  &:hover {
+    text-decoration: none;
+    color: $white;
+  }
+}
+
+.navbar-dark {
+  .navbar-toggler {
+    border-color: rgba(255,255,255,.5);
+  }
+}

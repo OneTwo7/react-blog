@@ -1,0 +1,37 @@
+#comment-form {
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+
+#comment-content-input {
+  margin-bottom: .5rem;
+}
+
+#cancel-edit {
+  margin-left: .5rem;
+}
+
+.comment {
+  margin-bottom: 1rem;
+  &:hover .comment-controls {
+    visibility: visible;
+  }
+}
+
+.comment-wrapper {
+  border: 1px solid $light-grey;
+}
+
+.comment-top {
+  display: flex;
+  justify-content: space-between;
+  padding: .5rem 1rem;
+  .comment-controls {
+    visibility: hidden;
+    align-self: flex-end;
+  }
+}
+
+.comment-content {
+  padding: 1rem;
+}

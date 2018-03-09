@@ -1,0 +1,53 @@
+@import 'colors';
+@import 'navbar';
+@import 'modals';
+@import 'posts';
+@import 'post';
+@import 'comments';
+@import 'footer';
+
+html {
+  min-height: 100%;
+  position: relative;
+}
+
+body {
+  height: 100%;
+}
+
+button {
+  cursor: pointer;
+}
+
+#main {
+  margin-bottom: 4rem;
+}
+
+#shadow {
+  display: flex;
+  justify-content: space-around;
+  background-color: rgba(0,0,0,.1);
+  z-index: 1051;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  position: absolute;
+  overflow: hidden;
+}
+
+#cog {
+  position: fixed;
+  top: -2rem;
+  margin-top: 50vh;
+  font-size: 4rem;
+}
+
+.alert-danger {
+  margin-top: .3rem;
+}
+
+.timestamp {
+  color: rgba(0,0,0,.5);
+  font-size: .9rem;
+}

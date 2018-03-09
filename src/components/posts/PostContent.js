@@ -7,7 +7,7 @@ const PostContent = ({ author, post }) => (
     <div className="post-top">
       <div>
         <div>{author.name}</div>
-        <div>{fromNow(post.created_at)}</div>
+        <div className="timestamp">{fromNow(post.created_at)}</div>
       </div>
       <div>{post.category}</div>
     </div>
