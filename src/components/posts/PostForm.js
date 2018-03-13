@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/postActions';
 import { NotificationManager } from 'react-notifications';
 import TextInput from '../common/TextInput';
-import TextareaInput from '../common/TextareaInput';
+import PostContent from './PostContent';
 import PropTypes from 'prop-types';
 
 import FIELDS from './formFields';
@@ -38,9 +38,15 @@ class PostForm extends React.Component {
 
   onClick (event) {
     event.preventDefault();
+
+    const { post } = this.state;
+    post.content = $('#content').html();
+    this.setState({ post });
+
     if (!this.postFormIsValid()) {
       return;
     }
+
     this.props.actions.savePost(this.state.post).then(() => {
       this.redirect();
     }).catch(error => {
@@ -63,7 +69,7 @@ class PostForm extends React.Component {
 
     FIELDS.forEach(({ name }) => {
       if (name !== 'tags') {
-        if (!post[name].trim()) {
+        if (!post[name] || !post[name].trim()) {
           errors[name] = 'You must provide a value!';
           formIsValid = false;
         }
@@ -83,13 +89,9 @@ class PostForm extends React.Component {
     return FIELDS.map(({ name, label }) => {
       if (name === 'content') {
         return (
-          <TextareaInput
+          <PostContent
             key={name}
-            name={name}
             label={label}
-            onChange={this.onChange}
-            value={this.state.post[name]}
-            error={this.state.errors[name]}
           />
         );
       } else {

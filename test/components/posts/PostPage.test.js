@@ -6,7 +6,7 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import rootReducer from '../../../src/reducers';
 import { mount } from 'enzyme';
-import Post from '../../../src/components/posts/Post';
+import PostPage from '../../../src/components/posts/PostPage';
 
 const post1 = {
   id:      'first',
@@ -35,7 +35,7 @@ const props = {
 const wrapper = mount(
   <Provider store={store}>
     <Router>
-      <Post {...props} />
+      <PostPage {...props} />
     </Router>
   </Provider>
 );
@@ -43,5 +43,4 @@ const wrapper = mount(
 test('layout', t => {
   t.is(wrapper.find('#post').length, 1);
   t.is(wrapper.find('h1').text(), 'First');
-  t.is(wrapper.find('#post-content').text(), 'Content 1');
 });

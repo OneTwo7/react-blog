@@ -10,17 +10,15 @@ const TextareaInput = ({ name, label, onChange, placeholder, value, error }) => 
   return (
     <div className="form-group">
       {label && <label htmlFor={name}>{label}</label>}
-      <div className="field">
-        <textarea
-          id={name}
-          name={name}
-          className={inputClass}
-          placeholder={placeholder}
-          value={value}
-          onChange={onChange}
-        />
-        {error && <div className="alert alert-danger">{error}</div>}
-      </div>
+      <textarea
+        id={name}
+        name={name}
+        className={inputClass}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+      />
+      {error && <div className="alert alert-danger">{error}</div>}
     </div>
   );
 };

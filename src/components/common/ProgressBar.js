@@ -2,20 +2,16 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-class ProgressBar extends Component {
-  render () {
-    return (
-      <div>
-        {
-          this.props.loading &&
-          <div id="shadow">
-            <i id="cog" className="fas fa-cog fa-spin" />
-          </div>
-        }
+const ProgressBar = ({ loading }) => (
+  <div>
+    {
+      loading &&
+      <div id="shadow">
+        <i id="cog" className="fas fa-cog fa-spin" />
       </div>
-    );
-  }
-}
+    }
+  </div>
+);
 
 ProgressBar.propTypes = {
   loading: PropTypes.bool.isRequired

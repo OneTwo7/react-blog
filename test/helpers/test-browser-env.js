@@ -19,8 +19,9 @@ function copyProps (src, target) {
 
 global.$ = () => ({
   scrollTop: () => {},
-  scroll: () => {},
-  resize: () => {}
+  scroll:    () => {},
+  resize:    () => {},
+  html:      () => {}
 });
 global.window = window;
 global.document = window.document;
