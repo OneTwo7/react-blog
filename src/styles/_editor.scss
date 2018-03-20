@@ -1,0 +1,62 @@
+.text, .code, .shell {
+  padding: 1rem;
+  border: 1px solid $light-grey;
+  border-radius: .25rem;
+  tab-size: 2;
+  white-space: pre-wrap;
+  min-height: 7.4rem;
+}
+
+.code {
+  background-color: #000;
+  color: #fff;
+}
+
+.shell {
+  background-color: #2b2;
+}
+
+.code div {
+  min-height: 1.3125rem;
+}
+
+.field-wrapper {
+  margin-bottom: 1rem;
+  pre {
+    margin-bottom: .4rem;
+  }
+  .btn {
+    padding: .15rem .5rem;
+    height: 2rem;
+  }
+  .remove-btn .svg-inline--fa {
+    font-size: 1.2rem;
+  }
+  &:first-child {
+    .swap-up {
+      display: none;
+    }
+  }
+  &:last-child {
+    .swap-down {
+      display: none;
+    }
+  }
+}
+
+.field-controls {
+  text-align: center;
+  .btn {
+    margin: 0 .2rem;
+  }
+}
+
+#content-controls.fixed {
+  position: fixed;
+  right: 0;
+  bottom: 3rem;
+  left: 0;
+  text-align: center;
+  background-color: #fff;
+  padding: .5rem 0;
+}
