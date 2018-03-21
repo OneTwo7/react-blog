@@ -8,8 +8,8 @@
 }
 
 .code {
-  background-color: #000;
-  color: #fff;
+  background-color: #212529;
+  color: #eee;
 }
 
 .shell {
@@ -51,6 +51,21 @@
   }
 }
 
+#content-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  button {
+    border: 1px solid rgba(0,0,0,.125);
+  }
+  #bold-btn {
+    font-weight: bold;
+  }
+  #em-btn {
+    font-style: italic;
+  }
+}
+
 #content-controls.fixed {
   position: fixed;
   right: 0;
@@ -58,5 +73,31 @@
   left: 0;
   text-align: center;
   background-color: #fff;
-  padding: .5rem 0;
+  padding: .5rem 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (min-width: 576px) {
+  #content-controls.fixed {
+    max-width: 540px;
+  }
+}
+
+@media (min-width: 768px) {
+  #content-controls.fixed {
+    max-width: 720px;
+  }
+}
+
+@media (min-width: 992px) {
+  #content-controls.fixed {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #content-controls.fixed {
+    max-width: 1140px;
+  }
 }

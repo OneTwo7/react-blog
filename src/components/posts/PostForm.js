@@ -16,9 +16,7 @@ class PostForm extends React.Component {
     this.state = {
       post: Object.assign({}, props.post),
       fields: [
-        { type: 'text',  id: 'field-0' },
-        { type: 'code',  id: 'field-1' },
-        { type: 'shell', id: 'field-2' }
+        { type: 'text',  id: 'field-0' }
       ],
       errors: {}
     };
@@ -26,16 +24,15 @@ class PostForm extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.onClick = this.onClick.bind(this);
     this.onCancel = this.onCancel.bind(this);
-    this.renderFields = this.renderFields.bind(this);
-    this.fixContentControls = this.fixContentControls.bind(this);
-    this.swapUp = this.swapUp.bind(this);
-    this.swapDown = this.swapDown.bind(this);
-    this.remove = this.remove.bind(this);
+    this.moveField = this.moveField.bind(this);
+    this.addField = this.addField.bind(this);
+    this.clearFields = this.clearFields.bind(this);
   }
 
   componentDidMount () {
     $(document).scroll(this.fixContentControls);
     $(window).resize(this.fixContentControls);
+    this.fixContentControls();
   }
 
   componentWillReceiveProps (nextProps) {
@@ -61,8 +58,8 @@ class PostForm extends React.Component {
   }
 
   onChange (event) {
-    const name = event.target.name;
-    const post = this.state.post;
+    const { name } = event.target;
+    const { post } = this.state;
     post[name] = event.target.value;
     this.setState({ post });
   }
@@ -123,7 +120,10 @@ class PostForm extends React.Component {
           <PostContent
             key={name}
             label={label}
-            renderFields={this.renderFields}
+            fields={this.state.fields}
+            moveField={this.moveField}
+            addField={this.addField}
+            clearFields={this.clearFields}
           />
         );
       } else {
@@ -143,65 +143,53 @@ class PostForm extends React.Component {
 
   // content fields
 
-  renderFields () {
+  moveField (event) {
     const { fields } = this.state;
-    const props = {};
-    return fields.map(({ type, id }, idx) => {
-      props.className = type;
-      props.spellCheck = type === 'text';
-      return (
-        <div key={idx} id={id} className="field-wrapper">
-          <pre
-            className={props.className}
-            contentEditable="true"
-            autoCorrect="off"
-            autoCapitalize="off"
-            spellCheck={props.spellCheck}
-          />
-          <div className="field-controls">
-            <button type="button" className="btn btn-outline-dark swap-up" onClick={this.swapUp}>
-              <i className="fas fa-caret-up fa-lg" />
-            </button>
-            <button type="button" className="btn btn-outline-dark remove-btn" onClick={this.remove}>
-              <i className="fas fa-times fa-lg" />
-            </button>
-            <button type="button" className="btn btn-outline-dark swap-down" onClick={this.swapDown}>
-              <i className="fas fa-caret-down fa-lg" />
-            </button>
-          </div>
-        </div>
-      );
-    });
-  }
-
-  swapUp (e) {
-    const { fields } = this.state;
-    const idx = this.getFieldIndex(e, fields);
-    fields[idx] = fields.splice(idx - 1, 1, fields[idx])[0];
+    const idx = this.getFieldIndex(event, fields);
+    const type = this.getFieldType(event);
+    switch (type) {
+      case 'swap-up':
+        fields[idx] = fields.splice(idx - 1, 1, fields[idx])[0];
+        break;
+      case 'swap-down':
+        fields[idx] = fields.splice(idx + 1, 1, fields[idx])[0];
+        break;
+      case 'remove-btn':
+        fields.splice(idx, 1);
+        break;
+      default:
+        return;
+    }
     this.setState({ fields });
   }
 
-  swapDown (e) {
-    const { fields } = this.state;
-    const idx = this.getFieldIndex(e, fields);
-    fields[idx] = fields.splice(idx + 1, 1, fields[idx])[0];
-    this.setState({ fields });
-  }
-
-  remove (e) {
-    const { fields } = this.state;
-    const idx = this.getFieldIndex(e, fields);
-    fields.splice(idx, 1);
-    this.setState({ fields });
-  }
-
-  getFieldIndex (e, fields) {
-    let target = e.target.parentNode;
+  getFieldIndex (event, fields) {
+    let target = event.target.parentNode;
     while (target.className !== 'field-wrapper') {
       target = target.parentNode;
     }
     const targetId = target.id;
     return fields.findIndex(({ id }) => targetId === id);
+  }
+
+  getFieldType (event) {
+    let target = event.target.parentNode;
+    while (target.nodeName !== 'BUTTON') {
+      target = target.parentNode;
+    }
+    return target.className.slice(21);
+  }
+
+  addField (event) {
+    const btnType = event.target.id;
+    const type = btnType.slice(0, btnType.indexOf('-'));
+    const { fields } = this.state;
+    const id = `field-${fields.length}`;
+    this.setState({ fields: [...fields, { type, id }] });
+  }
+
+  clearFields () {
+    this.setState({ fields: [] });
   }
 
   render () {
