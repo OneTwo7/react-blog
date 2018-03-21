@@ -136,7 +136,9 @@ export const handleKey = (e) => {
           // handle indentation inside of a code field
           if (isField(sel, 'code')) {
             const tabs = getTabs(sel);
-            newline += Array(tabs + 1).join('\t');
+            if (tabs) {
+              newline = '\r\n' + Array(tabs + 1).join('\t');
+            }
           }
           // handle new line inside of a shell field
           if (isField(sel, 'shell')) {
