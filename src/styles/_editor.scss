@@ -1,6 +1,9 @@
+.text {
+  border: 1px solid $light-grey;
+}
+
 .text, .code, .shell {
   padding: 1rem;
-  border: 1px solid $light-grey;
   border-radius: .25rem;
   tab-size: 2;
   white-space: pre-wrap;
@@ -13,7 +16,8 @@
 }
 
 .shell {
-  background-color: #2b2;
+  background-color: #300A24;
+  color: #12DE00;
 }
 
 .code div {
@@ -55,6 +59,9 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  max-width: 540px;
+  margin-right: auto;
+  margin-left: auto;
   button {
     border: 1px solid rgba(0,0,0,.125);
   }
@@ -74,30 +81,4 @@
   text-align: center;
   background-color: #fff;
   padding: .5rem 15px;
-  margin-right: auto;
-  margin-left: auto;
-}
-
-@media (min-width: 576px) {
-  #content-controls.fixed {
-    max-width: 540px;
-  }
-}
-
-@media (min-width: 768px) {
-  #content-controls.fixed {
-    max-width: 720px;
-  }
-}
-
-@media (min-width: 992px) {
-  #content-controls.fixed {
-    max-width: 960px;
-  }
-}
-
-@media (min-width: 1200px) {
-  #content-controls.fixed {
-    max-width: 1140px;
-  }
 }

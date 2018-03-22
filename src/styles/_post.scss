@@ -9,11 +9,19 @@
 
 #post-content {
   text-align: justify;
+  .text {
+    border: none;
+    padding: 0;
+  }
+  pre.code.prettyprint {
+    padding: 1rem;
+    background-color: $white;
+  }
 }
 
 #post-tags {
   margin-bottom: 1rem;
-  .tag {
+  .post-tag {
     display: inline-block;
     margin-right: .5rem;
     padding: .2rem .5rem;

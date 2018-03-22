@@ -6,6 +6,8 @@ import RecommendedPosts from './RecommendedPosts';
 import Comments from '../comments/Comments';
 import PropTypes from 'prop-types';
 
+/* eslint-disable no-undef */
+
 class PostPage extends Component {
   constructor (props) {
     super(props);
@@ -24,8 +26,25 @@ class PostPage extends Component {
     }
   }
 
-  insertContent (content) {
-    $('#post-content').html(content);
+  componentDidUpdate () {
+    PR.prettyPrint();
+  }
+
+  insertContent (postContent) {
+    if (!postContent) {
+      return;
+    }
+    const fields = JSON.parse(postContent);
+    let result = '';
+    fields.forEach(({ type, content }, idx) => {
+      if (type === 'text') {
+        result += `<pre key="${idx}" class="text">${content}</pre>`;
+      } else {
+        const className = type === 'shell' ? type : 'code prettyprint';
+        result += `<pre key="${idx}" class="${className}">${content}</pre>`;
+      }
+    });
+    $('#post-content').html(result);
   }
 
   render () {

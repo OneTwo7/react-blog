@@ -42,12 +42,14 @@ class PostForm extends React.Component {
   }
 
   componentWillUnmount () {
-    $(document).off('scroll', this.fixContentControls);
-    $(window).off('resize', this.fixContentControls);
+    this.unbindFixers();
   }
 
   fixContentControls () {
     const $content = $('#content');
+    if (!$content) {
+      this.unbindFixers();
+    }
     const $contentControls = $('#content-controls');
     const limit = $content.offset().top + $content.outerHeight(true);
     if ($(document).scrollTop() + $(window).height() - 100 < limit) {
@@ -55,6 +57,11 @@ class PostForm extends React.Component {
     } else {
       $contentControls.removeClass('fixed');
     }
+  }
+
+  unbindFixers () {
+    $(document).off('scroll', this.fixContentControls);
+    $(window).off('resize', this.fixContentControls);
   }
 
   onChange (event) {
@@ -67,8 +74,12 @@ class PostForm extends React.Component {
   onClick (event) {
     event.preventDefault();
 
-    const { post } = this.state;
-    post.content = $('#content').html();
+    const { post, fields } = this.state;
+    const $fields = $('#content').find('pre');
+    for (let i = 0, length = $fields.length; i < length; i++) {
+      fields[i].content = $fields.eq(i).html();
+    }
+    post.content = JSON.stringify(fields);
     this.setState({ post });
 
     if (!this.postFormIsValid()) {
@@ -173,7 +184,7 @@ class PostForm extends React.Component {
   }
 
   getFieldType (event) {
-    let target = event.target.parentNode;
+    let target = event.target;
     while (target.nodeName !== 'BUTTON') {
       target = target.parentNode;
     }

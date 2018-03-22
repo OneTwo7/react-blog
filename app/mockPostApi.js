@@ -1,13 +1,59 @@
 import delayObj from './delay';
+import { sanitizeHTML } from '../src/utils/editorHelpers';
 
 const env = process.env.NODE_ENV || 'development';
 const delay = delayObj[env];
 
 const posts = [];
-const content = Array.apply(null, Array(10)).map(
-  String.prototype.valueOf,
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-).join(' ');
+
+const text = '<h2>Lorem ipsum dolor sit amet</h2>' +
+'Consectetur adipiscing elit. Sed arcu nunc, porttitor in pellentesque ' +
+'vitae, lobortis vitae lacus. Pellentesque et neque porta, volutpat nisi ' +
+'in, interdum ipsum. Praesent pulvinar nibh vel fringilla pharetra. Sed ac ' +
+'varius nunc. Maecenas in ipsum in velit consequat porttitor. Maecenas ' +
+'augue mauris, efficitur id orci a, fringilla placerat quam. Cras rutrum ' +
+'enim risus. In dictum, quam at commodo sollicitudin, lacus risus placerat ' +
+'metus, vel sodales nunc nulla blandit <a href="/">molestie</a> enim.';
+
+const code = `
+import React from 'react';
+import { Route } from 'react-router-dom';
+import Header from './common/Header';
+import HomePage from './home/HomePage';
+import PostForm from './posts/PostForm';
+import PostPage from './posts/PostPage';
+import Footer from './common/Footer';
+import ProgressBar from './common/ProgressBar';
+import { NotificationContainer } from 'react-notifications';
+
+const App = () => (
+  <div>
+    <Header />
+    <div id="main" className="container">
+      <Route exact path="/" component={HomePage} />
+      <Route path="/new_post" component={PostForm} />
+      <Route exact path="/posts/:id" component={PostPage} />
+      <Route exact path="/posts/:id/edit" component={PostForm} />
+    </div>
+    <Footer />
+    <ProgressBar />
+    <NotificationContainer />
+  </div>
+);
+`;
+
+const shell = `
+me@laptop:~$ mongo
+> use my_db
+> show collections
+> db.users.findOne({ name: 'Peter' })
+`;
+
+const content = JSON.stringify([
+  { id: "field-0", type: "text", content:  text },
+  { id: "field-1", type: "code", content:  sanitizeHTML(code) },
+  { id: "field-2", type: "shell", content: shell }
+]);
 
 const replaceAll = (str, find, replace) => {
   return str.replace(new RegExp(find, 'g'), replace);

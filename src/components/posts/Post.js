@@ -12,12 +12,12 @@ const Post = ({ author, post }) => (
       <div>{post.category}</div>
     </div>
     <h1 id="post-title">{post.title}</h1>
-    <p id="post-content" />
+    <div id="post-content" />
     <div id="post-tags">
       {
         post.tags.length > 0 &&
         post.tags.split(' ').map((tag, idx) => (
-          <div key={idx} className="tag">
+          <div key={idx} className="post-tag">
             {tag}
           </div>
         ))

@@ -97,10 +97,16 @@ export const createElement = (type) => {
   insertHTML(element);
 };
 
+export const sanitizeHTML = (html) => {
+  return html.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+};
+
 export const onPaste = (e) => {
   e.preventDefault();
-  const data = (e.originalEvent || e).clipboardData.getData('text/plain');
-  document.execCommand('insertText', false, data);
+  let data = sanitizeHTML(
+    (e.originalEvent || e).clipboardData.getData('text/plain')
+  );
+  document.execCommand('insertHTML', false, data);
 };
 
 export const handleKey = (e) => {
