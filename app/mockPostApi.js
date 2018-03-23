@@ -15,8 +15,7 @@ const text = '<h2>Lorem ipsum dolor sit amet</h2>' +
 'enim risus. In dictum, quam at commodo sollicitudin, lacus risus placerat ' +
 'metus, vel sodales nunc nulla blandit <a href="/">molestie</a> enim.';
 
-const code = `
-import React from 'react';
+const code = `import React from 'react';
 import { Route } from 'react-router-dom';
 import Header from './common/Header';
 import HomePage from './home/HomePage';
@@ -42,8 +41,7 @@ const App = () => (
 );
 `;
 
-const shell = `
-me@laptop:~$ mongo
+const shell = `me@laptop:~$ mongo
 > use my_db
 > show collections
 > db.users.findOne({ name: 'Peter' })

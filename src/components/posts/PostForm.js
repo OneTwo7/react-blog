@@ -15,9 +15,7 @@ class PostForm extends React.Component {
 
     this.state = {
       post: Object.assign({}, props.post),
-      fields: [
-        { type: 'text',  id: 'field-0' }
-      ],
+      fields: [...props.fields],
       errors: {}
     };
 
@@ -33,12 +31,20 @@ class PostForm extends React.Component {
     $(document).scroll(this.fixContentControls);
     $(window).resize(this.fixContentControls);
     this.fixContentControls();
+    this.insertContent(this.state.fields);
   }
 
   componentWillReceiveProps (nextProps) {
     if (this.props.post.id !== nextProps.post.id) {
-      this.setState({ post: Object.assign({}, nextProps.post) });
+      this.setState({
+        post:   Object.assign({}, nextProps.post),
+        fields: nextProps.fields
+      });
     }
+  }
+
+  componentDidUpdate () {
+    this.insertContent(this.state.fields);
   }
 
   componentWillUnmount () {
@@ -203,6 +209,14 @@ class PostForm extends React.Component {
     this.setState({ fields: [] });
   }
 
+  insertContent (fields) {
+    fields.forEach(({ id, content }) => {
+      if (content) {
+        $(`#${id} pre`).html(content);
+      }
+    });
+  }
+
   render () {
     return (
       <form>
@@ -230,7 +244,8 @@ class PostForm extends React.Component {
 PostForm.propTypes = {
   actions: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
-  post: PropTypes.object
+  post:    PropTypes.object.isRequired,
+  fields:  PropTypes.array.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -241,15 +256,18 @@ const mapStateToProps = (state, ownProps) => {
     category: '',
     tags: ''
   };
+  let fields = [{ type: 'text',  id: 'field-0' }];
   const { posts } = state;
   const postId = ownProps.match.params.id;
 
   if (postId && posts.length > 0) {
     post = posts.filter(post => post.id === postId)[0];
+    fields = JSON.parse(post.content);
   }
 
   return {
-    post
+    post,
+    fields
   };
 };
 
