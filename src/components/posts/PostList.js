@@ -5,9 +5,9 @@ import PropTypes from 'prop-types';
 const PostList = ({ posts, onDeleteClick }) => (
   <div className="row">
     {
-      posts.map(post => (
+      posts.map((post, idx) => (
         <PostPreview
-          key={post.id}
+          key={idx}
           post={post}
           onDeleteClick={onDeleteClick}
         />

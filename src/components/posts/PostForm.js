@@ -47,7 +47,7 @@ class PostForm extends React.Component {
 
   fixContentControls () {
     const $content = $('#content');
-    if (!$content) {
+    if (!$content.length) {
       this.unbindFixers();
     }
     const $contentControls = $('#content-controls');

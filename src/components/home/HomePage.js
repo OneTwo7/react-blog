@@ -16,7 +16,7 @@ class HomePage extends React.Component {
     this.state = {
       postsPerPage: 9,
       page: 1,
-      postsLength: 0,
+      postsLength: props.postsLength,
       postId: ''
     };
 
@@ -48,6 +48,10 @@ class HomePage extends React.Component {
         }
       }
     }
+  }
+
+  componentWillUnmount () {
+    $(document).off('scroll', this.loadPosts);
   }
 
   onDeleteClick (event) {
