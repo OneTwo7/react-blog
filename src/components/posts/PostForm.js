@@ -45,6 +45,7 @@ class PostForm extends React.Component {
 
   componentDidUpdate () {
     this.insertContent(this.state.fields);
+    this.fixContentControls();
   }
 
   componentWillUnmount () {

@@ -58,12 +58,10 @@
 #content-controls {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  max-width: 540px;
-  margin-right: auto;
-  margin-left: auto;
+  justify-content: center;
   button {
     border: 1px solid rgba(0,0,0,.125);
+    margin: .1rem;
   }
   #bold-btn {
     font-weight: bold;
@@ -80,5 +78,5 @@
   left: 0;
   text-align: center;
   background-color: #fff;
-  padding: .5rem 15px;
+  padding: .4rem 0;
 }
