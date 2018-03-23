@@ -1,5 +1,5 @@
 import delayObj from './delay';
-import { sanitizeHTML } from '../src/utils/editorHelpers';
+import { sanitizeHTML } from '../../src/utils/editorHelpers';
 
 const env = process.env.NODE_ENV || 'development';
 const delay = delayObj[env];

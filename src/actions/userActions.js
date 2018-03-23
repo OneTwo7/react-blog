@@ -1,5 +1,5 @@
 import * as types from '../constants';
-import UserApi from '../../app/mockUserApi';
+import UserApi from '../../app/mocks/mockUserApi';
 import { beginAjaxCall, ajaxCallError } from './ajaxStatusActions';
 
 export const loadUsersSuccess = (users) => {

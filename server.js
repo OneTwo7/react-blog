@@ -1,30 +1,18 @@
 const express = require('express');
 const path = require('path');
-const webpack = require('webpack');
-const config = require('./webpack.config.dev');
-const webpackDevMiddleware = require('webpack-dev-middleware');
-const webpackHotMiddleware = require('webpack-hot-middleware');
 
 const port = 3000;
 const app = express();
-const compiler = webpack(config);
 
-app.use(webpackDevMiddleware(compiler, {
-  noInfo: true,
-  publicPath: config.output.publicPath
-}));
+const env = process.env.NODE_ENV || 'development';
 
-app.use(webpackHotMiddleware(compiler));
+if (env === 'development') {
+  require('./app/services/webpack.js')(app);
+}
 
 app.use(express.static(path.join(__dirname, 'src')));
 
-app.get('/favicon.ico', (req, res) => {
-  res.status(204);
-});
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'src/index.html'));
-});
+require('./app/config/routes')(app);
 
 app.listen(port, err => {
   if (err) {

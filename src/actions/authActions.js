@@ -1,5 +1,5 @@
 import * as types from '../constants';
-import AuthApi from '../../app/mockAuthApi';
+import AuthApi from '../../app/mocks/mockAuthApi';
 import { beginAjaxCall, ajaxCallError } from './ajaxStatusActions';
 
 export const loginSuccess = (user) => {

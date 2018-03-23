@@ -1,5 +1,5 @@
 import * as types from '../constants';
-import PostApi from '../../app/mockPostApi';
+import PostApi from '../../app/mocks/mockPostApi';
 import { beginAjaxCall, ajaxCallError } from './ajaxStatusActions';
 
 export const loadPostsSuccess = (posts) => {
