@@ -1,6 +1,11 @@
 import * as types from '../constants';
-import CommentApi from '../../app/mocks/mockCommentApi';
 import { beginAjaxCall, ajaxCallError } from './ajaxStatusActions';
+import axios from 'axios';
+
+const handleError = (error, dispatch) => {
+  dispatch(ajaxCallError());
+  throw(error);
+};
 
 export const loadPostCommentsSuccess = (comments) => {
   return {
@@ -33,8 +38,8 @@ export const deleteCommentSuccess = (id, postId) => {
 
 export const loadComments = (id) => {
   return (dispatch => {
-    return CommentApi.getCommentsByPostId(id).then(comments => {
-      dispatch(loadPostCommentsSuccess(comments.reverse()));
+    return axios.get(`/api/posts/${id}/comments`).then(({ data }) => {
+      dispatch(loadPostCommentsSuccess(data.reverse()));
     }).catch(error => {
       throw(error);
     });
@@ -42,27 +47,29 @@ export const loadComments = (id) => {
 };
 
 export const saveComment = (comment) => {
-  const commentId = comment.id;
+  const commentId = comment._id;
+  const postId    = comment.post_id;
   return (dispatch => {
     dispatch(beginAjaxCall());
-    return CommentApi.saveComment(comment).then(comment => {
-      commentId ? dispatch(updateCommentSuccess(comment)) :
-        dispatch(createCommentSuccess(comment));
-    }).catch(error => {
-      dispatch(ajaxCallError());
-      throw(error);
-    });
+    if (commentId) {
+      return axios.put(`/api/posts/${postId}/comments/${commentId}`, comment)
+      .then(({ data }) => {
+        dispatch(updateCommentSuccess(data));
+      }).catch(error => handleError(error, dispatch));
+    }
+    return axios.post(`/api/posts/${postId}/comments`, comment)
+    .then(({ data }) => {
+      dispatch(createCommentSuccess(data));
+    }).catch(error => handleError(error, dispatch));
   });
 };
 
-export const deleteComment = (id) => {
+export const deleteComment = (postId, commentId) => {
   return (dispatch => {
     dispatch(beginAjaxCall());
-    return CommentApi.deleteComment(id).then(postId => {
-      dispatch(deleteCommentSuccess(id, postId));
-    }).catch(error => {
-      dispatch(ajaxCallError());
-      throw(error);
-    });
+    return axios.delete(`/api/posts/${postId}/comments/${commentId}`)
+    .then(() => {
+      dispatch(deleteCommentSuccess(commentId, postId));
+    }).catch(error => handleError(error, dispatch));
   });
 };

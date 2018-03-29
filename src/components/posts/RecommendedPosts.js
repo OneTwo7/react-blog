@@ -3,14 +3,17 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 const renderPosts = (recommended) => {
-  return recommended.map(p => (
-    <div key={p.post.id} className="col-md-4">
+  return recommended.map(({ post, type, tag }) => (
+    <div key={post._id} className="col-md-4">
       <div className="related-post">
-        {p.type === 'tag' && <div>Also tagged {p.tag}</div>}
+        {
+          type === 'tag' &&
+          <div className="related-tag">Also tagged {tag}</div>
+        }
         <div className="bottom">
           <h3 className="title">
-            <Link to={`/posts/${p.post.id}`}>
-              {p.post.title}
+            <Link to={`/posts/${post._id}`}>
+              {post.title}
             </Link>
           </h3>
         </div>

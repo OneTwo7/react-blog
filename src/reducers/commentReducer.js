@@ -1,7 +1,7 @@
 import * as types from '../constants';
 
-const findCommentIndex = (comments, id) => {
-  return comments.findIndex(c => c.id === id);
+const findCommentIndex = (comments, commentId) => {
+  return comments.findIndex(({ _id }) => _id === commentId);
 };
 
 const commentReducer = (state = [], action) => {
@@ -15,7 +15,7 @@ const commentReducer = (state = [], action) => {
       return [Object.assign({}, action.comment), ...state];
     case types.UPDATE_COMMENT_SUCCESS:
       comments = [...state];
-      idx = findCommentIndex(comments, action.comment.id);
+      idx = findCommentIndex(comments, action.comment._id);
       comments.splice(idx, 1, Object.assign({}, action.comment));
       return comments;
     case types.DELETE_COMMENT_SUCCESS:

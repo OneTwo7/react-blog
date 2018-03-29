@@ -6,7 +6,7 @@ const CommentsList = ({ comments, users, onEditClick, onDeleteClick }) => {
   const renderComments = () => (
     comments.map(comment => (
       <Comment
-        key={comment.id}
+        key={comment._id}
         comment={comment}
         users={users}
         onEditClick={onEditClick}

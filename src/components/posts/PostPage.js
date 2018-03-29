@@ -21,7 +21,7 @@ class PostPage extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (this.props.post.id !== nextProps.post.id) {
+    if (this.props.post._id !== nextProps.post._id) {
       this.insertContent(nextProps.post.content);
     }
   }
@@ -54,7 +54,7 @@ class PostPage extends Component {
       <div className="row">
         <Post author={author} post={post} />
         <RecommendedPosts recommended={recommended} />
-        <Comments count={post.comments} postId={post.id} />
+        <Comments count={post.comments} postId={post._id} />
       </div>
     );
   }
@@ -68,7 +68,6 @@ PostPage.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   let post = {
-    id: '',
     author: '',
     title: '',
     content: '',
@@ -88,7 +87,7 @@ const mapStateToProps = (state, ownProps) => {
   if (postId && postsLength > 0) {
     // find the post and remove it from the list
     for (let i = 0; i < postsLength; i++) {
-      if (posts[i].id === postId) {
+      if (posts[i]._id === postId) {
         post = posts.splice(i, 1)[0];
         postsLength--;
         break;
@@ -98,7 +97,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   if (post.author && users.length > 0) {
-    author = users.filter(u => u.id === post.author)[0];
+    author = users.filter(u => u._id === post.author)[0];
   }
 
   return {

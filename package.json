@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "concurrently \"npm run server\" \"npm run lint:watch\"",
-    "server": "nodemon --watch app --watch server.js",
+    "server": "nodemon --watch app --ignore app/mocks --watch server.js",
     "lint": "esw webpack.config.* src",
     "lint:watch": "npm run lint -- --watch",
     "test": "ava test --verbose",
@@ -30,7 +30,13 @@
   },
   "homepage": "https://github.com/OneTwo7/react-blog#readme",
   "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.2",
+    "cookie-session": "^2.0.0-beta.3",
     "express": "^4.16.2",
+    "mongoose": "^5.0.12",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-notifications": "^1.4.3",

@@ -8,7 +8,7 @@ const authReducer = (state = null, action) => {
       currentUser = Object.assign({}, action.user);
       return currentUser;
     case types.LOGOUT_SUCCESS:
-      return currentUser;
+      return {};
     case types.GET_CURRENT_USER_SUCCESS:
       if (action.user) {
         currentUser = Object.assign({}, action.user);

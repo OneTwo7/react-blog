@@ -1,7 +1,7 @@
 import * as types from '../constants';
 
-const findPostIndex = (posts, id) => {
-  return posts.findIndex(p => p.id === id);
+const findPostIndex = (posts, postId) => {
+  return posts.findIndex(({ _id }) => _id === postId);
 };
 
 const postReducer = (state = [], action) => {
@@ -16,11 +16,11 @@ const postReducer = (state = [], action) => {
       return [Object.assign({}, action.post), ...state];
     case types.UPDATE_POST_SUCCESS:
       posts = [...state];
-      idx = findPostIndex(posts, action.post.id);
+      idx = findPostIndex(posts, action.post._id);
       posts.splice(idx, 1, Object.assign({}, action.post));
       return posts;
     case types.DELETE_POST_SUCCESS:
-      return [...state.filter(post => post.id !== action.id)];
+      return [...state.filter(post => post._id !== action.id)];
     case types.CREATE_COMMENT_SUCCESS:
       posts = [...state];
       idx = findPostIndex(posts, action.comment.post_id);

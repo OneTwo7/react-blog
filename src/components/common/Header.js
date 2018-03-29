@@ -27,6 +27,9 @@ class Header extends Component {
 
   componentDidMount () {
     this.props.actions.getCurrentUser();
+    $('#login-modal').on('shown.bs.modal', () => {
+      $('#email').focus();
+    });
   }
 
   onChange (event) {
@@ -51,7 +54,7 @@ class Header extends Component {
       email: '',
       password: ''
     };
-    this.props.actions.login(email, password).then(() => {
+    this.props.actions.login(email.toLowerCase(), password).then(() => {
       $('#login-modal').modal('hide');
       this.setState({ auth });
       NotificationManager.success('You are now logged in!');
@@ -70,10 +73,11 @@ class Header extends Component {
 
     if (!auth) {
       return;
-    } else if (!auth.id) {
+    } else if (!auth._id) {
       return (
         <li className="nav-item">
           <button
+            key="lodin-modal-btn"
             type="button"
             className="btn btn-outline-light"
             data-toggle="modal"
@@ -87,6 +91,7 @@ class Header extends Component {
       return (
         <li className="nav-item dropdown">
           <button
+            key="navbarDropdown"
             className="btn btn-link dropdown-toggle"
             id="navbarDropdown"
             type="button"

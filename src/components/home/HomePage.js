@@ -63,7 +63,7 @@ class HomePage extends React.Component {
     this.props.actions.deletePost(this.state.postId).then(() => {
       NotificationManager.success('Post has been deleted.');
     }).catch(error => {
-      NotificationManager.error(error);
+      NotificationManager.error(error.toString());
     });
     $('#confirmation-modal').modal('hide');
   }

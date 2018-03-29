@@ -1,6 +1,6 @@
 import * as types from '../constants';
-import AuthApi from '../../app/mocks/mockAuthApi';
 import { beginAjaxCall, ajaxCallError } from './ajaxStatusActions';
+import axios from 'axios';
 
 export const loginSuccess = (user) => {
   return {
@@ -25,8 +25,8 @@ export const getCurrentUserSuccess = (user) => {
 export const login = (email, password) => {
   return (dispatch => {
     dispatch(beginAjaxCall());
-    return AuthApi.login(email, password).then(user => {
-      dispatch(loginSuccess(user));
+    return axios.post('/api/login', { email, password }).then(({ data }) => {
+      dispatch(loginSuccess(data));
     }).catch(error => {
       dispatch(ajaxCallError());
       throw(error);
@@ -37,7 +37,7 @@ export const login = (email, password) => {
 export const logout = () => {
   return (dispatch => {
     dispatch(beginAjaxCall());
-    return AuthApi.logout().then(() => {
+    return axios.get('/api/logout').then(() => {
       dispatch(logoutSuccess());
     }).catch(error => {
       dispatch(ajaxCallError());
@@ -49,8 +49,8 @@ export const logout = () => {
 export const getCurrentUser = () => {
   return (dispatch => {
     dispatch(beginAjaxCall());
-    return AuthApi.getCurrentUser().then(user => {
-      dispatch(getCurrentUserSuccess(user));
+    return axios.get('/api/current_user').then(({ data }) => {
+      dispatch(getCurrentUserSuccess(data));
     }).catch(error => {
       dispatch(ajaxCallError());
       throw(error);

@@ -12,7 +12,7 @@ const Comment = ({ comment, users, onEditClick, onDeleteClick }) => (
         </div>
         <div className="comment-controls">
           <button
-            id={`edit-${comment.id}`}
+            id={`edit-${comment._id}`}
             type="button"
             onClick={onEditClick}
             className="btn btn-link"
@@ -20,7 +20,7 @@ const Comment = ({ comment, users, onEditClick, onDeleteClick }) => (
             edit
           </button>
           <button
-            id={`delete-${comment.id}`}
+            id={`delete-${comment._id}`}
             type="button"
             onClick={onDeleteClick}
             className="btn btn-link"

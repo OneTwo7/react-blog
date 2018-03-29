@@ -1,5 +1,0 @@
-{
- "events": {
-   "restart": "echo \"module.exports = true;\" > restarting.js"
- }
-}

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 const PostPreview = ({ post, onDeleteClick }) => (
   <div className="post-wrapper col-md-4">
-    <div id={post.id} className="post-preview">
+    <div id={post._id} className="post-preview">
       <div className="post-preview-top">
         <div className="post-category">
           {post.category}
@@ -15,11 +15,11 @@ const PostPreview = ({ post, onDeleteClick }) => (
         </div>
       </div>
       <div className="post-controls">
-        <Link to={`/posts/${post.id}/edit`}>
+        <Link to={`/posts/${post._id}/edit`}>
           edit
         </Link>
         <button
-          id={`delete-${post.id}`}
+          id={`delete-${post._id}`}
           type="button"
           className="btn btn-link"
           onClick={onDeleteClick}
@@ -29,7 +29,7 @@ const PostPreview = ({ post, onDeleteClick }) => (
       </div>
       <div className="post-preview-bottom">
         <h2 className="post-title">
-          <Link to={`/posts/${post.id}`}>{post.title}</Link>
+          <Link to={`/posts/${post._id}`}>{post.title}</Link>
         </h2>
       </div>
     </div>

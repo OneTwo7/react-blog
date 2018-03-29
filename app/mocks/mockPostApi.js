@@ -71,7 +71,7 @@ for (let i = 0; i < 100; i++) {
     comments: 3,
     created_at: new Date()
   });
-  posts[i].id = generateId(posts[i]);
+  posts[i]._id = generateId(posts[i]);
 }
 
 class PostApi {
@@ -99,11 +99,11 @@ class PostApi {
           reject('You must provide category.');
         }
 
-        if (post.id) {
-          const existingPostIndex = posts.findIndex(a => a.id == post.id);
+        if (post._id) {
+          const existingPostIndex = posts.findIndex(p => p._id == post._id);
           posts.splice(existingPostIndex, 1, post);
         } else {
-          post.id = generateId(post);
+          post._id = generateId(post);
           post.created_at = new Date();
           post.comments = 0;
           posts.push(post);
@@ -118,7 +118,7 @@ class PostApi {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         const indexOfpostToDelete = posts.findIndex(post => {
-          post.id == postId;
+          post._id == postId;
         });
         posts.splice(indexOfpostToDelete, 1);
         resolve();
@@ -129,7 +129,7 @@ class PostApi {
   static updateCommentsCount (id, diff) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        const idx = posts.findIndex(p => p.id === id);
+        const idx = posts.findIndex(p => p._id === id);
         posts[idx].comments += diff;
         resolve();
       }, delay);

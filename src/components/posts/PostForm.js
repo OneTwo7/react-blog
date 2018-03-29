@@ -35,7 +35,7 @@ class PostForm extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (this.props.post.id !== nextProps.post.id) {
+    if (this.props.post._id !== nextProps.post._id) {
       this.setState({
         post:   Object.assign({}, nextProps.post),
         fields: nextProps.fields
@@ -96,7 +96,7 @@ class PostForm extends React.Component {
     this.props.actions.savePost(this.state.post).then(() => {
       this.redirect();
     }).catch(error => {
-      NotificationManager.error(error);
+      NotificationManager.error(error.toString());
     });
   }
 
@@ -221,7 +221,7 @@ class PostForm extends React.Component {
   render () {
     return (
       <form>
-        <h1>{this.state.post.id ? 'Edit Post' : 'New Post'}</h1>
+        <h1>{this.state.post._id ? 'Edit Post' : 'New Post'}</h1>
         {this.renderInputs()}
         <input
           type="submit"
@@ -251,7 +251,7 @@ PostForm.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   let post = {
-    author: state.auth ? state.auth.id : null,
+    author: state.auth ? state.auth._id : null,
     title: '',
     content: '',
     category: '',
@@ -262,7 +262,7 @@ const mapStateToProps = (state, ownProps) => {
   const postId = ownProps.match.params.id;
 
   if (postId && posts.length > 0) {
-    post = posts.filter(post => post.id === postId)[0];
+    post = posts.filter(post => post._id === postId)[0];
     fields = JSON.parse(post.content);
   }
 

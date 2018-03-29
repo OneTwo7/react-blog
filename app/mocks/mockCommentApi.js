@@ -20,7 +20,7 @@ for (let i = 0; i < 100; i++) {
       content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       created_at: new Date()
     });
-    comments[i * 3 + j].id = generateId();
+    comments[i * 3 + j]._id = generateId();
   }
 }
 
@@ -44,11 +44,11 @@ class CommentApi {
           reject(`Content must be at least ${minContentLength} characters.`);
         }
 
-        if (comment.id) {
-          const idx = comments.findIndex(c => c.id === comment.id);
+        if (comment._id) {
+          const idx = comments.findIndex(c => c._id === comment._id);
           comments.splice(idx, 1, comment);
         } else {
-          comment.id = generateId().toString();
+          comment._id = generateId().toString();
           comment.created_at = new Date();
           comments.push(comment);
           PostApi.updateCommentsCount(comment.post_id, 1).catch(error => {
@@ -64,8 +64,8 @@ class CommentApi {
   static deleteComment (id) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        const idx = comments.findIndex(c => c.id === id);
-        const postId = comments.find(c => c.id === id).post_id;
+        const idx = comments.findIndex(c => c._id === id);
+        const postId = comments.find(c => c._id === id).post_id;
         comments.splice(idx, 1);
         PostApi.updateCommentsCount(postId, -1).catch(error => {
           throw(error);

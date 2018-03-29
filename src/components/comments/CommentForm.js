@@ -18,7 +18,7 @@ const CommentForm = ({ comment, errors, onChange, onClick, cancelEdit }) => (
       className="btn btn-primary"
     />
     {
-      comment.id &&
+      comment._id &&
       <button
         id="cancel-edit"
         type="button"

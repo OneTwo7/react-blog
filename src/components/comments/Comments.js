@@ -5,7 +5,7 @@ import * as actions from '../../actions/commentActions';
 import CommentForm from '../comments/CommentForm';
 import CommentsList from './CommentsList';
 import ConfirmationModal from '../common/ConfirmationModal';
-import NotificationManager from 'react-notifications';
+import { NotificationManager } from 'react-notifications';
 import PropTypes from 'prop-types';
 
 class Comments extends React.Component {
@@ -85,14 +85,14 @@ class Comments extends React.Component {
     const { auth } = this.props;
     comment.post_id = this.props.postId;
 
-    if (!(auth && auth.id)) {
+    if (!(auth && auth._id)) {
       $('#login-modal').modal('show');
     } else {
-      comment.author = auth.id;
+      comment.author = auth._id;
       this.props.actions.saveComment(comment).then(() => {
         NotificationManager.success('Done!');
       }).catch(error => {
-        NotificationManager.error(error);
+        NotificationManager.error(error.toString());
       });
       this.setDefaultComment();
     }
@@ -101,7 +101,7 @@ class Comments extends React.Component {
   onEditClick (event) {
     const commentId = this.getCommentId(event.target.id);
     const comment = Object.assign(
-      {}, this.props.comments.find(c => c.id === commentId)
+      {}, this.props.comments.find(c => c._id === commentId)
     );
     this.setState({ comment });
     $(window).scrollTop($('#comments').offset().top);
@@ -113,7 +113,7 @@ class Comments extends React.Component {
 
   onDeleteClick (event) {
     const commentId = this.getCommentId(event.target.id);
-    if (commentId === this.state.comment.id) {
+    if (commentId === this.state.comment._id) {
       this.setDefaultComment();
     }
     this.setState({ commentId });
@@ -121,10 +121,11 @@ class Comments extends React.Component {
   }
 
   confirm () {
-    this.props.actions.deleteComment(this.state.commentId).then(() => {
+    this.props.actions.deleteComment(this.props.postId, this.state.commentId)
+    .then(() => {
       NotificationManager.success('Comment has been deleted.');
     }).catch(error => {
-      NotificationManager.error(error);
+      NotificationManager.error(error.toString());
     });
     $('#confirmation-modal').modal('hide');
   }
@@ -168,7 +169,7 @@ const mapStateToProps = (state) => {
   const usersById = {};
 
   for (let i = 0, l = users.length; i < l; i++) {
-    usersById[users[i].id] = users[i];
+    usersById[users[i]._id] = users[i];
   }
 
   return {
