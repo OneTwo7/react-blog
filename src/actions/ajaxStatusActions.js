@@ -11,3 +11,8 @@ export const ajaxCallError = () => {
     type: AJAX_CALL_ERROR
   };
 };
+
+export const dispatchAjaxCallError = (error, dispatch) => {
+  dispatch(ajaxCallError());
+  throw(error);
+};

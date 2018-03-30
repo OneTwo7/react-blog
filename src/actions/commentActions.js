@@ -1,11 +1,6 @@
 import * as types from '../constants';
-import { beginAjaxCall, ajaxCallError } from './ajaxStatusActions';
+import { beginAjaxCall, dispatchAjaxCallError } from './ajaxStatusActions';
 import axios from 'axios';
-
-const handleError = (error, dispatch) => {
-  dispatch(ajaxCallError());
-  throw(error);
-};
 
 export const loadPostCommentsSuccess = (comments) => {
   return {
@@ -55,12 +50,12 @@ export const saveComment = (comment) => {
       return axios.put(`/api/posts/${postId}/comments/${commentId}`, comment)
       .then(({ data }) => {
         dispatch(updateCommentSuccess(data));
-      }).catch(error => handleError(error, dispatch));
+      }).catch(error => dispatchAjaxCallError(error, dispatch));
     }
     return axios.post(`/api/posts/${postId}/comments`, comment)
     .then(({ data }) => {
       dispatch(createCommentSuccess(data));
-    }).catch(error => handleError(error, dispatch));
+    }).catch(error => dispatchAjaxCallError(error, dispatch));
   });
 };
 
@@ -70,6 +65,6 @@ export const deleteComment = (postId, commentId) => {
     return axios.delete(`/api/posts/${postId}/comments/${commentId}`)
     .then(() => {
       dispatch(deleteCommentSuccess(commentId, postId));
-    }).catch(error => handleError(error, dispatch));
+    }).catch(error => dispatchAjaxCallError(error, dispatch));
   });
 };

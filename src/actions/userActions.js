@@ -1,5 +1,5 @@
 import * as types from '../constants';
-import { beginAjaxCall, ajaxCallError } from './ajaxStatusActions';
+import { beginAjaxCall, dispatchAjaxCallError } from './ajaxStatusActions';
 import axios from 'axios';
 
 export const loadUsersSuccess = (users) => {
@@ -14,9 +14,6 @@ export const loadUsers = () => {
     dispatch(beginAjaxCall());
     return axios.get('/api/users').then(({ data }) => {
       dispatch(loadUsersSuccess(data));
-    }).catch(error => {
-      dispatch(ajaxCallError());
-      throw(error);
-    });
+    }).catch(error => dispatchAjaxCallError(error, dispatch));
   });
 };

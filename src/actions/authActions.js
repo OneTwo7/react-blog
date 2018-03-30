@@ -1,5 +1,5 @@
 import * as types from '../constants';
-import { beginAjaxCall, ajaxCallError } from './ajaxStatusActions';
+import { beginAjaxCall, dispatchAjaxCallError } from './ajaxStatusActions';
 import axios from 'axios';
 
 export const loginSuccess = (user) => {
@@ -27,10 +27,7 @@ export const login = (email, password) => {
     dispatch(beginAjaxCall());
     return axios.post('/api/login', { email, password }).then(({ data }) => {
       dispatch(loginSuccess(data));
-    }).catch(error => {
-      dispatch(ajaxCallError());
-      throw(error);
-    });
+    }).catch(error => dispatchAjaxCallError(error, dispatch));
   });
 };
 
@@ -39,10 +36,7 @@ export const logout = () => {
     dispatch(beginAjaxCall());
     return axios.get('/api/logout').then(() => {
       dispatch(logoutSuccess());
-    }).catch(error => {
-      dispatch(ajaxCallError());
-      throw(error);
-    });
+    }).catch(error => dispatchAjaxCallError(error, dispatch));
   });
 };
 
@@ -51,9 +45,6 @@ export const getCurrentUser = () => {
     dispatch(beginAjaxCall());
     return axios.get('/api/current_user').then(({ data }) => {
       dispatch(getCurrentUserSuccess(data));
-    }).catch(error => {
-      dispatch(ajaxCallError());
-      throw(error);
-    });
+    }).catch(error => dispatchAjaxCallError(error, dispatch));
   });
 };
