@@ -5,3 +5,27 @@
     padding: 1.5rem 15px;
   }
 }
+
+#login-modal {
+  .list-group {
+    flex-direction: row;
+  }
+  .list-group-item {
+    &:first-child {
+      border-bottom-left-radius: .25rem;
+      border-top-right-radius: 0;
+      margin-bottom: 0;
+    }
+    &:last-child {
+      border-top-right-radius: .25rem;
+      border-bottom-left-radius: 0;
+    }
+  }
+  .list-group-item-action {
+    min-width: 6.5rem;
+    text-align: center;
+  }
+  .close {
+    line-height: 3.125rem;
+  }
+}

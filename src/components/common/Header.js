@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/authActions';
+import { createUser } from '../../actions/userActions';
 import { Link } from 'react-router-dom';
 import LoginModal from './LoginModal';
 import { NotificationManager } from 'react-notifications';
@@ -14,8 +15,11 @@ class Header extends Component {
     this.state = {
       auth: {
         email: '',
-        password: ''
-      }
+        password: '',
+        name: '',
+        password_confirmation: ''
+      },
+      error: false
     };
 
     this.onChange = this.onChange.bind(this);
@@ -23,13 +27,17 @@ class Header extends Component {
     this.logout = this.logout.bind(this);
     this.renderContent = this.renderContent.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.signup = this.signup.bind(this);
+    this.setDefault = this.setDefault.bind(this);
+    this.validatePassword = this.validatePassword.bind(this);
   }
 
   componentDidMount () {
     this.props.actions.getCurrentUser();
     $('#login-modal').on('shown.bs.modal', () => {
-      $('#email').focus();
+      $('input[type="email"]:first').focus();
     });
+    $('#signup-password_confirmation').on('input', this.validatePassword);
   }
 
   onChange (event) {
@@ -41,31 +49,73 @@ class Header extends Component {
 
   onKeyDown (event) {
     if (event.keyCode === 13) {
-      this.login();
+      if (event.target.id.indexOf('login') !== -1) {
+        this.login();
+      } else {
+        this.signup();
+      }
+    }
+  }
+
+  validatePassword (event) {
+    this.onChange(event);
+    const { password, password_confirmation } = this.state.auth;
+    if (password !== password_confirmation) {
+      this.setState({ error: true });
+    } else {
+      this.setState({ error: false });
     }
   }
 
   login () {
     const { email, password } = this.state.auth;
     if (!email || !password) {
+      NotificationManager.error('You must provide email and password!');
       return;
     }
-    const auth = {
-      email: '',
-      password: ''
-    };
     this.props.actions.login(email.toLowerCase(), password).then(() => {
       $('#login-modal').modal('hide');
-      this.setState({ auth });
+      this.setDefault();
       NotificationManager.success('You are now logged in!');
     }).catch(error => {
       NotificationManager.error('Invalid email/password combination!');
+    });
+  }
+
+  signup () {
+    const { email, name, password, password_confirmation } = this.state.auth;
+    if (!email || !name || !password) {
+      NotificationManager.error('You must fill in all inputs!');
       return;
+    }
+    if (password !== password_confirmation) {
+      NotificationManager.error('Passwords don\'t match!');
+      return;
+    }
+
+    const user = {
+      email: email.toLowerCase(),
+      name,
+      password
+    };
+
+    this.props.createUser(user).then(() => {
+      $('#login-modal').modal('hide');
+      this.setDefault();
+      NotificationManager.success('You have successfully signed up!');
+    }).catch(error => {
+      NotificationManager.error(error.toString());
     });
   }
 
   logout () {
     this.props.actions.logout();
+  }
+
+  setDefault () {
+    this.setState({
+      auth: { email: '', password: '', name: '', password_confirmation: '' }
+    });
   }
 
   renderContent () {
@@ -117,6 +167,8 @@ class Header extends Component {
   }
 
   render () {
+    const { auth, error } = this.state;
+
     return (
       <header className="navbar navbar-expand-md navbar-dark bg-primary">
         <nav className="container">
@@ -150,8 +202,11 @@ class Header extends Component {
           <LoginModal
             onChange={this.onChange}
             onKeyDown={this.onKeyDown}
-            auth={this.state.auth}
+            auth={auth}
             login={this.login}
+            signup={this.signup}
+            onFocus={this.onFocus}
+            error={error}
           />
         </nav>
       </header>
@@ -161,7 +216,8 @@ class Header extends Component {
 
 Header.propTypes = {
   auth: PropTypes.object,
-  actions: PropTypes.object.isRequired
+  actions: PropTypes.object.isRequired,
+  createUser: PropTypes.func.isRequired
 };
 
 const mapStateToProps = ({ auth }) => {
@@ -172,7 +228,8 @@ const mapStateToProps = ({ auth }) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    actions: bindActionCreators(actions, dispatch)
+    actions: bindActionCreators(actions, dispatch),
+    createUser: bindActionCreators(createUser, dispatch)
   };
 };
 
