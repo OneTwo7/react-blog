@@ -5,18 +5,17 @@ import PropTypes from 'prop-types';
 
 const PostContent = ({ label, fields, moveField, addField, clearFields }) => {
   const renderFields = () => {
-    const props = {};
-    return fields.map(({ type, id }, idx) => {
-      props.className = type;
-      props.spellCheck = type === 'text';
+    return fields.map(({ type, id }) => {
+      const className = type;
+      const spellCheck = type === 'text';
       return (
-        <div key={idx} id={id} className="field-wrapper">
+        <div key={id} id={id} className="field-wrapper">
           <pre
-            className={props.className}
+            className={className}
             contentEditable="true"
             autoCorrect="off"
             autoCapitalize="off"
-            spellCheck={props.spellCheck}
+            spellCheck={spellCheck}
           />
           <div className="field-controls">
             <button

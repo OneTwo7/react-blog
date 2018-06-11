@@ -13,9 +13,12 @@ class PostForm extends React.Component {
   constructor (props) {
     super(props);
 
+    const { fields } = props;
+
     this.state = {
       post: Object.assign({}, props.post),
-      fields: [...props.fields],
+      fields: [...fields],
+      fieldsCounter: fields.length,
       errors: {}
     };
 
@@ -85,6 +88,7 @@ class PostForm extends React.Component {
     const $fields = $('#content').find('pre');
     for (let i = 0, length = $fields.length; i < length; i++) {
       fields[i].content = $fields.eq(i).html();
+      fields[i].id = `field-${i}`;
     }
     post.content = JSON.stringify(fields);
     this.setState({ post });
@@ -116,14 +120,18 @@ class PostForm extends React.Component {
     FIELDS.forEach(({ name }) => {
       if (name !== 'tags') {
         if (!post[name] || !post[name].trim()) {
-          errors[name] = 'You must provide a value!';
+          let errorMessage = `You must provide a value for ${name}`;
+          errors[name] = errorMessage;
+          NotificationManager.error(errorMessage);
           formIsValid = false;
         }
       }
     });
 
     if (!errors.title && post.title.trim().length < 4) {
-      errors.title = 'Title must be at least 4 characters!';
+      let errorMessage = 'Title must be at least 4 characters!';
+      errors.title = errorMessage;
+      NotificationManager.error(errorMessage);
       formIsValid = false;
     }
 
@@ -201,9 +209,12 @@ class PostForm extends React.Component {
   addField (event) {
     const btnType = event.target.id;
     const type = btnType.slice(0, btnType.indexOf('-'));
-    const { fields } = this.state;
-    const id = `field-${fields.length}`;
-    this.setState({ fields: [...fields, { type, id }] });
+    const { fields, fieldsCounter } = this.state;
+    const id = `field-${fieldsCounter}`;
+    this.setState({
+      fields: [...fields, { type, id }],
+      fieldsCounter: fieldsCounter + 1
+    });
   }
 
   clearFields () {
