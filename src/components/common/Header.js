@@ -5,7 +5,7 @@ import * as actions from '../../actions/authActions';
 import { createUser } from '../../actions/userActions';
 import { Link } from 'react-router-dom';
 import LoginModal from './LoginModal';
-import { NotificationManager } from 'react-notifications';
+import * as notifications from '../../utils/notifications';
 import PropTypes from 'prop-types';
 
 class Header extends Component {
@@ -70,26 +70,26 @@ class Header extends Component {
   login () {
     const { email, password } = this.state.auth;
     if (!email || !password) {
-      NotificationManager.error('You must provide email and password!');
+      notifications.showErrorMessage('You must provide email and password!');
       return;
     }
     this.props.actions.login(email.toLowerCase(), password).then(() => {
       $('#login-modal').modal('hide');
       this.setDefault();
-      NotificationManager.success('You are now logged in!');
+      notifications.showSuccessMessage('You are now logged in!');
     }).catch(error => {
-      NotificationManager.error('Invalid email/password combination!');
+      notifications.showErrorMessage('Invalid email/password combination!');
     });
   }
 
   signup () {
     const { email, name, password, password_confirmation } = this.state.auth;
     if (!email || !name || !password) {
-      NotificationManager.error('You must fill in all inputs!');
+      notifications.showErrorMessage('You must fill in all inputs!');
       return;
     }
     if (password !== password_confirmation) {
-      NotificationManager.error('Passwords don\'t match!');
+      notifications.showErrorMessage('Passwords don\'t match!');
       return;
     }
 
@@ -102,14 +102,18 @@ class Header extends Component {
     this.props.createUser(user).then(() => {
       $('#login-modal').modal('hide');
       this.setDefault();
-      NotificationManager.success('You have successfully signed up!');
+      notifications.showSuccessMessage('You have successfully signed up!');
     }).catch(error => {
-      NotificationManager.error(error.toString());
+      notifications.showReason(error);
     });
   }
 
   logout () {
-    this.props.actions.logout();
+    this.props.actions.logout().then(() => {
+      notifications.showSuccessMessage('You successfully logged out!');
+    }).catch(error => {
+      notifications.showReason(error);
+    });
   }
 
   setDefault () {

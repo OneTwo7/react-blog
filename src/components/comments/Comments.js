@@ -5,7 +5,7 @@ import * as actions from '../../actions/commentActions';
 import CommentForm from '../comments/CommentForm';
 import CommentsList from './CommentsList';
 import ConfirmationModal from '../common/ConfirmationModal';
-import { NotificationManager } from 'react-notifications';
+import { showSuccessMessage, showReason } from '../../utils/notifications';
 import PropTypes from 'prop-types';
 
 class Comments extends React.Component {
@@ -90,9 +90,9 @@ class Comments extends React.Component {
     } else {
       comment.author = auth._id;
       this.props.actions.saveComment(comment).then(() => {
-        NotificationManager.success('Done!');
+        showSuccessMessage('Done!');
       }).catch(error => {
-        NotificationManager.error(error.toString());
+        showReason(error);
       });
       this.setDefaultComment();
     }
@@ -123,9 +123,9 @@ class Comments extends React.Component {
   confirm () {
     this.props.actions.deleteComment(this.props.postId, this.state.commentId)
     .then(() => {
-      NotificationManager.success('Comment has been deleted.');
+      showSuccessMessage('Comment has been deleted.');
     }).catch(error => {
-      NotificationManager.error(error.toString());
+      showReason(error);
     });
     $('#confirmation-modal').modal('hide');
   }

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/postActions';
-import { NotificationManager } from 'react-notifications';
+import { showErrorMessage, showReason } from '../../utils/notifications';
 import TextInput from '../common/TextInput';
 import PostContent from './PostContent';
 import PropTypes from 'prop-types';
@@ -100,7 +100,7 @@ class PostForm extends React.Component {
     this.props.actions.savePost(this.state.post).then(() => {
       this.redirect();
     }).catch(error => {
-      NotificationManager.error(error.toString());
+      showReason(error);
     });
   }
 
@@ -122,7 +122,7 @@ class PostForm extends React.Component {
         if (!post[name] || !post[name].trim()) {
           let errorMessage = `You must provide a value for ${name}`;
           errors[name] = errorMessage;
-          NotificationManager.error(errorMessage);
+          showErrorMessage(errorMessage);
           formIsValid = false;
         }
       }
@@ -131,7 +131,7 @@ class PostForm extends React.Component {
     if (!errors.title && post.title.trim().length < 4) {
       let errorMessage = 'Title must be at least 4 characters!';
       errors.title = errorMessage;
-      NotificationManager.error(errorMessage);
+      showErrorMessage(errorMessage);
       formIsValid = false;
     }
 

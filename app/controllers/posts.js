@@ -12,6 +12,14 @@ exports.getPosts = (req, res) => {
 exports.createPost = (req, res) => {
   const data = req.body;
 
+  try {
+    const a = 11;
+    a = 9;
+  } catch (err) {
+    hasError(err, res);
+    return;
+  }
+
   Post.create(data, (err, post) => {
     if (!hasError(err, res)) {
       res.send(post);

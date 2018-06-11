@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import PostList from '../posts/PostList';
 import PostPreview from '../posts/PostPreview';
 import ConfirmationModal from '../common/ConfirmationModal';
-import { NotificationManager } from 'react-notifications';
+import { showSuccessMessage, showReason } from '../../utils/notifications';
 
 class HomePage extends React.Component {
   constructor (props) {
@@ -61,9 +61,9 @@ class HomePage extends React.Component {
 
   confirm () {
     this.props.actions.deletePost(this.state.postId).then(() => {
-      NotificationManager.success('Post has been deleted.');
+      showSuccessMessage('Post has been deleted.');
     }).catch(error => {
-      NotificationManager.error(error.toString());
+      showReason(error);
     });
     $('#confirmation-modal').modal('hide');
   }

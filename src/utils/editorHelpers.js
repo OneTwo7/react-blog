@@ -1,4 +1,4 @@
-import { NotificationManager } from 'react-notifications';
+import { showErrorMessage } from './notifications';
 
 const insertHTML = (html) => {
   document.execCommand('insertHTML', false, html);
@@ -7,24 +7,28 @@ const insertHTML = (html) => {
 const isField = (selection, type) => {
   let node = selection.anchorNode;
 
+  if (!node) {
+    return false;
+  }
+
   if (node.nodeType !== 1) {
     node = node.parentNode;
   }
 
-  return node.className.indexOf(type) !== -1;
+  return node.className.includes(type);
 };
 
 const getSelectionText = (emptyCheck) => {
   const selection = window.getSelection();
   if (!isField(selection, 'text')) {
-    NotificationManager.error('Wrong selection!');
+    showErrorMessage('Wrong selection!');
     return;
   }
 
   const text = selection.toString();
   if (emptyCheck) {
     if (selection.isCollapsed) {
-      NotificationManager.error('Nothing is selected!');
+      showErrorMessage('Nothing is selected!');
       return;
     }
   }
@@ -85,7 +89,7 @@ export const createElement = (type) => {
       case 'link-btn':
         url = prompt('Provide an address', '');
         if (!url) {
-          NotificationManager.error('You need to provide a URL!');
+          showErrorMessage('You need to provide a URL!');
           return;
         }
         element = `<a href="${url}">${text}</a>`;
