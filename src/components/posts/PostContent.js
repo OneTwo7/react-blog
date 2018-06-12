@@ -1,9 +1,9 @@
 import React from 'react';
 import { onPaste, handleKey, addElement } from '../../utils/editorHelpers';
-import controls from './contentControls';
+import { contentControls, clearControls } from './contentControls';
 import PropTypes from 'prop-types';
 
-const PostContent = ({ label, fields, moveField, addField, clearFields }) => {
+const PostContent = ({ fields, moveField, addField, clear, cancel }) => {
   const renderFields = () => {
     return fields.map(({ type, id }) => {
       const className = type;
@@ -45,7 +45,7 @@ const PostContent = ({ label, fields, moveField, addField, clearFields }) => {
     });
   };
 
-  const renderControls = () => (
+  const renderControls = (controls) => (
     controls.map(({ type, id, text }, idx) => {
       let clickHandler;
       switch (type) {
@@ -55,8 +55,11 @@ const PostContent = ({ label, fields, moveField, addField, clearFields }) => {
         case 'addField':
           clickHandler = addField;
           break;
+        case 'clearFields':
+          clickHandler = clear;
+          break;
         default:
-          clickHandler = clearFields;
+          clickHandler = cancel;
       }
       return (
         <button
@@ -77,24 +80,27 @@ const PostContent = ({ label, fields, moveField, addField, clearFields }) => {
       {renderFields()}
     </div>,
     <div key="content-controls" id="content-controls">
-      {renderControls()}
+      {renderControls(contentControls)}
+    </div>,
+    <div key="clear-controls" id="clear-controls">
+      {renderControls(clearControls)}
     </div>
   ]);
 
   return (
     <div className="form-group">
-      <label>{label}</label>
+      <label>Content</label>
       {renderContentInput()}
     </div>
   );
 };
 
 PostContent.propTypes = {
-  label: PropTypes.string,
   fields: PropTypes.array.isRequired,
   moveField: PropTypes.func.isRequired,
   addField: PropTypes.func.isRequired,
-  clearFields: PropTypes.func.isRequired
+  clear: PropTypes.func.isRequired,
+  cancel: PropTypes.func.isRequired
 };
 
 export default PostContent;

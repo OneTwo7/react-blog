@@ -1,5 +1,6 @@
-export const getRecommended = (post, posts, postsLength) => {
+export const getRecommended = (post, posts) => {
   let recommended = [];
+  let postsLength = posts.length;
 
   // same category
   for (let i = 0; i < postsLength; i++) {
@@ -17,12 +18,13 @@ export const getRecommended = (post, posts, postsLength) => {
   let tags = post.tags;
   if (recommended.length < 3 && tags) {
     tags = post.tags.split(' ');
-    for (let i = 0, l = tags.length; i < l; i++) {
+    let tagsLength = tags.length;
+    for (let i = 0; i < tagsLength; i++) {
       if (recommended.length === 3) {
         break;
       }
       for (let j = 0; j < postsLength; j++) {
-        if (posts[j].tags.indexOf(tags[i]) !== -1) {
+        if (posts[j].tags.includes(tags[i])) {
           recommended.push({
             type: 'tag',
             tag: tags[i],

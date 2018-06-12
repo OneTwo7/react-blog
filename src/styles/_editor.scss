@@ -1,3 +1,13 @@
+@mixin control-flex {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  button {
+    border: 1px solid rgba(0,0,0,.125);
+    margin: .1rem;
+  }
+}
+
 .text {
   border: 1px solid $light-grey;
 }
@@ -56,18 +66,20 @@
 }
 
 #content-controls {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  button {
-    border: 1px solid rgba(0,0,0,.125);
-    margin: .1rem;
-  }
+  @include control-flex;
   #bold-btn {
     font-weight: bold;
   }
   #em-btn {
     font-style: italic;
+  }
+}
+
+#clear-controls {
+  @include control-flex;
+  margin-top: .5rem;
+  button {
+    width: 5rem;
   }
 }
 

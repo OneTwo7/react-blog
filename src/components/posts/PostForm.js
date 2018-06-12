@@ -18,6 +18,7 @@ class PostForm extends React.Component {
     this.state = {
       post: Object.assign({}, props.post),
       fields: [...fields],
+      cachedFields: [],
       fieldsCounter: fields.length,
       errors: {}
     };
@@ -28,6 +29,7 @@ class PostForm extends React.Component {
     this.moveField = this.moveField.bind(this);
     this.addField = this.addField.bind(this);
     this.clearFields = this.clearFields.bind(this);
+    this.cancelClear = this.cancelClear.bind(this);
   }
 
   componentDidMount () {
@@ -85,11 +87,9 @@ class PostForm extends React.Component {
     event.preventDefault();
 
     const { post, fields } = this.state;
-    const $fields = $('#content').find('pre');
-    for (let i = 0, length = $fields.length; i < length; i++) {
-      fields[i].content = $fields.eq(i).html();
-      fields[i].id = `field-${i}`;
-    }
+
+    this.grabContent();
+
     post.content = JSON.stringify(fields);
     this.setState({ post });
 
@@ -145,11 +145,11 @@ class PostForm extends React.Component {
         return (
           <PostContent
             key={name}
-            label={label}
             fields={this.state.fields}
             moveField={this.moveField}
             addField={this.addField}
-            clearFields={this.clearFields}
+            clear={this.clearFields}
+            cancel={this.cancelClear}
           />
         );
       } else {
@@ -218,7 +218,34 @@ class PostForm extends React.Component {
   }
 
   clearFields () {
-    this.setState({ fields: [] });
+    const { fieldsCounter } = this.state;
+    if (!fieldsCounter) {
+      return;
+    }
+    this.grabContent();
+    const { fields: cachedFields } = this.state;
+    this.setState({ cachedFields, fields: [], fieldsCounter: 0 });
+  }
+
+  cancelClear () {
+    const { fieldsCounter } = this.state;
+    if (fieldsCounter) {
+      return;
+    }
+    const { cachedFields: fields } = this.state;
+    this.setState({ fields, fieldsCounter: fields.length, cachedFields: [] });
+    this.insertContent(fields);
+  }
+
+  grabContent () {
+    const { fields } = this.state;
+    const $fields = $('#content').find('pre');
+    const fieldsCounter = fields.length;
+    for (let i = 0; i < fieldsCounter; i++) {
+      fields[i].content = $fields.eq(i).html();
+      fields[i].id = `field-${i}`;
+    }
+    this.setState({ fields, fieldsCounter });
   }
 
   insertContent (fields) {
@@ -273,7 +300,7 @@ const mapStateToProps = (state, ownProps) => {
   const postId = ownProps.match.params.id;
 
   if (postId && posts.length > 0) {
-    post = posts.filter(post => post._id === postId)[0];
+    post = posts.find(post => post._id === postId);
     fields = JSON.parse(post.content);
   }
 

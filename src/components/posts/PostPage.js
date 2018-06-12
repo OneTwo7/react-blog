@@ -79,25 +79,18 @@ const mapStateToProps = (state, ownProps) => {
   const postId = ownProps.match.params.id;
 
   const { users } = state;
+  let posts = [...state.posts];
   let recommended = [];
   let author = {};
-  let posts = [...state.posts];
-  let postsLength = posts.length;
 
-  if (postId && postsLength > 0) {
-    // find the post and remove it from the list
-    for (let i = 0; i < postsLength; i++) {
-      if (posts[i]._id === postId) {
-        post = posts.splice(i, 1)[0];
-        postsLength--;
-        break;
-      }
-    }
-    recommended = getRecommended(post, posts, postsLength);
+  if (postId && posts.length) {
+    const postIndex = posts.findIndex(post => post._id === postId);
+    post = posts.splice(postIndex, 1)[0];
+    recommended = getRecommended(post, posts);
   }
 
-  if (post.author && users.length > 0) {
-    author = users.filter(u => u._id === post.author)[0];
+  if (post.author && users.length) {
+    author = users.find(user => user._id === post.author);
   }
 
   return {
