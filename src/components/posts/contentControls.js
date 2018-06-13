@@ -7,7 +7,8 @@ export const contentControls = [
   { type: 'addElement',  id: 'ul-btn',    text: 'ul' },
   { type: 'addField',    id: 'text-btn',  text: 'text' },
   { type: 'addField',    id: 'code-btn',  text: 'code' },
-  { type: 'addField',    id: 'shell-btn', text: 'shell' }
+  { type: 'addField',    id: 'shell-btn', text: 'shell' },
+  { type: 'addField',    id: 'img-btn',   text: 'img' }
 ];
 
 export const clearControls = [

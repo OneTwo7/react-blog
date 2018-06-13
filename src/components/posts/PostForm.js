@@ -5,6 +5,7 @@ import * as actions from '../../actions/postActions';
 import { showErrorMessage, showReason } from '../../utils/notifications';
 import TextInput from '../common/TextInput';
 import PostContent from './PostContent';
+import PreviewModal from '../common/PreviewModal';
 import PropTypes from 'prop-types';
 
 import FIELDS from './formFields';
@@ -18,6 +19,7 @@ class PostForm extends React.Component {
     this.state = {
       post: Object.assign({}, props.post),
       fields: [...fields],
+      pictures: {},
       cachedFields: [],
       fieldsCounter: fields.length,
       errors: {}
@@ -33,10 +35,11 @@ class PostForm extends React.Component {
   }
 
   componentDidMount () {
+    const { fields, pictures } = this.state;
     $(document).scroll(this.fixContentControls);
     $(window).resize(this.fixContentControls);
     this.fixContentControls();
-    this.insertContent(this.state.fields);
+    this.insertContent(fields, pictures);
   }
 
   componentWillReceiveProps (nextProps) {
@@ -46,10 +49,16 @@ class PostForm extends React.Component {
         fields: nextProps.fields
       });
     }
+    if (this.props.post.author !== nextProps.post.author) {
+      this.setState({
+        post: Object.assign({}, nextProps.post)
+      });
+    }
   }
 
   componentDidUpdate () {
-    this.insertContent(this.state.fields);
+    const { fields, pictures } = this.state;
+    this.insertContent(fields, pictures);
     this.fixContentControls();
   }
 
@@ -86,7 +95,7 @@ class PostForm extends React.Component {
   onClick (event) {
     event.preventDefault();
 
-    const { post, fields } = this.state;
+    const { post, fields, pictures } = this.state;
 
     this.grabContent();
 
@@ -97,7 +106,17 @@ class PostForm extends React.Component {
       return;
     }
 
-    this.props.actions.savePost(this.state.post).then(() => {
+    const formData = new FormData();
+
+    for (let key in pictures) {
+      formData.append('pictures', pictures[key][0]);
+    }
+
+    for (let key in post) {
+      formData.append(key, post[key]);
+    }
+
+    this.props.actions.savePost(formData).then(() => {
       this.redirect();
     }).catch(error => {
       showReason(error);
@@ -228,30 +247,48 @@ class PostForm extends React.Component {
   }
 
   cancelClear () {
-    const { fieldsCounter } = this.state;
+    const { fieldsCounter, pictures } = this.state;
     if (fieldsCounter) {
       return;
     }
     const { cachedFields: fields } = this.state;
     this.setState({ fields, fieldsCounter: fields.length, cachedFields: [] });
-    this.insertContent(fields);
+    this.insertContent(fields, pictures);
   }
 
   grabContent () {
-    const { fields } = this.state;
-    const $fields = $('#content').find('pre');
+    const { fields, pictures } = this.state;
+    const $picWrapper = $('#content .custom-file');
     const fieldsCounter = fields.length;
     for (let i = 0; i < fieldsCounter; i++) {
-      fields[i].content = $fields.eq(i).html();
-      fields[i].id = `field-${i}`;
+      let fieldId = `field-${i}`;
+      let field = fields[i];
+      if (field.type !== 'img') {
+        field.content = $(`#${field.id} pre`).eq(0).html();
+      } else {
+        const $pic = $picWrapper.find(`#img-${field.id}`).eq(0);
+        const files = $pic.prop('files');
+        if (files && files[0]) {
+          pictures[fieldId] = files;
+          field.content = files[0].name;
+        }
+      }
+      field.id = fieldId;
     }
-    this.setState({ fields, fieldsCounter });
+    this.setState({ fields, fieldsCounter, pictures });
   }
 
-  insertContent (fields) {
-    fields.forEach(({ id, content }) => {
-      if (content) {
-        $(`#${id} pre`).html(content);
+  insertContent (fields, pictures) {
+    fields.forEach(({ type, id, content }) => {
+      if (type !== 'img') {
+        if (content) {
+          $(`#${id} pre`).html(content);
+        }
+      } else {
+        const $input = $(`#${id} .custom-file-input`);
+        if ($input.length) {
+          $input[0].files = pictures[id];
+        }
       }
     });
   }
@@ -275,6 +312,7 @@ class PostForm extends React.Component {
         >
           Cancel
         </button>
+        <PreviewModal />
       </form>
     );
   }

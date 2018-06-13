@@ -5,6 +5,12 @@
   button {
     border: 1px solid rgba(0,0,0,.125);
     margin: .1rem;
+    &:first-child {
+      margin-left: 0;
+    }
+    &:last-child {
+      margin-right: 0;
+    }
   }
 }
 
@@ -36,12 +42,16 @@
 
 .field-wrapper {
   margin-bottom: 1rem;
-  pre {
+  pre, div {
     margin-bottom: .4rem;
   }
   .btn {
     padding: .15rem .5rem;
     height: 2rem;
+  }
+  .btn.btn-preview {
+    padding: .375rem .75rem;
+    height: auto;
   }
   .remove-btn .svg-inline--fa {
     font-size: 1.2rem;
@@ -85,6 +95,7 @@
 
 #content-controls.fixed {
   position: fixed;
+  z-index: 3;
   right: 0;
   bottom: 3rem;
   left: 0;

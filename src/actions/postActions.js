@@ -41,18 +41,18 @@ export const loadPosts = () => {
   });
 };
 
-export const savePost = (post) => {
-  const postId = post._id;
+export const savePost = (postData) => {
+  const postId = postData.has('_id');
   return (dispatch => {
     dispatch(beginAjaxCall());
     if (postId) {
-      return axios.put(`/api/posts/${postId}`, post).then(({ data }) => {
+      return axios.put(`/api/posts/${postId}`, postData).then(({ data }) => {
         dispatch(updatePostSuccess(data));
       }).catch(error => {
         dispatchAjaxCallError(error, dispatch);
       });
     }
-    return axios.post('/api/posts', post).then(({ data }) => {
+    return axios.post('/api/posts', postData).then(({ data }) => {
       dispatch(createPostSuccess(data));
     }).catch(error => {
       dispatchAjaxCallError(error, dispatch);

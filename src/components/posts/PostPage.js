@@ -39,6 +39,8 @@ class PostPage extends Component {
     fields.forEach(({ type, content }, idx) => {
       if (type === 'text') {
         result += `<pre key="${idx}" class="text">${content}</pre>`;
+      } else if (type === 'img') {
+        result += `<img key="${idx}" src="/img/uploads/${content}">`;
       } else {
         const className = type === 'shell' ? type : 'code prettyprint';
         result += `<pre key="${idx}" class="${className}">${content}</pre>`;

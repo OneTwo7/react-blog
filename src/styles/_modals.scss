@@ -29,3 +29,16 @@
     line-height: 3.125rem;
   }
 }
+
+#preview-modal {
+  .modal-content {
+    border: none;
+  }
+  .modal-body {
+    padding: 0;
+    img {
+      border-radius: .3rem;
+      width: 100%;
+    }
+  }
+}

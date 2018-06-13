@@ -20,6 +20,10 @@ button {
   cursor: pointer;
 }
 
+input[type="file"] {
+  cursor: pointer;
+}
+
 #main {
   margin-bottom: 4rem;
 }

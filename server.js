@@ -7,6 +7,8 @@ const app = express();
 
 const env = process.env.NODE_ENV || 'development';
 
+app.use(express.static(__dirname + '/src'));
+
 require('./app/config/mongoose')(keys);
 
 if (env === 'development') {
