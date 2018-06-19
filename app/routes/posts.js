@@ -12,7 +12,7 @@ router.get('/', posts.getPosts);
 
 router.post('/', upload.array('pictures'), posts.createPost);
 
-router.put('/:id', posts.updatePost);
+router.put('/:id', upload.array('pictures'), posts.updatePost);
 
 router.delete('/:id', posts.deletePost);
 

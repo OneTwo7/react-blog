@@ -3,17 +3,6 @@ import { onPaste, handleKey, addElement } from '../../utils/editorHelpers';
 import { contentControls, clearControls } from './contentControls';
 import PropTypes from 'prop-types';
 
-const preview = (event) => {
-  const $previewModal = $('#preview-modal');
-  const inputId = event.target.id.split('-preview-')[0];
-  const input = document.getElementById(inputId);
-  if (input.files && input.files[0]) {
-    const src = URL.createObjectURL(input.files[0]);
-    $previewModal.find('.modal-body').html(`<img src="${src}">`);
-    $previewModal.modal('show');
-  }
-};
-
 const change = (event) => {
   const input = event.target;
   const $label = $(`label[for="${input.id}"]`);
@@ -24,16 +13,35 @@ const change = (event) => {
   }
 };
 
-const PostContent = ({ fields, moveField, addField, clear, cancel }) => {
+const reselect = (event) => {
+  const id = event.target.id.split('-change-')[0];
+  const $field = $(`#${id}`);
+  $field.find('.input-group-append').addClass('d-none');
+  $field.find('.custom-file').removeClass('d-none');
+  $field.find('.btn-preview').removeClass('preview-edit');
+};
+
+const PostContent = (props) => {
+  const { fields, moveField, addField, clear, cancel, edit, preview } = props;
+
   const renderFields = () => {
     return fields.map(({ type, id }) => {
       let field;
       if (type === 'img') {
-        field = (
-          <div className="input-group">
+        let appendClass = 'input-group-append';
+        let fileInputClass = 'custom-file';
+        let previewClass = 'btn btn-outline-secondary btn-preview';
+        if (edit) {
+          fileInputClass += ' d-none';
+          previewClass += ' preview-edit';
+        } else {
+          appendClass += ' d-none';
+        }
+        field = [
+          <div key="picture-file" className="input-group">
             <div className="input-group-prepend">
               <button
-                className="btn btn-outline-secondary btn-preview"
+                className={previewClass}
                 id={`img-${id}-preview-btn`}
                 type="button"
                 onClick={preview}
@@ -41,7 +49,17 @@ const PostContent = ({ fields, moveField, addField, clear, cancel }) => {
                 Preview
               </button>
             </div>
-            <div className="custom-file">
+            <div className={appendClass}>
+              <button
+                className="btn btn-outline-secondary btn-change"
+                id={`${id}-change-btn`}
+                type="button"
+                onClick={reselect}
+              >
+                Change
+              </button>
+            </div>
+            <div className={fileInputClass}>
               <input
                 className="custom-file-input"
                 id={`img-${id}`}
@@ -53,8 +71,20 @@ const PostContent = ({ fields, moveField, addField, clear, cancel }) => {
                 Choose file
               </label>
             </div>
+          </div>,
+          <div key="picture-sign" className="input-group">
+            <div className="input-group-prepend">
+              <label className="input-group-text" htmlFor={`img-${id}-sign`}>
+                Sign
+              </label>
+            </div>
+            <input
+              className="form-control"
+              id={`img-${id}-sign`}
+              type="text"
+            />
           </div>
-        );
+        ];
       } else {
         field = (
           <pre
@@ -152,7 +182,9 @@ PostContent.propTypes = {
   moveField: PropTypes.func.isRequired,
   addField: PropTypes.func.isRequired,
   clear: PropTypes.func.isRequired,
-  cancel: PropTypes.func.isRequired
+  cancel: PropTypes.func.isRequired,
+  edit: PropTypes.bool.isRequired,
+  preview: PropTypes.func.isRequired
 };
 
 export default PostContent;

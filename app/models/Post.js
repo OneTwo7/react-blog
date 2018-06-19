@@ -1,6 +1,7 @@
-const mongoose   = require('mongoose');
-const { Schema } = mongoose;
-const User       = mongoose.model('User');
+const mongoose      = require('mongoose');
+const { Schema }    = mongoose;
+const User          = mongoose.model('User');
+const pictureSchema = require('./Picture');
 
 const postSchema = Schema({
   author:     { type: Schema.Types.ObjectId, ref: 'User' },
@@ -9,7 +10,8 @@ const postSchema = Schema({
   category:   { type: String, required: '{PATH} is required!' },
   tags:       { type: String },
   comments:   { type: Number, default: 0 },
-  created_at: { type: Date, default: Date.now }
+  created_at: { type: Date, default: Date.now },
+  pictures:   [pictureSchema]
 });
 
 const Post = mongoose.model('Post', postSchema);

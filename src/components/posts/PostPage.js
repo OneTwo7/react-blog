@@ -14,15 +14,15 @@ class PostPage extends Component {
   }
 
   componentDidMount () {
-    const { content } = this.props.post;
+    const { content, pictures } = this.props.post;
     if (content) {
-      this.insertContent(content);
+      this.insertContent(content, pictures);
     }
   }
 
   componentWillReceiveProps (nextProps) {
     if (this.props.post._id !== nextProps.post._id) {
-      this.insertContent(nextProps.post.content);
+      this.insertContent(nextProps.post.content, nextProps.post.pictures);
     }
   }
 
@@ -30,17 +30,25 @@ class PostPage extends Component {
     PR.prettyPrint();
   }
 
-  insertContent (postContent) {
+  insertContent (postContent, pictures) {
     if (!postContent) {
       return;
     }
     const fields = JSON.parse(postContent);
     let result = '';
-    fields.forEach(({ type, content }, idx) => {
+    fields.forEach(({ type, content, id }, idx) => {
       if (type === 'text') {
         result += `<pre key="${idx}" class="text">${content}</pre>`;
       } else if (type === 'img') {
-        result += `<img key="${idx}" src="/img/uploads/${content}">`;
+        let picture = pictures.find(picture => picture.field === id);
+        result += `
+          <div key="${idx}" class="card">
+            <img class="card-img-top" src="${picture.url}">
+            <div class="card-body">
+              <p class="card-text">${content}</p>
+            </div>
+          </div>
+        `;
       } else {
         const className = type === 'shell' ? type : 'code prettyprint';
         result += `<pre key="${idx}" class="${className}">${content}</pre>`;

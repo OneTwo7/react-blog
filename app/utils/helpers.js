@@ -2,9 +2,9 @@ const prepareUser = ({ _id, email, name, roles }) => ({
   _id, email, name, roles
 });
 
-exports.hasError = (err, res) => {
+exports.hasError = (err, res, status = 400) => {
   if (err) {
-    res.status(400);
+    res.status(status);
     res.send({ reason: err.toString() });
     return true;
   }

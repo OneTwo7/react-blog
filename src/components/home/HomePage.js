@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -9,7 +9,7 @@ import PostPreview from '../posts/PostPreview';
 import ConfirmationModal from '../common/ConfirmationModal';
 import { showSuccessMessage, showReason } from '../../utils/notifications';
 
-class HomePage extends React.Component {
+class HomePage extends Component {
   constructor (props) {
     super(props);
 

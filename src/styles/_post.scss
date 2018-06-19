@@ -25,7 +25,14 @@
   }
   img {
     width: 100%;
+  }
+  .card {
     margin-bottom: 1rem;
+    .card-body {
+      padding: .75rem;
+      text-align: center;
+      color: $grey;
+    }
   }
 }
 

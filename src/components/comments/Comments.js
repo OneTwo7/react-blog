@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/commentActions';
@@ -8,7 +8,7 @@ import ConfirmationModal from '../common/ConfirmationModal';
 import { showSuccessMessage, showReason } from '../../utils/notifications';
 import PropTypes from 'prop-types';
 
-class Comments extends React.Component {
+class Comments extends Component {
   constructor (props) {
     super(props);
 

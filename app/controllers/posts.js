@@ -1,25 +1,52 @@
 const Post = require('mongoose').model('Post');
 const { hasError } = require('../utils/helpers');
-
 const path = require('path');
 const fs = require('fs');
 
-const unlink = (res, tempPath, reason) => {
-  fs.unlink(tempPath, err => {
-    if (err) {
-      return handleError(res, err);
+const uploadPictures = (res, files, pictureFields) => {
+  return new Promise((resolve, reject) => {
+    if (!pictureFields) {
+      resolve([]);
     }
 
-    handleError(res, null, reason);
-  });
-};
+    const fiveMegaBytes = 5 * 1024 * 1024;
+    const fields = Array.prototype.concat(pictureFields);
+    const fieldsLength = fields.length;
+    const pictures = [];
 
-const handleError = (res, err, reason) => {
-  if (err) {
-    res.status(500).send({ reason: err.toString() });
-  } else {
-    res.status(403).send({ reason });
-  }
+    for (let file of files) {
+      const { originalname: name, path: tempPath, mimetype, size } = file;
+      const target = path.join(__dirname, '../..', 'src/img/uploads', name);
+
+      if (mimetype !== 'image/png' && mimetype !== 'image/jpeg') {
+        fs.unlink(tempPath, err => {
+          if (!hasError(err, res, 500)) {
+            reject('Wrong file type!');
+          }
+        });
+      }
+
+      if (size > fiveMegaBytes) {
+        fs.unlink(tempPath, err => {
+          if (!hasError(err, res, 500)) {
+            reject(`Picture ${name} is too big!`);
+          }
+        });
+      }
+
+      fs.rename(tempPath, target, err => {
+        if (!hasError(err, res, 500)) {
+          pictures.push({
+            field: fields.shift(),
+            url: `/img/uploads/${name}`
+          });
+          if (pictures.length === fieldsLength) {
+            resolve(pictures);
+          }
+        }
+      });
+    }
+  });
 };
 
 exports.getPosts = (req, res) => {
@@ -31,53 +58,48 @@ exports.getPosts = (req, res) => {
 };
 
 exports.createPost = (req, res) => {
-  const data = req.body;
-  const files = req.files;
-  const fiveMegaBytes = 5 * 1024 * 1024;
+  const { body: data, files } = req;
+  const { pictureFields } = data;
 
-  for (let file of files) {
-    const name = file.originalname;
-    const tempPath = file.path;
-    const targetPath = path.join(__dirname, '../..', 'src/img/uploads', name);
-    const type = file.mimetype;
-    const size = file.size;
+  delete data.pictureFields;
 
-    if (!(type === 'image/png' || type === 'image/jpeg')) {
-      return unlink(res, tempPath, 'Wrong file type!');
-    }
+  uploadPictures(res, files, pictureFields).then(pictures => {
+    data.pictures = pictures;
 
-    if (size > fiveMegaBytes) {
-      return unlink(res, tempPath, `Picture ${name} is too big!`);
-    }
-
-    fs.rename(tempPath, targetPath, err => {
-      if (err) {
-        return handleError(res, err);
+    Post.create(data, (err, post) => {
+      if (!hasError(err, res)) {
+        res.send(post);
       }
     });
-  }
-
-  Post.create(data, (err, post) => {
-    if (!hasError(err, res)) {
-      res.send(post);
-    }
+  }).catch(error => {
+    hasError(error, res, 403);
   });
 };
 
 exports.updatePost = (req, res) => {
-  const { content } = req.body;
+  const { body: data, files } = req;
+  const { pictureFields } = data;
 
-  Post.findOne({ _id: req.params.id }).exec((err, post) => {
-    if (!hasError(err, res)) {
+  delete data.pictureFields;
 
-      post.content = content;
+  uploadPictures(res, files, pictureFields).then(pictures => {
+    Post.findOne({ _id: data._id }).exec((err, post) => {
+      if (!hasError(err, res)) {
+        post.title = data.title;
+        post.content = data.content;
+        post.category = data.category;
+        post.tags = data.tags;
+        post.pictures = post.pictures.concat(pictures);
 
-      post.save((err) => {
-        if (!hasError(err, res)) {
-          res.send(post);
-        }
-      });
-    }
+        post.save((err) => {
+          if (!hasError(err, res)) {
+            res.send(post);
+          }
+        });
+      }
+    });
+  }).catch(error => {
+    hasError(error, res, 403);
   });
 };
 
