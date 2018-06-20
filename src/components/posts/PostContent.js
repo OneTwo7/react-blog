@@ -1,28 +1,11 @@
 import React from 'react';
-import { onPaste, handleKey, addElement } from '../../utils/editorHelpers';
+import * as editorHelpers from '../../utils/editorHelpers';
 import { contentControls, clearControls } from './contentControls';
 import PropTypes from 'prop-types';
 
-const change = (event) => {
-  const input = event.target;
-  const $label = $(`label[for="${input.id}"]`);
-  if (input.files && input.files[0]) {
-    $label.text('File chosen');
-  } else {
-    $label.text('Choose file');
-  }
-};
-
-const reselect = (event) => {
-  const id = event.target.id.split('-change-')[0];
-  const $field = $(`#${id}`);
-  $field.find('.input-group-append').addClass('d-none');
-  $field.find('.custom-file').removeClass('d-none');
-  $field.find('.btn-preview').removeClass('preview-edit');
-};
-
 const PostContent = (props) => {
   const { fields, moveField, addField, clear, cancel, edit, preview } = props;
+  const { onPaste, handleKey, addElement, change, reselect } = editorHelpers;
 
   const renderFields = () => {
     return fields.map(({ type, id }) => {

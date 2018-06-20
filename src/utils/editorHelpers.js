@@ -1,5 +1,7 @@
 import { showErrorMessage } from './notifications';
 
+const fiveMegaBytes = 5 * 1024 * 1024;
+
 const insertHTML = (html) => {
   document.execCommand('insertHTML', false, html);
 };
@@ -168,4 +170,33 @@ export const handleKey = (e) => {
       insertHTML('\t');
     }
   }
+};
+
+export const change = (event) => {
+  const input = event.target;
+  const $label = $(`label[for="${input.id}"]`);
+  if (input.files && input.files[0]) {
+    const { size, type } = input.files[0];
+    if (type !== 'image/png' && type !== 'image/jpeg') {
+      showErrorMessage('Wrong file type!');
+      input.value = '';
+      return;
+    }
+    if (size > fiveMegaBytes) {
+      showErrorMessage('File should be less than 5MB!');
+      input.value = '';
+      return;
+    }
+    $label.text('File chosen');
+  } else {
+    $label.text('Choose file');
+  }
+};
+
+export const reselect = (event) => {
+  const id = event.target.id.split('-change-')[0];
+  const $field = $(`#${id}`);
+  $field.find('.input-group-append').addClass('d-none');
+  $field.find('.custom-file').removeClass('d-none');
+  $field.find('.btn-preview').removeClass('preview-edit');
 };
