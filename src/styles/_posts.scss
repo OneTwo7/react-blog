@@ -1,3 +1,5 @@
+$border-grey: 1px solid $light-grey;
+
 .post-wrapper {
   padding-top: .5rem;
   padding-bottom: .5rem;
@@ -6,22 +8,31 @@
   }
 }
 
+.post-link:hover {
+  text-decoration: none;
+}
+
 .post-preview {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border: 1px solid $light-grey;
-  height: 15rem;
 }
 
 .post-preview-top {
-  display: flex;
-  justify-content: space-between;
-  padding: .4rem 1.2rem;
+  position: relative;
+  height: 286px;
+  background: $light-grey;
+  img {
+    position: absolute;
+    width: 100%;
+    visibility: hidden;
+    margin: auto;
+  }
 }
 
 .post-preview-bottom {
   display: flex;
+  align-items: flex-end;
 }
 
 .post-category {
@@ -47,24 +58,18 @@
   flex-basis: 100%;
   margin-bottom: 0;
   padding: 1rem 0;
-  border-top: 1px solid $light-grey;
+  border-right: $border-grey;
+  border-bottom: $border-grey;
+  border-left: $border-grey;
   text-align: center;
-  color: #007bff;
+  color: $dark-grey;
 }
 
 .post-controls {
-  position: absolute;
-  top: 4.5rem;
   visibility: hidden;
-  display: flex;
-  flex-direction: column;
-  left: 1.2rem;
-  z-index: 50;
-  padding: 0 1.2rem;
+  margin-left: 1rem;
   .btn-link {
-    margin-top: .5rem;
-    padding: 0;
-    text-align: left;
+    margin-left: .5rem;
   }
 }
 

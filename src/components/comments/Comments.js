@@ -65,7 +65,7 @@ class Comments extends Component {
   }
 
   getCommentId (btnId) {
-    return btnId.slice(btnId.indexOf('-') + 1);
+    return btnId.split('-')[1];
   }
 
   onChange (event) {
@@ -135,7 +135,7 @@ class Comments extends Component {
 
     return (
       <section id="comments" className="col-md-6 offset-md-3">
-        <h2>Comments ({count ? count : 0})</h2>
+        <h2>Comments ({count})</h2>
         <CommentForm
           comment={this.state.comment}
           errors={this.state.errors}
@@ -166,6 +166,7 @@ Comments.propTypes = {
 
 const mapStateToProps = (state) => {
   const { comments, auth, users } = state;
+  const count = comments.length;
   const usersById = {};
 
   for (let i = 0, l = users.length; i < l; i++) {
@@ -175,7 +176,8 @@ const mapStateToProps = (state) => {
   return {
     comments,
     auth,
-    usersById
+    usersById,
+    count
   };
 };
 

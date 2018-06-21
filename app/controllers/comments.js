@@ -1,6 +1,4 @@
-const mongoose = require('mongoose');
-const Comment = mongoose.model('Comment');
-const Post = mongoose.model('Post');
+const Comment = require('mongoose').model('Comment');
 const { hasError } = require('../utils/helpers');
 
 exports.getCommentsByPostId = (req, res) => {
@@ -16,8 +14,6 @@ exports.createComment = (req, res) => {
 
   Comment.create(data, (err, comment) => {
     if (!hasError(err, res)) {
-
-      Post.findByIdAndUpdate(req.params.id, { $inc: { comments: 1 } }).exec();
 
       res.send(comment);
     }
@@ -39,9 +35,6 @@ exports.updateComment = (req, res) => {
 exports.deleteComment = (req, res) => {
   Comment.remove({ _id: req.params.commentId }, (err) => {
     if (!hasError(err, res)) {
-
-      Post.findByIdAndUpdate(req.params.id, { $inc: { comments: -1 } })
-      .exec();
 
       res.status(200);
       res.end();

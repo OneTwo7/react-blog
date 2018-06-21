@@ -9,7 +9,6 @@ const postSchema = Schema({
   content:    { type: String, required: '{PATH} is required!' },
   category:   { type: String, required: '{PATH} is required!' },
   tags:       { type: String },
-  comments:   { type: Number, default: 0 },
   created_at: { type: Date, default: Date.now },
   pictures:   [pictureSchema]
 });
@@ -61,22 +60,19 @@ const samplePosts = [
     title:    'First',
     content:  firstContent,
     category: 'Distinctive',
-    tags:     'first sample',
-    comments: 3
+    tags:     'first sample'
   },
   {
     title:    'Second',
     content:  secondContent,
     category: 'Distinctive',
-    tags:     'second sample',
-    comments: 2
+    tags:     'second sample'
   },
   {
     title:    'Another',
     content:  anotherContent,
     category: 'Generic',
-    tags:     'another sample',
-    comments: 0
+    tags:     'another sample'
   }
 ];
 

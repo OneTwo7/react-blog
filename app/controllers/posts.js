@@ -1,53 +1,7 @@
-const Post = require('mongoose').model('Post');
-const { hasError } = require('../utils/helpers');
-const path = require('path');
-const fs = require('fs');
-
-const uploadPictures = (res, files, pictureFields) => {
-  return new Promise((resolve, reject) => {
-    if (!pictureFields) {
-      resolve([]);
-    }
-
-    const fiveMegaBytes = 5 * 1024 * 1024;
-    const fields = Array.prototype.concat(pictureFields);
-    const fieldsLength = fields.length;
-    const pictures = [];
-
-    for (let file of files) {
-      const { originalname: name, path: tempPath, mimetype, size } = file;
-      const target = path.join(__dirname, '../..', 'src/img/uploads', name);
-
-      if (mimetype !== 'image/png' && mimetype !== 'image/jpeg') {
-        fs.unlink(tempPath, err => {
-          if (!hasError(err, res, 500)) {
-            reject('Wrong file type!');
-          }
-        });
-      }
-
-      if (size > fiveMegaBytes) {
-        fs.unlink(tempPath, err => {
-          if (!hasError(err, res, 500)) {
-            reject(`Picture ${name} is too big!`);
-          }
-        });
-      }
-
-      fs.rename(tempPath, target, err => {
-        if (!hasError(err, res, 500)) {
-          pictures.push({
-            field: fields.shift(),
-            url: `/img/uploads/${name}`
-          });
-          if (pictures.length === fieldsLength) {
-            resolve(pictures);
-          }
-        }
-      });
-    }
-  });
-};
+const mongoose = require('mongoose');
+const Post = mongoose.model('Post');
+const Comment = mongoose.model('Comment');
+const { hasError, uploadPictures } = require('../utils/helpers');
 
 exports.getPosts = (req, res) => {
   Post.find({}).exec(function (err, collection) {
@@ -104,10 +58,15 @@ exports.updatePost = (req, res) => {
 };
 
 exports.deletePost = (req, res) => {
-  Post.remove({ _id: req.params.id }, (err) => {
+  const post_id = req.params.id;
+  Post.remove({ _id: post_id }, (err) => {
     if (!hasError(err, res)) {
-      res.status(200);
-      res.end();
+      Comment.remove({ post_id: post_id }, (err) => {
+        if (!hasError(err, res)) {
+          res.status(200);
+          res.end();
+        }
+      });
     }
   });
 };

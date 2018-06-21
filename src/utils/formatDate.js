@@ -6,11 +6,13 @@ const periods = {
 };
 
 export const fromNow = (date) => {
-  if (!(date instanceof Date)) {
+  const parsedDate = Date.parse(date);
+
+  if (isNaN(parsedDate)) {
     return '';
   }
 
-  const time = new Date() - date;
+  const time = new Date() - parsedDate;
 
   if (time < 90 * periods.second) {
     const seconds = Math.ceil(time / periods.second);
