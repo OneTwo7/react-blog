@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/postActions';
 import { showErrorMessage, showReason } from '../../utils/notifications';
-import TextInput from '../common/TextInput';
-import PostContent from './PostContent';
+import PostInputs from './PostInputs';
 import PreviewModal from '../common/PreviewModal';
 import PropTypes from 'prop-types';
 
@@ -179,37 +178,6 @@ class PostForm extends Component {
     return formIsValid;
   }
 
-  renderInputs (savedPictures) {
-    return FIELDS.map(({ name, label }) => {
-      if (name === 'content') {
-        return (
-          <PostContent
-            key={name}
-            fields={this.state.fields}
-            moveField={this.moveField}
-            addField={this.addField}
-            clear={this.clearFields}
-            cancel={this.cancelClear}
-            pictures={savedPictures}
-            preview={this.preview}
-            reselect={this.reselect}
-          />
-        );
-      } else {
-        return (
-          <TextInput
-            key={name}
-            name={name}
-            label={label}
-            onChange={this.onChange}
-            value={this.state.post[name]}
-            error={this.state.errors[name]}
-          />
-        );
-      }
-    });
-  }
-
   // content fields
 
   moveField (event) {
@@ -306,12 +274,12 @@ class PostForm extends Component {
 
   preview (event) {
     const { target } = event;
-    const { pictures } = this.state.post;
+    const { post, savedPictures } = this.state;
     const id = target.id.split('-').slice(1, 3).join('-');
     const $previewModal = $('#preview-modal');
     let src;
-    if (target.className.includes('preview-edit')) {
-      let picture = pictures.find(picture => picture.field === id);
+    if (savedPictures.includes(id)) {
+      let picture = post.pictures.find(picture => picture.field === id);
       src = picture.url;
     } else {
       const inputId = event.target.id.split('-preview-')[0];
@@ -377,10 +345,24 @@ class PostForm extends Component {
   }
 
   render () {
+    const { post } = this.state;
+
     return (
       <form>
-        <h1>{this.state.post._id ? 'Edit Post' : 'New Post'}</h1>
-        {this.renderInputs(this.state.savedPictures)}
+        <h1>{post._id ? 'Edit Post' : 'New Post'}</h1>
+        <PostInputs
+          fields={this.state.fields}
+          move={this.moveField}
+          add={this.addField}
+          clear={this.clearFields}
+          cancel={this.cancelClear}
+          pictures={this.state.savedPictures}
+          preview={this.preview}
+          reselect={this.reselect}
+          onChange={this.onChange}
+          post={post}
+          errors={this.state.errors}
+        />
         <input
           type="submit"
           onClick={this.onClick}

@@ -3,19 +3,15 @@ import Comment from './Comment';
 import PropTypes from 'prop-types';
 
 const CommentsList = ({ comments, users, onEditClick, onDeleteClick }) => {
-  const renderComments = () => (
-    comments.map(comment => (
-      <Comment
-        key={comment._id}
-        comment={comment}
-        users={users}
-        onEditClick={onEditClick}
-        onDeleteClick={onDeleteClick}
-      />
-    ))
-  );
-
-  return renderComments();
+  return comments.map(comment => (
+    <Comment
+      key={comment._id}
+      comment={comment}
+      users={users}
+      onEditClick={onEditClick}
+      onDeleteClick={onDeleteClick}
+    />
+  ));
 };
 
 CommentsList.propTypes = {
