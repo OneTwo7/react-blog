@@ -64,7 +64,7 @@ class PostPage extends Component {
       <div className="row">
         <Post author={author} post={post} />
         <RecommendedPosts recommended={recommended} />
-        <Comments count={post.comments} postId={post._id} />
+        <Comments postId={post._id} />
       </div>
     );
   }

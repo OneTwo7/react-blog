@@ -4,17 +4,17 @@ import { contentControls, clearControls } from './contentControls';
 import PropTypes from 'prop-types';
 
 const PostContent = (props) => {
-  const { fields, moveField, addField, clear, cancel, edit, preview } = props;
-  const { onPaste, handleKey, addElement, change, reselect } = editorHelpers;
+  const { moveField, addField, clear, cancel, pictures, preview } = props;
+  const { onPaste, handleKey, addElement, change } = editorHelpers;
 
   const renderFields = () => {
-    return fields.map(({ type, id }) => {
+    return props.fields.map(({ type, id }) => {
       let field;
       if (type === 'img') {
         let appendClass = 'input-group-append';
         let fileInputClass = 'custom-file';
         let previewClass = 'btn btn-outline-secondary btn-preview';
-        if (edit) {
+        if (pictures.includes(id)) {
           fileInputClass += ' d-none';
           previewClass += ' preview-edit';
         } else {
@@ -37,7 +37,7 @@ const PostContent = (props) => {
                 className="btn btn-outline-secondary btn-change"
                 id={`${id}-change-btn`}
                 type="button"
-                onClick={reselect}
+                onClick={props.reselect}
               >
                 Change
               </button>
@@ -166,8 +166,9 @@ PostContent.propTypes = {
   addField: PropTypes.func.isRequired,
   clear: PropTypes.func.isRequired,
   cancel: PropTypes.func.isRequired,
-  edit: PropTypes.bool.isRequired,
-  preview: PropTypes.func.isRequired
+  pictures: PropTypes.array.isRequired,
+  preview: PropTypes.func.isRequired,
+  reselect: PropTypes.func.isRequired
 };
 
 export default PostContent;

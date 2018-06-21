@@ -14,7 +14,7 @@ class PostForm extends Component {
   constructor (props) {
     super(props);
 
-    const { fields } = props;
+    const { fields, savedPictures } = props;
 
     this.state = {
       post: Object.assign({}, props.post),
@@ -23,6 +23,8 @@ class PostForm extends Component {
       cachedFields: [],
       fieldsCounter: Math.max(...fields.map(({ id }) => id.split('-')[1])) + 1,
       cachedFieldsCounter: 0,
+      savedPictures: [...savedPictures],
+      removedPictures: [],
       errors: {}
     };
 
@@ -34,6 +36,7 @@ class PostForm extends Component {
     this.clearFields = this.clearFields.bind(this);
     this.cancelClear = this.cancelClear.bind(this);
     this.preview = this.preview.bind(this);
+    this.reselect = this.reselect.bind(this);
   }
 
   componentDidMount () {
@@ -46,12 +49,13 @@ class PostForm extends Component {
 
   componentWillReceiveProps (nextProps) {
     if (this.props.post._id !== nextProps.post._id) {
-      const { post, fields } = nextProps;
+      const { post, fields, savedPictures } = nextProps;
       const counter = Math.max(...fields.map(({ id }) => id.split('-')[1]));
       this.setState({
         post:   Object.assign({}, post),
         fields: [...fields],
-        fieldsCounter: counter + 1
+        fieldsCounter: counter + 1,
+        savedPictures: [...savedPictures]
       });
     }
     if (this.props.post.author !== nextProps.post.author) {
@@ -100,7 +104,7 @@ class PostForm extends Component {
   onClick (event) {
     event.preventDefault();
 
-    const { post, fields, pictures } = this.state;
+    const { post, fields } = this.state;
 
     this.grabContent();
 
@@ -111,6 +115,8 @@ class PostForm extends Component {
       return;
     }
 
+    const { pictures, removedPictures } = this.state;
+
     const formData = new FormData();
 
     for (let key in pictures) {
@@ -120,6 +126,10 @@ class PostForm extends Component {
 
     for (let key in post) {
       formData.append(key, post[key]);
+    }
+
+    for (let field of removedPictures) {
+      formData.append('removedPictures', field);
     }
 
     this.props.actions.savePost(formData).then(() => {
@@ -164,7 +174,7 @@ class PostForm extends Component {
     return formIsValid;
   }
 
-  renderInputs (editing) {
+  renderInputs (savedPictures) {
     return FIELDS.map(({ name, label }) => {
       if (name === 'content') {
         return (
@@ -175,8 +185,9 @@ class PostForm extends Component {
             addField={this.addField}
             clear={this.clearFields}
             cancel={this.cancelClear}
-            edit={editing}
+            pictures={savedPictures}
             preview={this.preview}
+            reselect={this.reselect}
           />
         );
       } else {
@@ -197,9 +208,10 @@ class PostForm extends Component {
   // content fields
 
   moveField (event) {
-    const { fields } = this.state;
+    const { fields, savedPictures, removedPictures } = this.state;
     const idx = this.getFieldIndex(event, fields);
     const type = this.getFieldType(event);
+    const field = `field-${idx}`;
     switch (type) {
       case 'swap-up':
         fields[idx] = fields.splice(idx - 1, 1, fields[idx])[0];
@@ -212,6 +224,14 @@ class PostForm extends Component {
         break;
       default:
         return;
+    }
+    if (type === 'remove-btn' && savedPictures.includes(field)) {
+      this.setState({
+        savedPictures: savedPictures.filter(sField => sField !== field),
+        removedPictures: [...removedPictures, field],
+        fields
+      });
+      return;
     }
     this.setState({ fields });
   }
@@ -245,7 +265,7 @@ class PostForm extends Component {
   }
 
   clearFields () {
-    const { fieldsCounter } = this.state;
+    const { fieldsCounter, savedPictures, removedPictures } = this.state;
     if (!fieldsCounter) {
       return;
     }
@@ -255,21 +275,26 @@ class PostForm extends Component {
       cachedFields: fields,
       cachedFieldsCounter: fieldsCounter,
       fields: [],
-      fieldsCounter: 0
+      fieldsCounter: 0,
+      savedPictures: [],
+      removedPictures: [...savedPictures]
     });
   }
 
   cancelClear () {
-    const { fieldsCounter, pictures } = this.state;
+    const { fieldsCounter } = this.state;
     if (fieldsCounter) {
       return;
     }
-    const { cachedFields, cachedFieldsCounter } = this.state;
+    const { cachedFields, cachedFieldsCounter, pictures } = this.state;
+    const { savedPictures, removedPictures } = this.state;
     this.setState({
       fields: cachedFields,
       fieldsCounter: cachedFieldsCounter,
       cachedFields: [],
-      cachedFieldsCounter: 0
+      cachedFieldsCounter: 0,
+      savedPictures: [...removedPictures],
+      removedPictures: []
     });
     this.insertContent(cachedFields, pictures);
   }
@@ -294,6 +319,15 @@ class PostForm extends Component {
     }
     $previewModal.find('.modal-body').html(`<img src="${src}">`);
     $previewModal.modal('show');
+  }
+
+  reselect (event) {
+    const id = event.target.id.split('-change-')[0];
+    const { savedPictures, removedPictures } = this.state;
+    this.setState({
+      savedPictures: savedPictures.filter(field => field !== id),
+      removedPictures: [...removedPictures, id]
+    });
   }
 
   grabContent () {
@@ -335,12 +369,10 @@ class PostForm extends Component {
   }
 
   render () {
-    const editing = !!this.state.post._id;
-
     return (
       <form>
-        <h1>{editing ? 'Edit Post' : 'New Post'}</h1>
-        {this.renderInputs(editing)}
+        <h1>{this.state.post._id ? 'Edit Post' : 'New Post'}</h1>
+        {this.renderInputs(this.state.savedPictures)}
         <input
           type="submit"
           onClick={this.onClick}
@@ -362,10 +394,11 @@ class PostForm extends Component {
 }
 
 PostForm.propTypes = {
-  actions: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
-  post:    PropTypes.object.isRequired,
-  fields:  PropTypes.array.isRequired
+  actions:       PropTypes.object.isRequired,
+  history:       PropTypes.object.isRequired,
+  post:          PropTypes.object.isRequired,
+  fields:        PropTypes.array.isRequired,
+  savedPictures: PropTypes.array.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -374,20 +407,24 @@ const mapStateToProps = (state, ownProps) => {
     title: '',
     content: '',
     category: '',
-    tags: ''
+    tags: '',
+    pictures: []
   };
   let fields = [{ type: 'text',  id: 'field-0' }];
+  let savedPictures = [];
   const { posts } = state;
   const postId = ownProps.match.params.id;
 
   if (postId && posts.length > 0) {
     post = posts.find(post => post._id === postId);
     fields = JSON.parse(post.content);
+    savedPictures = post.pictures.map(({ field }) => field);
   }
 
   return {
     post,
-    fields
+    fields,
+    savedPictures
   };
 };
 

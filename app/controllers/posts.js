@@ -33,8 +33,11 @@ exports.createPost = (req, res) => {
 exports.updatePost = (req, res) => {
   const { body: data, files } = req;
   const { pictureFields } = data;
+  let { removedPictures } = data;
 
-  delete data.pictureFields;
+  if (removedPictures !== 'undefined' && !Array.isArray(removedPictures)) {
+    removedPictures = [removedPictures];
+  }
 
   uploadPictures(res, files, pictureFields).then(pictures => {
     Post.findOne({ _id: data._id }).exec((err, post) => {
@@ -43,7 +46,16 @@ exports.updatePost = (req, res) => {
         post.content = data.content;
         post.category = data.category;
         post.tags = data.tags;
-        post.pictures = post.pictures.concat(pictures);
+
+        let postPictures = post.pictures;
+
+        if (removedPictures !== 'undefined') {
+          postPictures = postPictures.filter(({ field }) => (
+            !removedPictures.includes(field)
+          ));
+        }
+
+        post.pictures = postPictures.concat(pictures);
 
         post.save((err) => {
           if (!hasError(err, res)) {

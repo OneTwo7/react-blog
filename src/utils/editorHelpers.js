@@ -192,11 +192,3 @@ export const change = (event) => {
     $label.text('Choose file');
   }
 };
-
-export const reselect = (event) => {
-  const id = event.target.id.split('-change-')[0];
-  const $field = $(`#${id}`);
-  $field.find('.input-group-append').addClass('d-none');
-  $field.find('.custom-file').removeClass('d-none');
-  $field.find('.btn-preview').removeClass('preview-edit');
-};
