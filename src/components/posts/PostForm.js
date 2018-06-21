@@ -25,6 +25,9 @@ class PostForm extends Component {
       cachedFieldsCounter: 0,
       savedPictures: [...savedPictures],
       removedPictures: [],
+      mainPicture: {
+        field: ''
+      },
       errors: {}
     };
 
@@ -115,7 +118,7 @@ class PostForm extends Component {
       return;
     }
 
-    const { pictures, removedPictures } = this.state;
+    const { pictures, removedPictures, mainPicture } = this.state;
 
     const formData = new FormData();
 
@@ -131,6 +134,8 @@ class PostForm extends Component {
     for (let field of removedPictures) {
       formData.append('removedPictures', field);
     }
+
+    formData.append('mainPicture', mainPicture.field);
 
     this.props.actions.savePost(formData).then(() => {
       this.redirect();
@@ -331,14 +336,17 @@ class PostForm extends Component {
   }
 
   grabContent () {
-    const { fields, pictures } = this.state;
+    const { fields, pictures, mainPicture } = this.state;
     const fieldsLength = fields.length;
     for (let i = 0; i < fieldsLength; i++) {
       let field = fields[i];
       let fieldId = field.id;
       if (field.type !== 'img') {
-        field.content = $(`#${field.id} pre`).eq(0).html();
+        field.content = $(`#${fieldId} pre`).eq(0).html();
       } else {
+        if (!mainPicture.field) {
+          mainPicture.field = fieldId;
+        }
         const $pic = $(`#img-${fieldId}`).eq(0);
         const files = $pic.prop('files');
         if (files && files[0]) {
@@ -347,7 +355,7 @@ class PostForm extends Component {
         field.content = $(`#img-${fieldId}-sign`).val();
       }
     }
-    this.setState({ fields, pictures });
+    this.setState({ fields, pictures, mainPicture });
   }
 
   insertContent (fields, pictures) {

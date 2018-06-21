@@ -32,7 +32,7 @@ exports.createPost = (req, res) => {
 
 exports.updatePost = (req, res) => {
   const { body: data, files } = req;
-  const { pictureFields } = data;
+  const { pictureFields, mainPicture } = data;
   let { removedPictures } = data;
 
   if (removedPictures !== 'undefined' && !Array.isArray(removedPictures)) {
@@ -55,7 +55,22 @@ exports.updatePost = (req, res) => {
           ));
         }
 
-        post.pictures = postPictures.concat(pictures);
+        postPictures = postPictures.concat(pictures);
+
+        if (mainPicture) {
+          let main;
+          const otherPictures = postPictures.filter(pic => {
+            if (pic.field !== mainPicture) {
+              return true;
+            } else {
+              main = pic;
+              return false;
+            }
+          });
+          postPictures = [main, ...otherPictures];
+        }
+
+        post.pictures = postPictures;
 
         post.save((err) => {
           if (!hasError(err, res)) {
