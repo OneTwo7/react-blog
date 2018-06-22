@@ -55,8 +55,8 @@ const LoginModal = ({ onChange, onKeyDown, auth, login, signup, errors }) => (
                 <a href="/auth/google" id="google-btn">
                   Login with Google
                 </a>
-                <a href="/auth/facebook" id="facebook-btn">
-                  Login with Facebook
+                <a href="/auth/github" id="github-btn">
+                  Login with Github
                 </a>
                 <a href="/auth/vk" id="vk-btn">
                   Login with VK

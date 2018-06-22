@@ -25,15 +25,15 @@ module.exports = (app) => {
 
   router.get(
     '/auth/google/callback',
-    passport.authenticate('google'),
+    passport.authenticate('google', { failureRedirect: '/' }),
     redirect
   );
 
-  router.get('/auth/facebook', passport.authenticate('facebook'));
+  router.get('/auth/github', passport.authenticate('github'));
 
   router.get(
-    '/auth/facebook/callback',
-    passport.authenticate('facebook'),
+    '/auth/github/callback',
+    passport.authenticate('github', { failureRedirect: '/' }),
     redirect
   );
 
@@ -41,7 +41,7 @@ module.exports = (app) => {
 
   router.get(
     '/auth/vk/callback',
-    passport.authenticate('vkontakte'),
+    passport.authenticate('vkontakte', { failureRedirect: '/' }),
     redirect
   );
 

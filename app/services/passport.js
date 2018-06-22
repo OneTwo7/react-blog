@@ -2,10 +2,11 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const FacebookStrategy = require('passport-facebook').Strategy;
+const GithubStrategy = require('passport-github').Strategy;
 const VkStrategy = require('passport-vkontakte').Strategy;
 const User = mongoose.model('User');
 const keys = require('../config/keys');
+const { handleSocialLogin } = require('../utils/helpers');
 
 passport.use(new LocalStrategy({
   usernameField: 'email'
@@ -24,50 +25,23 @@ passport.use(new GoogleStrategy({
   clientSecret: keys.googleClientSecret,
   callbackURL: '/auth/google/callback'
 }, (accessToken, refreshToken, profile, done) => {
-  User.findOne({ id: profile.id }).exec((err, existingUser) => {
-    if (existingUser) {
-      done(null, existingUser);
-    } else {
-      const user = new User({ id: profile.id, name: profile.displayName });
-      user.save().then(err => {
-        done(null, user);
-      });
-    }
-  });
+  handleSocialLogin(profile.id, profile.displayName, done);
 }));
 
-passport.use(new FacebookStrategy({
-  clientID: keys.facebookAppID,
-  clientSecret: keys.facebookAppSecret,
-  callbackURL: '/auth/facebook/callback'
+passport.use(new GithubStrategy({
+  clientID: keys.githubClientID,
+  clientSecret: keys.githubClientSecret,
+  callbackURL: '/auth/github/callback'
 }, (accessToken, refreshToken, profile, done) => {
-  User.findOne({ id: profile.id }).exec((err, existingUser) => {
-    if (existingUser) {
-      done(null, existingUser);
-    } else {
-      const user = new User({ id: profile.id, name: profile.displayName });
-      user.save().then(err => {
-        done(null, user);
-      });
-    }
-  });
+  handleSocialLogin(profile.id, profile.displayName, done);
 }));
 
 passport.use(new VkStrategy({
-  clientID: keys.vkAppID,
-  clientSecret: keys.vkAppSecret,
+  clientID: keys.vkClientID,
+  clientSecret: keys.vkClientSecret,
   callbackURL: '/auth/vk/callback'
 }, (accessToken, refreshToken, params, profile, done) => {
-  User.findOne({ id: profile.id }).exec((err, existingUser) => {
-    if (existingUser) {
-      done(null, existingUser);
-    } else {
-      const user = new User({ id: profile.id, name: profile.displayName });
-      user.save().then(err => {
-        done(null, user);
-      });
-    }
-  });
+  handleSocialLogin(profile.id, profile.displayName, done);
 }));
 
 passport.serializeUser((user, done) => {

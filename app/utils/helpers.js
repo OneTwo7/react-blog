@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const User = require('mongoose').model('User');
 
 const prepareUser = ({ _id, email, name, roles }) => ({
   _id, email, name, roles
@@ -80,3 +81,16 @@ exports.uploadPictures = (res, files, pictureFields) => {
     }
   });
 };
+
+exports.handleSocialLogin = (id, name, done) => {
+  User.findOne({ id }).exec((err, existingUser) => {
+    if (existingUser) {
+      done(null, existingUser);
+    } else {
+      const user = new User({ id, name });
+      user.save().then(err => {
+        done(null, user);
+      });
+    }
+  });
+}
