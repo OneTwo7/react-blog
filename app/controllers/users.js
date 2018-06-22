@@ -14,6 +14,13 @@ exports.getUsers = (req, res) => {
 
 exports.createUser = (req, res) => {
   const { email, name, password } = req.body;
+
+  if (email.length < 6 || password.length < 6) {
+    return res.status(400).send({
+      reason: 'Email/Password should be at least 6 characters long!'
+    });
+  }
+
   const salt = encrypt.createSalt();
   const pwd_hash = encrypt.hashPwd(salt, password);
 
@@ -22,10 +29,9 @@ exports.createUser = (req, res) => {
   User.create(data, (err, user) => {
     if (!hasError(err, res)) {
       req.logIn(user, (err) => {
-        if (err) {
-          return next(err);
+        if (!hasError(err)) {
+          res.send(prepareUser(user));
         }
-        res.send(prepareUser(user));
       });
     }
   });

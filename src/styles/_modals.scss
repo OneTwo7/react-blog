@@ -28,6 +28,11 @@
   .close {
     line-height: 3.125rem;
   }
+  .form-group {
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
 }
 
 #preview-modal {
@@ -40,5 +45,16 @@
       border-radius: .3rem;
       width: 100%;
     }
+  }
+}
+
+#google-btn {
+  display: inline-block;
+  color: $white;
+  background-color: $blue;
+  padding: .5rem .75rem;
+  border-radius: .25rem;
+  &:hover {
+    text-decoration: none;
   }
 }

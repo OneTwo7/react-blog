@@ -31,6 +31,10 @@ exports.logoutUser = (req, res) => {
   res.redirect('/');
 };
 
+exports.redirect = (req, res) => {
+  res.redirect('/');
+};
+
 exports.uploadPictures = (res, files, pictureFields) => {
   return new Promise((resolve, reject) => {
     if (!pictureFields) {

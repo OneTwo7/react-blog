@@ -19,7 +19,7 @@ class Header extends Component {
         name: '',
         password_confirmation: ''
       },
-      error: false
+      errors: {}
     };
 
     this.onChange = this.onChange.bind(this);
@@ -29,7 +29,7 @@ class Header extends Component {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.signup = this.signup.bind(this);
     this.setDefault = this.setDefault.bind(this);
-    this.validatePassword = this.validatePassword.bind(this);
+    this.validate = this.validate.bind(this);
   }
 
   componentDidMount () {
@@ -37,7 +37,7 @@ class Header extends Component {
     $('#login-modal').on('shown.bs.modal', () => {
       $('input[type="email"]:first').focus();
     });
-    $('#signup-password_confirmation').on('input', this.validatePassword);
+    $('#list-signup input').on('input', this.validate);
   }
 
   onChange (event) {
@@ -49,7 +49,7 @@ class Header extends Component {
 
   onKeyDown (event) {
     if (event.keyCode === 13) {
-      if (event.target.id.indexOf('login') !== -1) {
+      if (event.target.id.includes('login')) {
         this.login();
       } else {
         this.signup();
@@ -57,14 +57,23 @@ class Header extends Component {
     }
   }
 
-  validatePassword (event) {
+  validate (event) {
     this.onChange(event);
-    const { password, password_confirmation } = this.state.auth;
-    if (password !== password_confirmation) {
-      this.setState({ error: true });
+    const { name: inputName } = event.target;
+    const { errors } = this.state;
+    const { email, name, password, password_confirmation } = this.state.auth;
+    let error;
+    if (inputName === 'email') {
+      error = email.length < 6;
+    } else if (inputName === 'name') {
+      error = !name.length;
+    } else if (inputName === 'password') {
+      error = password.length < 6;
     } else {
-      this.setState({ error: false });
+      error = password !== password_confirmation;
     }
+    errors[inputName] = error;
+    this.setState({ errors });
   }
 
   login () {
@@ -86,6 +95,15 @@ class Header extends Component {
     const { email, name, password, password_confirmation } = this.state.auth;
     if (!email || !name || !password) {
       notifications.showErrorMessage('You must fill in all inputs!');
+      return;
+    }
+    if (email.length < 6) {
+      notifications.showErrorMessage('Email should be at least 6 characters!');
+      return;
+    }
+    if (password.length < 6) {
+      notifications
+      .showErrorMessage('Password should be at least 6 characters!');
       return;
     }
     if (password !== password_confirmation) {
@@ -171,7 +189,7 @@ class Header extends Component {
   }
 
   render () {
-    const { auth, error } = this.state;
+    const { auth, errors } = this.state;
 
     return (
       <header className="navbar navbar-expand-md navbar-dark bg-primary">
@@ -210,7 +228,7 @@ class Header extends Component {
             login={this.login}
             signup={this.signup}
             onFocus={this.onFocus}
-            error={error}
+            errors={errors}
           />
         </nav>
       </header>

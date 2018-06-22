@@ -2,7 +2,7 @@ import React from 'react';
 import Input from './Input';
 import PropTypes from 'prop-types';
 
-const LoginModal = ({ onChange, onKeyDown, auth, login, signup, error }) => (
+const LoginModal = ({ onChange, onKeyDown, auth, login, signup, errors }) => (
   <div
     className="modal fade"
     id="login-modal"
@@ -51,6 +51,10 @@ const LoginModal = ({ onChange, onKeyDown, auth, login, signup, error }) => (
             aria-labelledby="modal-login-list"
           >
             <div className="modal-body">
+              <a href="/auth/google" id="google-btn">
+                Login with Google
+              </a>
+              <hr />
               <form>
                 <Input
                   id="login-email"
@@ -105,6 +109,7 @@ const LoginModal = ({ onChange, onKeyDown, auth, login, signup, error }) => (
                   onChange={onChange}
                   onKeyDown={onKeyDown}
                   label="Email"
+                  error={errors.email}
                 />
                 <Input
                   id="signup-name"
@@ -114,6 +119,7 @@ const LoginModal = ({ onChange, onKeyDown, auth, login, signup, error }) => (
                   onChange={onChange}
                   onKeyDown={onKeyDown}
                   label="Name"
+                  error={errors.name}
                 />
                 <Input
                   id="signup-password"
@@ -123,6 +129,7 @@ const LoginModal = ({ onChange, onKeyDown, auth, login, signup, error }) => (
                   onChange={onChange}
                   onKeyDown={onKeyDown}
                   label="Password"
+                  error={errors.password}
                 />
                 <Input
                   id="signup-password_confirmation"
@@ -132,7 +139,7 @@ const LoginModal = ({ onChange, onKeyDown, auth, login, signup, error }) => (
                   onChange={onChange}
                   onKeyDown={onKeyDown}
                   label="Password Confirmation"
-                  error={error}
+                  error={errors.password_confirmation}
                 />
               </form>
             </div>
@@ -165,7 +172,7 @@ LoginModal.propTypes = {
   auth: PropTypes.object.isRequired,
   login: PropTypes.func.isRequired,
   signup: PropTypes.func.isRequired,
-  error: PropTypes.bool.isRequired
+  errors: PropTypes.object.isRequired
 };
 
 export default LoginModal;

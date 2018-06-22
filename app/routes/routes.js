@@ -4,7 +4,7 @@ const passport = require('passport');
 const userRoutes = require('./users');
 const postRoutes = require('./posts');
 const commentRoutes = require('./comments');
-const { sendUser, logoutUser } = require('../utils/helpers');
+const { sendUser, logoutUser, redirect } = require('../utils/helpers');
 
 module.exports = (app) => {
 
@@ -17,6 +17,17 @@ module.exports = (app) => {
   router.use('/api/posts/:id/comments', commentRoutes);
 
   router.post('/api/login', passport.authenticate('local'), sendUser);
+
+  router.get(
+    '/auth/google',
+    passport.authenticate('google', { scope: ['profile'] })
+  );
+
+  router.get(
+    '/auth/google/callback',
+    passport.authenticate('google'),
+    redirect
+  );
 
   router.get('/api/logout', logoutUser);
 

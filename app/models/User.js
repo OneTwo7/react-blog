@@ -2,11 +2,12 @@ const mongoose = require('mongoose');
 const encrypt = require('../utils/encrypt');
 
 const userSchema = mongoose.Schema({
-  email:    { type: String, required: '{PATH} is required!', unique: true },
-  name:     { type: String, required: '{PATH} is required!' },
-  salt:     { type: String, required: '{PATH} is required!' },
-  pwd_hash: { type: String, required: '{PATH} is required!' },
-  roles:    [String]
+  id: String,
+  email: { type: String, trim: true, index: true, unique: true, sparse: true },
+  name: { type: String, required: '{PATH} is required!' },
+  salt: String,
+  pwd_hash: String,
+  roles: [String]
 });
 
 userSchema.methods = {
@@ -14,7 +15,7 @@ userSchema.methods = {
     return encrypt.hashPwd(this.salt, passwordToMatch) === this.pwd_hash;
   },
   hasRole: function (role) {
-    return this.roles.indexOf(role) !== -1;
+    return this.roles.includes(role);
   }
 };
 
