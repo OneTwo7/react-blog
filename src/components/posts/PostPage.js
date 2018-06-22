@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getRecommended } from '../../utils/selectors';
+import { setHeight, clipImage, reclipImages} from '../../utils/previewHelpers';
 import Post from './Post';
 import RecommendedPosts from './RecommendedPosts';
 import Comments from '../comments/Comments';
@@ -18,6 +19,7 @@ class PostPage extends Component {
     if (content) {
       this.insertContent(content, pictures);
     }
+    $(window).resize(reclipImages);
   }
 
   componentWillReceiveProps (nextProps) {
@@ -28,6 +30,11 @@ class PostPage extends Component {
 
   componentDidUpdate () {
     PR.prettyPrint();
+    setHeight();
+  }
+
+  conponentWillUnmount () {
+    $(window).off('resize', reclipImages);
   }
 
   insertContent (postContent, pictures) {
@@ -57,13 +64,20 @@ class PostPage extends Component {
     $('#post-content').html(result);
   }
 
+  onImageLoad (event) {
+    clipImage(event.target);
+  }
+
   render () {
     const { author, post, recommended } = this.props;
 
     return (
       <div className="row">
         <Post author={author} post={post} />
-        <RecommendedPosts recommended={recommended} />
+        <RecommendedPosts
+          recommended={recommended}
+          onLoad={this.onImageLoad}
+        />
         <Comments postId={post._id} />
       </div>
     );

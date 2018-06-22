@@ -2,7 +2,7 @@ import React from 'react';
 import RecommendedPost from './RecommendedPost';
 import PropTypes from 'prop-types';
 
-const RecommendedPosts = ({ recommended }) => (
+const RecommendedPosts = ({ recommended, onLoad }) => (
   <section id="related-posts" className="col-md-10 offset-md-1">
     <div className="row">
       {
@@ -12,6 +12,7 @@ const RecommendedPosts = ({ recommended }) => (
             post={post}
             type={type}
             tag={tag}
+            onLoad={onLoad}
           />
         ))
       }
@@ -20,7 +21,8 @@ const RecommendedPosts = ({ recommended }) => (
 );
 
 RecommendedPosts.propTypes = {
-  recommended: PropTypes.array.isRequired
+  recommended: PropTypes.array.isRequired,
+  onLoad: PropTypes.func.isRequired
 };
 
 export default RecommendedPosts;
