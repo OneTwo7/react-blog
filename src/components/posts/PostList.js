@@ -9,7 +9,7 @@ const PostList = ({ posts, onDeleteClick, onLoad }) => (
         <PostPreview
           key={idx}
           post={post}
-          onDeleteClick={onDeleteClick}
+          onClick={onDeleteClick}
           onLoad={onLoad}
         />
       ))
