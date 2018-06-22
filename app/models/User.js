@@ -3,7 +3,7 @@ const encrypt = require('../utils/encrypt');
 
 const userSchema = mongoose.Schema({
   id: String,
-  email: { type: String, trim: true, index: true, unique: true, sparse: true },
+  email: { type: String, trim: true },
   name: { type: String, required: '{PATH} is required!' },
   salt: String,
   pwd_hash: String,

@@ -29,6 +29,22 @@ module.exports = (app) => {
     redirect
   );
 
+  router.get('/auth/facebook', passport.authenticate('facebook'));
+
+  router.get(
+    '/auth/facebook/callback',
+    passport.authenticate('facebook'),
+    redirect
+  );
+
+  router.get('/auth/vk', passport.authenticate('vkontakte'));
+
+  router.get(
+    '/auth/vk/callback',
+    passport.authenticate('vkontakte'),
+    redirect
+  );
+
   router.get('/api/logout', logoutUser);
 
   router.get('/api/current_user', sendUser);

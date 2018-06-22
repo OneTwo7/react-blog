@@ -40,6 +40,16 @@ class Header extends Component {
     $('#list-signup input').on('input', this.validate);
   }
 
+  componentWillReceiveProps (nextProps) {
+    const { auth: nextAuth } = nextProps;
+    if (nextAuth && nextAuth._id) {
+      const { auth } = this.props;
+      if (!auth || nextAuth._id !== auth._id) {
+        notifications.showSuccessMessage('You are now logged in!');
+      }
+    }
+  }
+
   onChange (event) {
     const name = event.target.name;
     const auth = this.state.auth;
@@ -85,7 +95,6 @@ class Header extends Component {
     this.props.actions.login(email.toLowerCase(), password).then(() => {
       $('#login-modal').modal('hide');
       this.setDefault();
-      notifications.showSuccessMessage('You are now logged in!');
     }).catch(error => {
       notifications.showErrorMessage('Invalid email/password combination!');
     });

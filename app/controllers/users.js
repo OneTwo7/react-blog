@@ -21,18 +21,28 @@ exports.createUser = (req, res) => {
     });
   }
 
-  const salt = encrypt.createSalt();
-  const pwd_hash = encrypt.hashPwd(salt, password);
-
-  const data = { email, name, salt, pwd_hash };
-
-  User.create(data, (err, user) => {
+  User.findOne({ email: email }).exec((err, user) => {
     if (!hasError(err, res)) {
-      req.logIn(user, (err) => {
-        if (!hasError(err)) {
-          res.send(prepareUser(user));
-        }
-      });
+      if (user) {
+        res.status(409).send({
+          reason: 'Duplicate email!'
+        });
+      } else {
+        const salt = encrypt.createSalt();
+        const pwd_hash = encrypt.hashPwd(salt, password);
+
+        const data = { email, name, salt, pwd_hash };
+
+        User.create(data, (err, user) => {
+          if (!hasError(err, res)) {
+            req.logIn(user, (err) => {
+              if (!hasError(err)) {
+                res.send(prepareUser(user));
+              }
+            });
+          }
+        });
+      }
     }
   });
 };

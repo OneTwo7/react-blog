@@ -48,13 +48,25 @@
   }
 }
 
-#google-btn {
-  display: inline-block;
-  color: $white;
-  background-color: $blue;
-  padding: .5rem .75rem;
-  border-radius: .25rem;
-  &:hover {
-    text-decoration: none;
+#social-login {
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid $light-grey;
+  display: flex;
+  flex-direction: column;
+  a {
+    text-align: center;
+    width: 12rem;
+    margin-top: 1rem;
+    color: $white;
+    background-color: $blue;
+    padding: .5rem .75rem;
+    border-radius: .25rem;
+    &:hover {
+      text-decoration: none;
+    }
+    &:first-child {
+      margin-top: 0;
+    }
   }
 }

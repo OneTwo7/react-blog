@@ -51,10 +51,17 @@ const LoginModal = ({ onChange, onKeyDown, auth, login, signup, errors }) => (
             aria-labelledby="modal-login-list"
           >
             <div className="modal-body">
-              <a href="/auth/google" id="google-btn">
-                Login with Google
-              </a>
-              <hr />
+              <div id="social-login">
+                <a href="/auth/google" id="google-btn">
+                  Login with Google
+                </a>
+                <a href="/auth/facebook" id="facebook-btn">
+                  Login with Facebook
+                </a>
+                <a href="/auth/vk" id="vk-btn">
+                  Login with VK
+                </a>
+              </div>
               <form>
                 <Input
                   id="login-email"
