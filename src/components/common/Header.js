@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/authActions';
 import { createUser } from '../../actions/userActions';
 import { Link } from 'react-router-dom';
-import LoginModal from './LoginModal';
+import LoginModal from './login/LoginModal';
 import * as notifications from '../../utils/notifications';
 import PropTypes from 'prop-types';
 
@@ -34,15 +34,17 @@ class Header extends Component {
 
   componentDidMount () {
     this.props.actions.getCurrentUser();
-    $('#login-modal').on('shown.bs.modal', () => {
-      $('input[type="email"]:first').focus();
+    $('#modal-login-list, #modal-signup-list').on('shown.bs.tab', (e) => {
+      const paneId = $(e.target).attr('href');
+      $(`${paneId} input[type="email"]`).focus();
     });
     $('#list-signup input').on('input', this.validate);
   }
 
-  componentWillReceiveProps () {
+  componentWillReceiveProps (nextProps) {
     const { auth } = this.props;
-    if (!auth) {
+    const { auth: nextAuth } = nextProps;
+    if (!auth && nextAuth._id) {
       notifications.showSuccessMessage('You are logged in!');
     }
   }
