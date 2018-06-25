@@ -88,7 +88,9 @@ class Comments extends Component {
     if (!(auth && auth._id)) {
       $('#login-modal').modal('show');
     } else {
-      comment.author = auth._id;
+      if (!comment.author) {
+        comment.author = auth._id;
+      }
       this.props.actions.saveComment(comment).then(() => {
         showSuccessMessage('Done!');
       }).catch(error => {
@@ -131,7 +133,7 @@ class Comments extends Component {
   }
 
   render () {
-    const { count } = this.props;
+    const { auth, comments, usersById, count } = this.props;
 
     return (
       <section id="comments" className="col-md-6 offset-md-3">
@@ -144,10 +146,11 @@ class Comments extends Component {
           cancelEdit={this.cancelEdit}
         />
         <CommentsList
-          comments={this.props.comments}
-          users={this.props.usersById}
-          onEditClick={this.onEditClick}
-          onDeleteClick={this.onDeleteClick}
+          auth={auth}
+          comments={comments}
+          users={usersById}
+          onEdit={this.onEditClick}
+          onDelete={this.onDeleteClick}
         />
         <ConfirmationModal confirm={this.confirm} />
       </section>
@@ -174,8 +177,8 @@ const mapStateToProps = (state) => {
   }
 
   return {
-    comments,
     auth,
+    comments,
     usersById,
     count
   };

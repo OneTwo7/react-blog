@@ -94,6 +94,7 @@ class HomePage extends Component {
     return [
       <PostList
         key="post-list"
+        auth={this.props.auth}
         posts={posts}
         onDeleteClick={this.onDeleteClick}
         onLoad={this.onImageLoad}
@@ -104,16 +105,18 @@ class HomePage extends Component {
 }
 
 HomePage.propTypes = {
+  auth: PropTypes.object,
   posts: PropTypes.array,
   postsLength: PropTypes.number.isRequired,
   actions: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => {
-  const { posts } = state;
+  const { posts, auth } = state;
   const postsLength = posts.length;
 
   return {
+    auth,
     posts,
     postsLength
   };

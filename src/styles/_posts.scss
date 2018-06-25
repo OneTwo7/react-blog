@@ -2,7 +2,8 @@ $border-grey: 1px solid $light-grey;
 
 .post-wrapper {
   padding-top: .5rem;
-  padding-bottom: .5rem;
+  padding-bottom: 2rem;
+  margin-bottom: 1rem;
   &:hover .post-controls {
     visibility: visible;
   }
@@ -67,6 +68,7 @@ $border-grey: 1px solid $light-grey;
 
 .post-controls {
   visibility: hidden;
+  position: absolute;
   margin-left: 1rem;
   .btn-link {
     border: none;
@@ -82,6 +84,7 @@ $border-grey: 1px solid $light-grey;
 
 @media (min-width: 768px) {
   .post-wrapper {
-    padding: .5rem;
+    padding: .5rem .5rem 2rem .5rem;
+    margin-bottom: 0;
   }
 }

@@ -1,12 +1,13 @@
 const router = require('express').Router({ mergeParams: true });
 const comments = require('../controllers/comments');
+const { requiresLogin } = require('../../utils/auth');
 
 router.get('/', comments.getCommentsByPostId);
 
-router.post('/', comments.createComment);
+router.post('/', requiresLogin, comments.createComment);
 
-router.put('/:commentId', comments.updateComment);
+router.put('/:commentId', requiresLogin, comments.updateComment);
 
-router.delete('/:commentId', comments.deleteComment);
+router.delete('/:commentId', requiresLogin, comments.deleteComment);
 
 module.exports = router;

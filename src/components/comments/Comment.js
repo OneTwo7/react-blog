@@ -2,43 +2,52 @@ import React from 'react';
 import { fromNow } from '../../utils/formatDate';
 import PropTypes from 'prop-types';
 
-const Comment = ({ comment, users, onEditClick, onDeleteClick }) => (
-  <div className="comment">
-    <div className="comment-wrapper">
-      <div className="comment-top">
-        <div>
-          <div>{users[comment.author].name}</div>
-          <div className="timestamp">{fromNow(comment.created_at)}</div>
+const Comment = ({ auth, comment, users, onEdit, onDelete }) => {
+  const { _id, author, content, created_at } = comment;
+  const isAdmin = auth.roles && auth.roles.includes('admin');
+
+  return (
+    <div className="comment">
+      <div className="comment-wrapper">
+        <div className="comment-top">
+          <div>
+            <div>{users[author].name}</div>
+            <div className="timestamp">{fromNow(created_at)}</div>
+          </div>
+          {
+            auth && (isAdmin || auth._id === author) &&
+            <div className="comment-controls">
+              <button
+                id={`edit-${_id}`}
+                type="button"
+                onClick={onEdit}
+                className="btn btn-link"
+              >
+                edit
+              </button>
+              <button
+                id={`delete-${_id}`}
+                type="button"
+                onClick={onDelete}
+                className="btn btn-link"
+              >
+                delete
+              </button>
+            </div>
+          }
         </div>
-        <div className="comment-controls">
-          <button
-            id={`edit-${comment._id}`}
-            type="button"
-            onClick={onEditClick}
-            className="btn btn-link"
-          >
-            edit
-          </button>
-          <button
-            id={`delete-${comment._id}`}
-            type="button"
-            onClick={onDeleteClick}
-            className="btn btn-link"
-          >
-            delete
-          </button>
-        </div>
+        <div className="comment-content">{content}</div>
       </div>
-      <div className="comment-content">{comment.content}</div>
     </div>
-  </div>
-);
+  );
+};
 
 Comment.propTypes = {
+  auth: PropTypes.object,
   comment: PropTypes.object,
   users: PropTypes.object,
-  onEditClick: PropTypes.func.isRequired,
-  onDeleteClick: PropTypes.func.isRequired
+  onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired
 };
 
 export default Comment;

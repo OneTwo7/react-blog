@@ -1,5 +1,6 @@
 const Comment = require('mongoose').model('Comment');
 const { hasError } = require('../utils/helpers');
+const { correctUser } = require('../utils/auth');
 
 exports.getCommentsByPostId = (req, res) => {
   Comment.find({ post_id: req.params.id }).exec(function (err, collection) {
@@ -21,23 +22,30 @@ exports.createComment = (req, res) => {
 };
 
 exports.updateComment = (req, res) => {
-  const { content } = req.body;
+  const { author, content } = req.body;
 
-  Comment.findByIdAndUpdate(req.params.commentId, { $set: { content } }, {
-    new: true
-  }, (err, comment) => {
-    if (!hasError(err, res)) {
-      res.send(comment);
-    }
-  });
+  if (correctUser(req, res, author)) {
+    Comment.findByIdAndUpdate(req.params.commentId, { $set: { content } }, {
+      new: true
+    }, (err, comment) => {
+      if (!hasError(err, res)) {
+        res.send(comment);
+      }
+    });
+  }
 };
 
 exports.deleteComment = (req, res) => {
-  Comment.remove({ _id: req.params.commentId }, (err) => {
+  Comment.findOne({ _id: req.params.commentId }).exec((err, comment) => {
     if (!hasError(err, res)) {
-
-      res.status(200);
-      res.end();
+      if (correctUser(req, res, comment.author)) {
+        comment.remove((err) => {
+          if (!hasError(err, res)) {
+            res.status(200);
+            res.end();
+          }
+        })
+      }
     }
   });
 };

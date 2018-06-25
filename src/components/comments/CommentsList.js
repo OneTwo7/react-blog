@@ -2,23 +2,25 @@ import React from 'react';
 import Comment from './Comment';
 import PropTypes from 'prop-types';
 
-const CommentsList = ({ comments, users, onEditClick, onDeleteClick }) => {
+const CommentsList = ({ auth, comments, users, onEdit, onDelete }) => {
   return comments.map(comment => (
     <Comment
       key={comment._id}
+      auth={auth}
       comment={comment}
       users={users}
-      onEditClick={onEditClick}
-      onDeleteClick={onDeleteClick}
+      onEdit={onEdit}
+      onDelete={onDelete}
     />
   ));
 };
 
 CommentsList.propTypes = {
+  auth: PropTypes.object,
   comments: PropTypes.array,
   users: PropTypes.object,
-  onEditClick: PropTypes.func.isRequired,
-  onDeleteClick: PropTypes.func.isRequired
+  onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired
 };
 
 export default CommentsList;
