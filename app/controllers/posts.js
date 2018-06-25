@@ -85,10 +85,10 @@ exports.updatePost = (req, res) => {
 };
 
 exports.deletePost = (req, res) => {
-  const post_id = req.params.id;
-  Post.remove({ _id: post_id }, (err) => {
+  const postId = req.params.id;
+  Post.remove({ _id: postId }, (err) => {
     if (!hasError(err, res)) {
-      Comment.remove({ post_id: post_id }, (err) => {
+      Comment.remove({ post_id: postId }, (err) => {
         if (!hasError(err, res)) {
           res.status(200);
           res.end();

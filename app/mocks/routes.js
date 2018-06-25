@@ -1,10 +1,10 @@
 const router = require('express').Router();
 const path = require('path');
 const passport = require('passport');
-const userRoutes = require('./users');
-const postRoutes = require('./posts');
-const commentRoutes = require('./comments');
-const authRoutes = require('./auth');
+const userRoutes = require('../routes/users');
+const postRoutes = require('./routes/posts');
+const commentRoutes = require('./routes/comments');
+const authRoutes = require('../routes/auth');
 const { sendUser, logoutUser } = require('../utils/helpers');
 
 module.exports = (app) => {

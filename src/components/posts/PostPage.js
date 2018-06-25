@@ -20,6 +20,7 @@ class PostPage extends Component {
       this.insertContent(content, pictures);
     }
     $(window).resize(reclipImages);
+    setHeight();
   }
 
   componentWillReceiveProps (nextProps) {
@@ -103,6 +104,7 @@ const mapStateToProps = (state, ownProps) => {
   const postId = ownProps.match.params.id;
 
   const { users } = state;
+
   let posts = [...state.posts];
   let recommended = [];
   let author = {};

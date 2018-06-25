@@ -6,6 +6,7 @@ const port = 3000;
 const app = express();
 
 const env = process.env.NODE_ENV || 'development';
+const mode = process.env.MODE || 'standard';
 
 app.use(express.static(__dirname + '/src'));
 
@@ -19,7 +20,11 @@ require('./app/services/passport');
 
 require('./app/config/express')(app, keys);
 
-require('./app/routes/routes')(app);
+if (mode === 'demo') {
+  require('./app/mocks/routes')(app);
+} else {
+  require('./app/routes/routes')(app);
+}
 
 app.listen(port, err => {
   if (err) {

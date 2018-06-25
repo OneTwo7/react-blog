@@ -69,6 +69,8 @@ $border-grey: 1px solid $light-grey;
   visibility: hidden;
   margin-left: 1rem;
   .btn-link {
+    border: none;
+    margin-top: -1px;
     margin-left: .5rem;
   }
 }

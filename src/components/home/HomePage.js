@@ -27,6 +27,7 @@ class HomePage extends Component {
   }
 
   componentDidMount () {
+    setHeight();
     $(document).scroll(this.loadPosts);
     $(window).resize(reclipImages);
   }

@@ -4,7 +4,7 @@ import { formatTitle } from '../../utils/formatText';
 import PropTypes from 'prop-types';
 
 const RecommendedPost = ({ post, post: { pictures }, type, tag, onLoad }) => (
-  <div className="col-md-4">
+  <div className="col-md-4 offset-md-0 col-sm-10 offset-sm-1">
     <Link to={`/posts/${post._id}`} className="post-link">
       <div className="related-post">
         <div className="post-preview-top">
