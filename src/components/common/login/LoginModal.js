@@ -3,9 +3,7 @@ import LoginModalContainer from './LoginModalContainer';
 import ModalHeader from './ModalHeader';
 import ModalTab from './ModalTab';
 import ModalBody from './ModalBody';
-import SocialPane from './SocialPane';
-import LoginPane from './LoginPane';
-import SignupPane from './SignupPane';
+import ModalPane from './ModalPane';
 import PropTypes from 'prop-types';
 
 const LoginModal = (props) => (
@@ -16,9 +14,9 @@ const LoginModal = (props) => (
       <ModalTab />
     </ModalHeader>
     <ModalBody>
-      <SocialPane />
-      <LoginPane />
-      <SignupPane />
+      <ModalPane />
+      <ModalPane />
+      <ModalPane />
     </ModalBody>
   </LoginModalContainer>
 );

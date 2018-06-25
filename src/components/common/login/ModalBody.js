@@ -5,9 +5,12 @@ const ModalBody = (props) => {
   const { onChange, onKeyDown, auth, login, signup, errors } = props;
   const children = React.Children.map(props.children, (child, idx) => {
     if (idx === 0) {
-      return React.cloneElement(child);
+      return React.cloneElement(child, {
+        type: 'social'
+      });
     } else if (idx === 1) {
       return React.cloneElement(child, {
+        type: 'login',
         onChange,
         onKeyDown,
         auth,
@@ -15,6 +18,7 @@ const ModalBody = (props) => {
       });
     } else {
       return React.cloneElement(child, {
+        type: 'signup',
         onChange,
         onKeyDown,
         auth,
