@@ -5,6 +5,7 @@ import * as actions from '../../actions/postActions';
 import { showErrorMessage, showReason } from '../../utils/notifications';
 import PostInputs from './PostInputs';
 import PreviewModal from '../common/PreviewModal';
+import Tags from '../common/Tags';
 import PropTypes from 'prop-types';
 
 import FIELDS from './formFields';
@@ -27,6 +28,7 @@ class PostForm extends Component {
       mainPicture: {
         field: ''
       },
+      tags: [],
       errors: {}
     };
 
@@ -39,6 +41,12 @@ class PostForm extends Component {
     this.cancelClear = this.cancelClear.bind(this);
     this.preview = this.preview.bind(this);
     this.reselect = this.reselect.bind(this);
+    this.onTagKeyDown = this.onTagKeyDown.bind(this);
+    this.onTagClick = this.onTagClick.bind(this);
+  }
+
+  componentWillMount () {
+    this.prepareTags();
   }
 
   componentDidMount () {
@@ -50,11 +58,14 @@ class PostForm extends Component {
     if (this.props.post._id !== nextProps.post._id) {
       const { post, fields, savedPictures } = nextProps;
       const counter = Math.max(...fields.map(({ id }) => id.split('-')[1]));
+      const tags = post.tags.split(' ');
+      post.tags = '';
       this.setState({
         post:   Object.assign({}, post),
         fields: [...fields],
         fieldsCounter: counter + 1,
-        savedPictures: [...savedPictures]
+        savedPictures: [...savedPictures],
+        tags
       });
     }
     if (this.props.post.author !== nextProps.post.author) {
@@ -90,7 +101,13 @@ class PostForm extends Component {
       return;
     }
 
-    const { pictures, removedPictures, mainPicture } = this.state;
+    const { pictures, removedPictures, mainPicture, tags } = this.state;
+
+    if (post.tags) {
+      post.tags = `${tags.join(' ')} ${post.tags}`.trim();
+    } else {
+      post.tags = tags.join(' ').trim();
+    }
 
     const formData = new FormData();
 
@@ -149,6 +166,39 @@ class PostForm extends Component {
 
     this.setState({ errors });
     return formIsValid;
+  }
+
+  onTagKeyDown (event) {
+    const { keyCode, key } = event;
+    if (keyCode === 13 || keyCode === 32 || key === ',') {
+      event.preventDefault();
+      const { post, tags } = this.state;
+      const tag = post.tags;
+      if (!tags.includes(tag)) {
+        tags.push(tag);
+      }
+      post.tags = '';
+      this.setState({ post, tags });
+    }
+  }
+
+  onTagClick (event) {
+    const { post, tags } = this.state;
+    const idx = event.target.id.split('-')[1];
+    const tag = tags[idx];
+    tags.splice(idx, 1);
+    post.tags = tag;
+    this.setState({ post, tags });
+    $('#tags').focus();
+  }
+
+  prepareTags () {
+    const { post } = this.state;
+    if (post._id && post.tags) {
+      const tags = post.tags.split(' ');
+      post.tags = '';
+      this.setState({ post, tags });
+    }
   }
 
   // content fields
@@ -318,7 +368,7 @@ class PostForm extends Component {
   }
 
   render () {
-    const { post } = this.state;
+    const { post, tags } = this.state;
 
     return (
       <form>
@@ -333,8 +383,13 @@ class PostForm extends Component {
           preview={this.preview}
           reselect={this.reselect}
           onChange={this.onChange}
+          onTagKeyDown={this.onTagKeyDown}
           post={post}
           errors={this.state.errors}
+        />
+        <Tags
+          tags={tags}
+          onClick={this.onTagClick}
         />
         <input
           type="submit"

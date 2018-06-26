@@ -111,3 +111,10 @@
 #em-btn {
   font-style: italic;
 }
+
+form .post-tag {
+  background-color: $white;
+  &:hover {
+    background-color: #e2e6ea;
+  }
+}

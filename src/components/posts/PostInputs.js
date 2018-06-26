@@ -31,6 +31,7 @@ const PostInputs = (props) => {
           label={label}
           onChange={onChange}
           value={post[name]}
+          onKeyDown={name === 'tags' ? props.onTagKeyDown : null}
           error={errors[name]}
         />
       );
@@ -48,6 +49,7 @@ PostInputs.propTypes = {
   preview: PropTypes.func.isRequired,
   reselect: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
+  onTagKeyDown: PropTypes.func.isRequired,
   post: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
 };
