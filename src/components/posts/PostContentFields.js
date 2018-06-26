@@ -1,13 +1,22 @@
 import React from 'react';
 import PictureInput from './PictureInput';
-import { onPaste, handleKey } from '../../utils/editorHelpers';
+import {
+  onPaste, handleKey, attachTextControls, addElement
+} from '../../utils/editorHelpers';
+import PostContentControls from './PostContentControls';
+import { textControls, btnClass } from './controls';
 import PropTypes from 'prop-types';
 
 const PostContentFields = ({ fields, move, pictures, preview, reselect }) => (
   <div id="content" onPaste={onPaste} onKeyDown={handleKey}>
     {
       fields.map(({ type, id }) => (
-        <div key={id} id={id} className="field-wrapper">
+        <div
+          key={id}
+          id={id}
+          className="field-wrapper"
+          onFocus={attachTextControls}
+        >
           {
             type === 'img' ?
             <PictureInput

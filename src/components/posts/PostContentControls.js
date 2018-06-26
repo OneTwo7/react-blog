@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const PostContentControls = ({ id, controls, handlers }) => (
+const PostContentControls = ({ id, controls, handlers, btnClass }) => (
   <div id={id}>
     {
       controls.map(({ type, id, text }, idx) => (
@@ -10,7 +10,7 @@ const PostContentControls = ({ id, controls, handlers }) => (
           type="button"
           id={id}
           onClick={handlers[type]}
-          className="btn btn-light"
+          className={btnClass[type]}
         >
           {text}
         </button>
@@ -22,7 +22,8 @@ const PostContentControls = ({ id, controls, handlers }) => (
 PostContentControls.propTypes = {
   id: PropTypes.string.isRequired,
   controls: PropTypes.array.isRequired,
-  handlers: PropTypes.object.isRequired
+  handlers: PropTypes.object.isRequired,
+  btnClass: PropTypes.object.isRequired
 };
 
 export default PostContentControls;

@@ -2,7 +2,7 @@ import React from 'react';
 import PostContentFields from './PostContentFields';
 import PostContentControls from './PostContentControls';
 import { addElement } from '../../utils/editorHelpers';
-import { contentControls, clearControls } from './contentControls';
+import { textControls, contentControls, btnClass } from './controls';
 import PropTypes from 'prop-types';
 
 const PostContent = (props) => {
@@ -24,14 +24,16 @@ const PostContent = (props) => {
         reselect={props.reselect}
       />
       <PostContentControls
+        id="text-controls"
+        controls={textControls}
+        handlers={handlers}
+        btnClass={btnClass}
+      />
+      <PostContentControls
         id="content-controls"
         controls={contentControls}
         handlers={handlers}
-      />
-      <PostContentControls
-        id="clear-controls"
-        controls={clearControls}
-        handlers={handlers}
+        btnClass={btnClass}
       />
     </div>
   );

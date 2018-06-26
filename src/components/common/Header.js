@@ -25,7 +25,6 @@ class Header extends Component {
     this.onChange = this.onChange.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
-    this.renderContent = this.renderContent.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.signup = this.signup.bind(this);
     this.setDefault = this.setDefault.bind(this);
@@ -149,9 +148,7 @@ class Header extends Component {
     });
   }
 
-  renderContent () {
-    const { auth } = this.props;
-
+  renderLoginButton (auth) {
     if (!auth) {
       return;
     } else if (!auth._id) {
@@ -197,8 +194,22 @@ class Header extends Component {
     }
   }
 
+  renderNewPostButton (auth) {
+    if (auth && auth._id) {
+      return (
+        <li className="nav-item active">
+          <Link className="nav-link" to="/new_post">
+            New Post
+          </Link>
+        </li>
+      );
+    }
+    return null;
+  }
+
   render () {
     const { auth, errors } = this.state;
+    const { auth: user } = this.props;
 
     return (
       <header className="navbar navbar-expand-md navbar-dark bg-primary">
@@ -218,14 +229,10 @@ class Header extends Component {
 
           <div className="collapse navbar-collapse" id="navbarMenu">
             <ul className="navbar-nav mr-auto">
-              <li className="nav-item mr-auto active">
-                <Link className="nav-link" to="/new_post">
-                  New Post
-                </Link>
-              </li>
+              {this.renderNewPostButton(user)}
             </ul>
             <ul className="navbar-nav">
-              {this.renderContent()}
+              {this.renderLoginButton(user)}
             </ul>
           </div>
 

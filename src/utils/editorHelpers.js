@@ -192,3 +192,12 @@ export const change = (event) => {
     $label.text('Choose file');
   }
 };
+
+export const attachTextControls = (event) => {
+  if (event.target.className === 'text') {
+    const $textControls = $('#text-controls');
+    $textControls.detach();
+    $(event.currentTarget).find('.field-controls').prepend($textControls);
+    $('#text-controls').css('display', 'flex');
+  }
+};

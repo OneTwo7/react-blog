@@ -43,9 +43,6 @@ class PostForm extends Component {
 
   componentDidMount () {
     const { fields, pictures } = this.state;
-    $(document).scroll(this.fixContentControls);
-    $(window).resize(this.fixContentControls);
-    this.fixContentControls();
     this.insertContent(fields, pictures);
   }
 
@@ -70,30 +67,6 @@ class PostForm extends Component {
   componentDidUpdate () {
     const { fields, pictures } = this.state;
     this.insertContent(fields, pictures);
-    this.fixContentControls();
-  }
-
-  componentWillUnmount () {
-    this.unbindFixers();
-  }
-
-  fixContentControls () {
-    const $content = $('#content');
-    if (!$content.length) {
-      this.unbindFixers();
-    }
-    const $contentControls = $('#content-controls');
-    const limit = $content.offset().top + $content.outerHeight(true);
-    if ($(document).scrollTop() + $(window).height() - 100 < limit) {
-      $contentControls.addClass('fixed');
-    } else {
-      $contentControls.removeClass('fixed');
-    }
-  }
-
-  unbindFixers () {
-    $(document).off('scroll', this.fixContentControls);
-    $(window).off('resize', this.fixContentControls);
   }
 
   onChange (event) {
