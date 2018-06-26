@@ -173,7 +173,7 @@ const mapStateToProps = (state) => {
   const usersById = {};
 
   for (let i = 0, l = users.length; i < l; i++) {
-    usersById[users[i]._id] = users[i];
+    usersById[users[i]._id] = users[i].name;
   }
 
   return {

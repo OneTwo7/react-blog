@@ -3,12 +3,8 @@ const { prepareUser, hasError } = require('../utils/helpers');
 const encrypt = require('../utils/encrypt');
 
 exports.getUsers = (req, res) => {
-  User.find({}).exec(function (err, collection) {
-    const users = [];
-    collection.forEach(user => {
-      users.push(prepareUser(user));
-    })
-    res.send(users);
+  User.find({}, { name: 1 }).exec(function (err, collection) {
+    res.send(collection);
   });
 };
 

@@ -420,8 +420,9 @@ PostForm.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => {
+  const { auth, posts } = state;
   let post = {
-    author: state.auth ? state.auth._id : null,
+    author: auth ? auth._id : null,
     title: '',
     content: '',
     category: '',
@@ -430,7 +431,6 @@ const mapStateToProps = (state, ownProps) => {
   };
   let fields = [{ type: 'text',  id: 'field-0' }];
   let savedPictures = [];
-  const { posts } = state;
   const postId = ownProps.match.params.id;
 
   if (postId && posts.length > 0) {

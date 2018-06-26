@@ -11,7 +11,7 @@ const Comment = ({ auth, comment, users, onEdit, onDelete }) => {
       <div className="comment-wrapper">
         <div className="comment-top">
           <div>
-            <div>{users[author].name}</div>
+            <div>{users[author]}</div>
             <div className="timestamp">{fromNow(created_at)}</div>
           </div>
           {

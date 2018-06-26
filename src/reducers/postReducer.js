@@ -21,20 +21,6 @@ const postReducer = (state = [], action) => {
       return posts;
     case types.DELETE_POST_SUCCESS:
       return [...state.filter(post => post._id !== action.id)];
-    case types.CREATE_COMMENT_SUCCESS:
-      posts = [...state];
-      idx = findPostIndex(posts, action.comment.post_id);
-      post = Object.assign({}, posts[idx]);
-      post.comments++;
-      posts.splice(idx, 1, post);
-      return posts;
-    case types.DELETE_COMMENT_SUCCESS:
-      posts = [...state];
-      idx = findPostIndex(posts, action.postId);
-      post = Object.assign({}, posts[idx]);
-      post.comments--;
-      posts.splice(idx, 1, post);
-      return posts;
     default:
       return state;
   }

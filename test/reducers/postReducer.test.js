@@ -1,6 +1,5 @@
 import test from 'ava';
 import * as types from '../../src/constants';
-import * as actions from '../../src/actions/postActions';
 import postReducer from '../../src/reducers/postReducer';
 
 test('load posts', t => {
@@ -17,13 +16,13 @@ test('load posts', t => {
 });
 
 const initialState = [
-  { id: 2, title: 'B' },
-  { id: 1, title: 'A' }
+  { _id: 2, title: 'B' },
+  { _id: 1, title: 'A' }
 ];
 
 test('create post', t => {
   const post = {
-    id: 3,
+    _id: 3,
     title: 'C'
   };
   const action = {
@@ -32,9 +31,9 @@ test('create post', t => {
   };
 
   const expectedState = [
-    { id: 3, title: 'C' },
-    { id: 2, title: 'B' },
-    { id: 1, title: 'A' }
+    { _id: 3, title: 'C' },
+    { _id: 2, title: 'B' },
+    { _id: 1, title: 'A' }
   ];
   const newState = postReducer(initialState, action);
 
@@ -43,7 +42,7 @@ test('create post', t => {
 
 test('update post', t => {
   const post = {
-    id: 1,
+    _id: 1,
     title: 'AAA'
   };
   const action = {
@@ -52,8 +51,8 @@ test('update post', t => {
   };
 
   const expectedState = [
-    { id: 2, title: 'B' },
-    { id: 1, title: 'AAA' }
+    { _id: 2, title: 'B' },
+    { _id: 1, title: 'AAA' }
   ];
   const newState = postReducer(initialState, action);
 
@@ -66,7 +65,7 @@ test('delete post', t => {
     id: 1
   };
 
-  const expectedState = [{ id: 2, title: 'B' }];
+  const expectedState = [{ _id: 2, title: 'B' }];
   const newState = postReducer(initialState, action);
 
   t.deepEqual(newState, expectedState);
