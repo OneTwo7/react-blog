@@ -36,6 +36,7 @@ module.exports = exports = {
           'postcss-loader'
         ]
       },
+      { test: /\.ico$/, loader: 'url-loader?name=img/[name].[ext]' },
       { test: /\.(woff2?|svg)$/, loader: 'url-loader?limit=10000' },
       { test: /\.(ttf|eot)$/, loader: 'file-loader' }
     ]

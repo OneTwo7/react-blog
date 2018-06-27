@@ -26,7 +26,7 @@ webpack(webpackConfig).run((err, stats) => {
   console.log(`Webpack stats: ${stats}`);
 
   console.log(
-    '\nYour app has been compiled in production mode and written to /dist.' +
+    '\nYour app has been compiled in production mode and written to /dist. ' +
     'It\'s ready to roll!\n'
   );
 

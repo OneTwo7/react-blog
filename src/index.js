@@ -10,6 +10,7 @@ import { loadPosts } from './actions/postActions';
 import { loadUsers } from './actions/userActions';
 import 'react-notifications/lib/notifications.css';
 import './styles/styles.scss';
+import './img/favicon.ico';
 
 const store = configureStore();
 store.dispatch(loadPosts());
