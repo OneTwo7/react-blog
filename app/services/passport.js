@@ -24,7 +24,8 @@ module.exports = (keys) => {
   passport.use(new GoogleStrategy({
     clientID: keys.googleClientID,
     clientSecret: keys.googleClientSecret,
-    callbackURL: '/auth/google/callback'
+    callbackURL: '/auth/google/callback',
+    proxy: true
   }, (accessToken, refreshToken, profile, done) => {
     handleSocialLogin(profile.id, profile.displayName, done);
   }));
@@ -32,7 +33,8 @@ module.exports = (keys) => {
   passport.use(new GithubStrategy({
     clientID: keys.githubClientID,
     clientSecret: keys.githubClientSecret,
-    callbackURL: '/auth/github/callback'
+    callbackURL: '/auth/github/callback',
+    proxy: true
   }, (accessToken, refreshToken, profile, done) => {
     handleSocialLogin(profile.id, profile.displayName, done);
   }));
@@ -40,7 +42,8 @@ module.exports = (keys) => {
   passport.use(new VkStrategy({
     clientID: keys.vkClientID,
     clientSecret: keys.vkClientSecret,
-    callbackURL: '/auth/vk/callback'
+    callbackURL: '/auth/vk/callback',
+    proxy: true
   }, (accessToken, refreshToken, params, profile, done) => {
     handleSocialLogin(profile.id, profile.displayName, done);
   }));
