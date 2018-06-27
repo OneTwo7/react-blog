@@ -22,8 +22,20 @@ module.exports = exports = {
   ],
   module: {
     rules: [
-      { test: /\.js$/, include: path.join(__dirname, 'src'), loaders: ['babel-loader'] },
-      { test: /\.(s*)css$/, loaders: ['style-loader', 'css-loader', 'sass-loader','postcss-loader'] },
+      {
+        test: /\.js$/,
+        include: path.join(__dirname, 'src'),
+        loaders: ['babel-loader']
+      },
+      {
+        test: /\.(s*)css$/,
+        loaders: [
+          'style-loader',
+          'css-loader',
+          'sass-loader',
+          'postcss-loader'
+        ]
+      },
       { test: /\.(woff2?|svg)$/, loader: 'url-loader?limit=10000' },
       { test: /\.(ttf|eot)$/, loader: 'file-loader' }
     ]

@@ -1,14 +1,11 @@
 const express = require('express');
-
-const keys = require('./app/config/keys');
-
-const port = 3000;
+const path = require('path');
+const keys = require('./app/keys');
 const app = express();
 
+const PORT = process.env.PORT || 3000;
 const env = process.env.NODE_ENV || 'development';
 const mode = process.env.MODE || 'standard';
-
-app.use(express.static(__dirname + '/src'));
 
 require('./app/config/mongoose')(keys);
 
@@ -16,7 +13,7 @@ if (env === 'development') {
   require('./app/services/webpack.js')(app);
 }
 
-require('./app/services/passport');
+require('./app/services/passport')(keys);
 
 require('./app/config/express')(app, keys);
 
@@ -26,10 +23,18 @@ if (mode === 'demo') {
   require('./app/routes/routes')(app);
 }
 
-app.listen(port, err => {
-  if (err) {
-    console.error(err);
-    throw(err);
-  }
-  console.log(`Listening on port ${port}...`);
-});
+if (env === 'production') {
+  app.use(express.static('dist'));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  });
+} else {
+  app.use(express.static('src'));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src', 'index.html'));
+  });
+}
+
+app.listen(PORT);

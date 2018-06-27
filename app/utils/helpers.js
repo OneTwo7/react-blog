@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const User = require('mongoose').model('User');
+const { uploadsPath } = require('../keys');
 
 const prepareUser = ({ _id, email, name, roles }) => ({
   _id, email, name, roles
@@ -49,7 +50,7 @@ exports.uploadPictures = (res, files, pictureFields) => {
 
     for (let file of files) {
       const { originalname: name, path: tempPath, mimetype, size } = file;
-      const target = path.join(__dirname, '../..', 'src/img/uploads', name);
+      const target = path.join(uploadsPath, name);
 
       if (mimetype !== 'image/png' && mimetype !== 'image/jpeg') {
         fs.unlink(tempPath, err => {

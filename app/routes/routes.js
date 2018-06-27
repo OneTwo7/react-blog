@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const path = require('path');
 const passport = require('passport');
 const userRoutes = require('./users');
 const postRoutes = require('./posts');
@@ -24,9 +23,5 @@ module.exports = (app) => {
   router.get('/api/logout', logoutUser);
 
   router.get('/api/current_user', sendUser);
-
-  router.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../src/index.html'));
-  });
 
 };

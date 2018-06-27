@@ -9,7 +9,7 @@ import App from './components/App';
 import { loadPosts } from './actions/postActions';
 import { loadUsers } from './actions/userActions';
 import 'react-notifications/lib/notifications.css';
-import './styles/custom.scss';
+import './styles/styles.scss';
 
 const store = configureStore();
 store.dispatch(loadPosts());

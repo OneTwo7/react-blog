@@ -1,13 +1,10 @@
 const router = require('express').Router();
 const posts  = require('../controllers/posts');
 const { requiresAdmin } = require('../utils/auth');
+const { uploadsPath } = require('../keys');
 
 const multer = require('multer');
-const path = require('path');
-
-const upload = multer({
-  dest: path.join(__dirname, '../..', 'src/img/uploads')
-});
+const upload = multer({ dest: uploadsPath });
 
 router.get('/', posts.getPosts);
 
