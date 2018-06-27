@@ -18,10 +18,9 @@
     "clean-dist": "npm run remove-dist && mkdir dist",
     "remove-dist": "node_modules/.bin/rimraf ./dist",
     "build:html": "node tools/buildHtml.js",
-    "extractImg": "cp -R src/img dist/",
-    "prebuild": "npm-run-all clean-dist test lint build:html extractImg",
+    "prebuild": "npm-run-all clean-dist test lint build:html",
     "build": "node tools/build.js",
-    "server:build": "NODE_ENV=production MODE=build-test node server.js",
+    "server:build": "NODE_ENV=production node server.js",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install && npm run build"
   },
   "ava": {
