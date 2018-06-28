@@ -201,3 +201,9 @@ export const attachTextControls = (event) => {
     $('#text-controls').css('display', 'flex');
   }
 };
+
+export const detachTextControls = () => {
+  const $textControls = $('#text-controls');
+  $textControls.css('display', 'none').detach();
+  $('form').eq(0).append($textControls);
+};

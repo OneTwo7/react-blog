@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/postActions';
 import { showErrorMessage, showReason } from '../../utils/notifications';
+import { detachTextControls } from '../../utils/editorHelpers';
 import PostInputs from './PostInputs';
 import PreviewModal from '../common/PreviewModal';
 import Tags from '../common/Tags';
@@ -94,14 +95,28 @@ class PostForm extends Component {
 
     this.grabContent();
 
-    post.content = JSON.stringify(fields);
+    const { pictures } = this.state;
+
+    const postFields = [];
+    fields.forEach(field => {
+      const { id, type } = field;
+      if (type === 'img') {
+        if (pictures[id]) {
+          postFields.push(field);
+        }
+      } else {
+        postFields.push(field);
+      }
+    });
+
+    post.content = JSON.stringify(postFields);
     this.setState({ post });
 
     if (!this.postFormIsValid()) {
       return;
     }
 
-    const { pictures, removedPictures, mainPicture, tags } = this.state;
+    const { removedPictures, mainPicture, tags } = this.state;
 
     if (post.tags) {
       post.tags = `${tags.join(' ')} ${post.tags}`.trim();
@@ -208,6 +223,7 @@ class PostForm extends Component {
     const idx = this.getFieldIndex(event, fields);
     const type = this.getFieldType(event);
     const field = `field-${idx}`;
+    const { type: fieldType } = fields[idx];
     switch (type) {
       case 'swap-up':
         fields[idx] = fields.splice(idx - 1, 1, fields[idx])[0];
@@ -221,13 +237,18 @@ class PostForm extends Component {
       default:
         return;
     }
-    if (type === 'remove-btn' && savedPictures.includes(field)) {
-      this.setState({
-        savedPictures: savedPictures.filter(sField => sField !== field),
-        removedPictures: [...removedPictures, field],
-        fields
-      });
-      return;
+    if (type === 'remove-btn') {
+      if (fieldType === 'text') {
+        detachTextControls();
+      }
+      if (savedPictures.includes(field)) {
+        this.setState({
+          savedPictures: savedPictures.filter(sField => sField !== field),
+          removedPictures: [...removedPictures, field],
+          fields
+        });
+        return;
+      }
     }
     this.setState({ fields });
   }
@@ -335,12 +356,12 @@ class PostForm extends Component {
       if (field.type !== 'img') {
         field.content = $(`#${fieldId} pre`).eq(0).html();
       } else {
-        if (!mainPicture.field) {
-          mainPicture.field = fieldId;
-        }
         const $pic = $(`#img-${fieldId}`).eq(0);
         const files = $pic.prop('files');
         if (files && files[0]) {
+          if (!mainPicture.field) {
+            mainPicture.field = fieldId;
+          }
           pictures[fieldId] = files;
         }
         field.content = $(`#img-${fieldId}-sign`).val();
