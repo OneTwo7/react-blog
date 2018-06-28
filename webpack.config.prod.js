@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const extractCSS = new ExtractTextPlugin('notifications.css');
 const extractSCSS = new ExtractTextPlugin('styles.css');
@@ -26,6 +27,9 @@ module.exports = exports = {
     extractCSS,
     extractSCSS,
     new webpack.optimize.UglifyJsPlugin(),
+    new CopyWebpackPlugin([
+      { from: 'src/img', to: 'img' }
+    ]),
   ],
   module: {
     rules: [

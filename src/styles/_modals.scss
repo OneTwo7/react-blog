@@ -55,13 +55,27 @@
   flex-direction: column;
   align-items: center;
   a {
-    text-align: center;
+    box-sizing: border-box;
+    position: relative;
+    font-weight: bold;
+    text-align: left;
     width: 15rem;
     margin-top: 1rem;
-    color: $white;
-    background-color: $blue;
-    padding: .5rem .75rem;
+    color: $grey;
+    background-color: $white;
+    padding: .5rem .75rem .5rem 4rem;
+    border: 1px solid $light-grey;
     border-radius: .25rem;
+    box-shadow: 0 2px $light-grey;
+    &:before {
+      content: "";
+      box-sizing: border-box;
+      position: absolute;
+      top: 0;
+      left: .75rem;
+      width: 1.8rem;
+      height: 100%;
+    }
     &:hover {
       text-decoration: none;
     }
@@ -69,4 +83,19 @@
       margin-top: 0;
     }
   }
+}
+
+#google-btn:before {
+  background: url('/img/google.svg') center center no-repeat;
+  background-size: contain;
+}
+
+#github-btn:before {
+  background: url('/img/github.svg') center center no-repeat;
+  background-size: contain;
+}
+
+#vk-btn:before {
+  background: url('/img/vk.svg') center center no-repeat;
+  background-size: contain;
 }

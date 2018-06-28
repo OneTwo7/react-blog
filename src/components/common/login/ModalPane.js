@@ -13,13 +13,13 @@ const ModalPane = (props) => {
     modalBody = (
       <div id="social-login">
         <a href="/auth/google" id="google-btn">
-          Login with Google
+          Sign in with Google
         </a>
         <a href="/auth/github" id="github-btn">
-          Login with Github
+          Sign in with Github
         </a>
         <a href="/auth/vk" id="vk-btn">
-          Login with VK
+          Sign in with VK
         </a>
       </div>
     );
