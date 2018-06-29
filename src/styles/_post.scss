@@ -1,5 +1,11 @@
 #post {
   margin-bottom: 4rem;
+  .post-controls {
+    visibility: visible;
+    position: static;
+    margin-left: 0;
+    float: right;
+  }
 }
 
 #post-title {

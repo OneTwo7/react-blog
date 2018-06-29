@@ -5,6 +5,9 @@ import { setHeight, clipImage, reclipImages} from '../../utils/previewHelpers';
 import Post from './Post';
 import RecommendedPosts from './RecommendedPosts';
 import Comments from '../comments/Comments';
+import { deletePost } from '../../actions/postActions';
+import ConfirmationModal from '../common/ConfirmationModal';
+import { showSuccessMessage, showReason } from '../../utils/notifications';
 import PropTypes from 'prop-types';
 
 /* eslint-disable no-undef */
@@ -12,6 +15,8 @@ import PropTypes from 'prop-types';
 class PostPage extends Component {
   constructor (props) {
     super(props);
+
+    this.confirm = this.confirm.bind(this);
   }
 
   componentDidMount () {
@@ -69,17 +74,36 @@ class PostPage extends Component {
     clipImage(event.target);
   }
 
+  remove () {
+    $('#post-remove-modal').modal('show');
+  }
+
+  confirm () {
+    this.props.deletePost(this.props.post._id).then(() => {
+      this.props.history.push('/');
+      showSuccessMessage('Post has been deleted.');
+    }).catch(error => {
+      showReason(error);
+    });
+    $('#post-remove-modal').modal('hide');
+  }
+
   render () {
-    const { author, post, recommended } = this.props;
+    const { author, post, recommended, auth } = this.props;
 
     return (
       <div className="row">
-        <Post author={author} post={post} />
+        <Post author={author} post={post} auth={auth} onClick={this.remove} />
         <RecommendedPosts
           recommended={recommended}
           onLoad={this.onImageLoad}
         />
         <Comments postId={post._id} />
+        <ConfirmationModal
+          id="post-remove-modal"
+          message="Are you sure you want to delete this post?"
+          confirm={this.confirm}
+        />
       </div>
     );
   }
@@ -88,7 +112,10 @@ class PostPage extends Component {
 PostPage.propTypes = {
   post: PropTypes.object.isRequired,
   author: PropTypes.object.isRequired,
-  recommended: PropTypes.array
+  recommended: PropTypes.array,
+  auth: PropTypes.object,
+  deletePost: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -103,7 +130,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const postId = ownProps.match.params.id;
 
-  const { users } = state;
+  const { users, auth } = state;
 
   let posts = [...state.posts];
   let recommended = [];
@@ -122,8 +149,9 @@ const mapStateToProps = (state, ownProps) => {
   return {
     post,
     recommended,
-    author
+    author,
+    auth
   };
 };
 
-export default connect(mapStateToProps)(PostPage);
+export default connect(mapStateToProps, { deletePost })(PostPage);

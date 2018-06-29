@@ -64,7 +64,7 @@ class HomePage extends Component {
   }
 
   onDeleteClick (event) {
-    this.setState({ postId: event.target.id.slice(7) });
+    this.setState({ postId: event.target.id.split('-')[1] });
     $('#confirmation-modal').modal('show');
   }
 

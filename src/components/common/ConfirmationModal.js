@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const ConfirmationModal = ({ confirm }) => (
+const ConfirmationModal = ({ confirm, message, id }) => (
   <div
-    className="modal fade"
-    id="confirmation-modal"
+    className="modal fade confirmation-modal"
+    id={id || "confirmation-modal"}
     tabIndex="-1"
     role="dialog"
     aria-labelledby="confirmationModalLabel"
@@ -13,7 +13,7 @@ const ConfirmationModal = ({ confirm }) => (
     <div className="modal-dialog" role="document">
       <div className="modal-content">
         <div className="modal-body">
-          <div>Are you sure you want to delete this?</div>
+          <div>{message || 'Are you sure you want to delete this?'}</div>
           <button
             type="button"
             className="close"
@@ -45,7 +45,9 @@ const ConfirmationModal = ({ confirm }) => (
 );
 
 ConfirmationModal.propTypes = {
-  confirm: PropTypes.func.isRequired
+  confirm: PropTypes.func.isRequired,
+  message: PropTypes.string,
+  id: PropTypes.string
 };
 
 export default ConfirmationModal;
