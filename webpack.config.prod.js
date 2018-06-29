@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 const extractCSS = new ExtractTextPlugin('notifications.css');
 const extractSCSS = new ExtractTextPlugin('styles.css');
@@ -26,7 +27,12 @@ module.exports = exports = {
     new webpack.DefinePlugin(GLOBALS),
     extractCSS,
     extractSCSS,
+    new OptimizeCssAssetsPlugin({
+      cssProcessor: require('cssnano'),
+      cssProcessorOptions: { safe: true, discardComments: { removeAll: true } }
+    }),
     new webpack.optimize.UglifyJsPlugin(),
+    new webpack.optimize.ModuleConcatenationPlugin(),
     new CopyWebpackPlugin([
       { from: 'src/img', to: 'img' }
     ]),

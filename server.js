@@ -24,6 +24,9 @@ if (mode === 'demo') {
 }
 
 if (env === 'production') {
+  const compression = require('compression');
+
+  app.use(compression());
   app.use(express.static('dist'));
 
   app.get('*', (req, res) => {
