@@ -30,43 +30,40 @@ export const deletePostSuccess = (id) => {
   };
 };
 
-export const loadPosts = () => {
-  return (dispatch => {
-    dispatch(beginAjaxCall());
-    return axios.get('/api/posts').then(({ data }) => {
-      dispatch(loadPostsSuccess(data.reverse()));
-    }).catch(error => {
-      dispatchAjaxCallError(error, dispatch);
-    });
-  });
-};
+export const loadPosts = () => (async dispatch => {
+  dispatch(beginAjaxCall());
+  try {
+    const { data } = await axios.get('/api/posts');
+    dispatch(loadPostsSuccess(data));
+  } catch (e) {
+    dispatchAjaxCallError(e, dispatch);
+  }
+});
 
 export const savePost = (postData) => {
   const postId = postData.has('_id');
-  return (dispatch => {
+  return (async dispatch => {
     dispatch(beginAjaxCall());
-    if (postId) {
-      return axios.put(`/api/posts/${postId}`, postData).then(({ data }) => {
+    try {
+      if (postId) {
+        const { data } = await axios.put(`/api/posts/${postId}`, postData);
         dispatch(updatePostSuccess(data));
-      }).catch(error => {
-        dispatchAjaxCallError(error, dispatch);
-      });
+      } else {
+        const { data } = await axios.post('/api/posts', postData);
+        dispatch(createPostSuccess(data));
+      }
+    } catch (e) {
+      dispatchAjaxCallError(e, dispatch);
     }
-    return axios.post('/api/posts', postData).then(({ data }) => {
-      dispatch(createPostSuccess(data));
-    }).catch(error => {
-      dispatchAjaxCallError(error, dispatch);
-    });
   });
 };
 
-export const deletePost = (id) => {
-  return (dispatch => {
-    dispatch(beginAjaxCall());
-    return axios.delete(`/api/posts/${id}`).then(() => {
-      dispatch(deletePostSuccess(id));
-    }).catch(error => {
-      dispatchAjaxCallError(error, dispatch);
-    });
-  });
-};
+export const deletePost = (id) => (async dispatch => {
+  dispatch(beginAjaxCall());
+  try {
+    await axios.delete(`/api/posts/${id}`);
+    dispatch(deletePostSuccess(id));
+  } catch (e) {
+    dispatchAjaxCallError(e, dispatch);
+  }
+});

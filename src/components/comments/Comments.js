@@ -123,7 +123,7 @@ class Comments extends Component {
   }
 
   confirm () {
-    this.props.actions.deleteComment(this.props.postId, this.state.commentId)
+    this.props.actions.deleteComment(this.state.commentId, this.props.postId)
     .then(() => {
       showSuccessMessage('Comment has been deleted.');
     }).catch(error => {

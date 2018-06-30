@@ -17,21 +17,23 @@ export const createUserSuccess = (user) => {
   };
 };
 
-export const loadUsers = () => {
-  return (dispatch => {
-    dispatch(beginAjaxCall());
-    return axios.get('/api/users').then(({ data }) => {
-      dispatch(loadUsersSuccess(data));
-    }).catch(error => dispatchAjaxCallError(error, dispatch));
-  });
-};
+export const loadUsers = () => (async dispatch => {
+  dispatch(beginAjaxCall());
+  try {
+    const { data } = await axios.get('/api/users');
+    dispatch(loadUsersSuccess(data));
+  } catch (e) {
+    dispatchAjaxCallError(e, dispatch);
+  }
+});
 
-export const createUser = (user) => {
-  return (dispatch => {
-    dispatch(beginAjaxCall());
-    return axios.post('/api/users', user).then(({ data }) => {
-      dispatch(createUserSuccess(data));
-      dispatch(getCurrentUserSuccess(data));
-    }).catch(error => dispatchAjaxCallError(error, dispatch));
-  });
-};
+export const createUser = (user) => (async dispatch => {
+  dispatch(beginAjaxCall());
+  try {
+    const { data } = await axios.post('/api/users', user);
+    dispatch(createUserSuccess(data));
+    dispatch(getCurrentUserSuccess(data));
+  } catch (e) {
+    dispatchAjaxCallError(e, dispatch);
+  }
+});

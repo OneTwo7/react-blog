@@ -22,29 +22,32 @@ export const getCurrentUserSuccess = (user) => {
   };
 };
 
-export const login = (email, password) => {
-  return (dispatch => {
-    dispatch(beginAjaxCall());
-    return axios.post('/api/login', { email, password }).then(({ data }) => {
-      dispatch(loginSuccess(data));
-    }).catch(error => dispatchAjaxCallError(error, dispatch));
-  });
-};
+export const login = (email, password) => (async dispatch => {
+  dispatch(beginAjaxCall());
+  try {
+    const { data } = await axios.post('/api/login', { email, password });
+    dispatch(loginSuccess(data));
+  } catch (e) {
+    dispatchAjaxCallError(e, dispatch);
+  }
+});
 
-export const logout = () => {
-  return (dispatch => {
-    dispatch(beginAjaxCall());
-    return axios.get('/api/logout').then(() => {
-      dispatch(logoutSuccess());
-    }).catch(error => dispatchAjaxCallError(error, dispatch));
-  });
-};
+export const logout = () => (async dispatch => {
+  dispatch(beginAjaxCall());
+  try {
+    await axios.get('/api/logout');
+    dispatch(logoutSuccess());
+  } catch (e) {
+    dispatchAjaxCallError(e, dispatch);
+  }
+});
 
-export const getCurrentUser = () => {
-  return (dispatch => {
-    dispatch(beginAjaxCall());
-    return axios.get('/api/current_user').then(({ data }) => {
-      dispatch(getCurrentUserSuccess(data));
-    }).catch(error => dispatchAjaxCallError(error, dispatch));
-  });
-};
+export const getCurrentUser = () => (async dispatch => {
+  dispatch(beginAjaxCall());
+  try {
+    const { data } = await axios.get('/api/current_user');
+    dispatch(getCurrentUserSuccess(data));
+  } catch (e) {
+    dispatchAjaxCallError(e, dispatch);
+  }
+});

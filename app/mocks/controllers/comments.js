@@ -19,7 +19,7 @@ exports.getCommentsByPostId = async (req, res) => {
     if (cookieComments) {
       comments = comments.concat(cookieComments);
     }
-    res.send(comments);
+    res.send(comments.reverse());
   } catch (e) {
     res.status(400);
     res.send({ reason: e.toString() });

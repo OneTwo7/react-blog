@@ -22,7 +22,7 @@ class HomePage extends Component {
     };
 
     this.onDeleteClick = this.onDeleteClick.bind(this);
-    this.loadPosts = this.loadPosts.bind(this);
+    //this.loadPosts = this.loadPosts.bind(this);
     this.confirm = this.confirm.bind(this);
   }
 

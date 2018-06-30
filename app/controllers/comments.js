@@ -3,7 +3,9 @@ const { correctUser } = require('../utils/auth');
 
 exports.getCommentsByPostId = async (req, res) => {
   try {
-    const comments = await Comment.find({ post_id: req.params.id });
+    const comments = await Comment.find({ post_id: req.params.id }).sort({
+      created_at: -1
+    });
     res.send(comments);
   } catch (e) {
     res.status(400);

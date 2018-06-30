@@ -14,7 +14,7 @@ exports.getPosts = async (req, res) => {
 
   try {
     const dbPosts = await Post.find({});
-    res.send(dbPosts.concat(posts));
+    res.send(dbPosts.concat(posts).reverse());
   } catch (e) {
     res.status(400);
     res.send({ reason: e.toString() });

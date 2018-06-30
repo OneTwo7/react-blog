@@ -5,7 +5,7 @@ const { uploadPictures } = require('../utils/helpers');
 
 exports.getPosts = async (req, res) => {
   try {
-    const posts = await Post.find({});
+    const posts = await Post.find({}).sort({ created_at: -1 });
     res.send(posts);
   } catch (e) {
     res.status(400);

@@ -31,40 +31,42 @@ export const deleteCommentSuccess = (id, postId) => {
   };
 };
 
-export const loadComments = (id) => {
-  return (dispatch => {
-    return axios.get(`/api/posts/${id}/comments`).then(({ data }) => {
-      dispatch(loadPostCommentsSuccess(data.reverse()));
-    }).catch(error => {
-      throw(error);
-    });
-  });
-};
+export const loadComments = (id) => (async dispatch => {
+  try {
+    const { data } = axios.get(`/api/posts/${id}/comments`);
+    dispatch(loadPostCommentsSuccess(data));
+  } catch (e) {
+    throw(e);
+  }
+});
 
 export const saveComment = (comment) => {
   const commentId = comment._id;
   const postId    = comment.post_id;
-  return (dispatch => {
+  return (async dispatch => {
     dispatch(beginAjaxCall());
-    if (commentId) {
-      return axios.put(`/api/posts/${postId}/comments/${commentId}`, comment)
-      .then(({ data }) => {
+    try {
+      if (commentId) {
+        const path = `/api/posts/${postId}/comments/${commentId}`;
+        const { data } = await axios.put(path, comment);
         dispatch(updateCommentSuccess(data));
-      }).catch(error => dispatchAjaxCallError(error, dispatch));
+      } else {
+        const path = `/api/posts/${postId}/comments`;
+        const { data } = await axios.post(path, comment);
+        dispatch(createCommentSuccess(data));
+      }
+    } catch (e) {
+      dispatchAjaxCallError(e, dispatch);
     }
-    return axios.post(`/api/posts/${postId}/comments`, comment)
-    .then(({ data }) => {
-      dispatch(createCommentSuccess(data));
-    }).catch(error => dispatchAjaxCallError(error, dispatch));
   });
 };
 
-export const deleteComment = (postId, commentId) => {
-  return (dispatch => {
-    dispatch(beginAjaxCall());
-    return axios.delete(`/api/posts/${postId}/comments/${commentId}`)
-    .then(() => {
-      dispatch(deleteCommentSuccess(commentId, postId));
-    }).catch(error => dispatchAjaxCallError(error, dispatch));
-  });
-};
+export const deleteComment = (commentId, postId) => (async dispatch => {
+  dispatch(beginAjaxCall());
+  try {
+    await axios.delete(`/api/posts/${postId}/comments/${commentId}`);
+    dispatch(deleteCommentSuccess(commentId, postId));
+  } catch (e) {
+    dispatchAjaxCallError(e, dispatch);
+  }
+});
