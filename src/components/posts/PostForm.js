@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/postActions';
-import { showErrorMessage, showReason } from '../../utils/notifications';
+import * as notifications from '../../utils/notifications';
 import { detachTextControls } from '../../utils/editorHelpers';
 import PostInputs from './PostInputs';
 import PreviewModal from '../common/PreviewModal';
@@ -27,7 +27,7 @@ class PostForm extends Component {
       savedPictures: [...savedPictures],
       removedPictures: [],
       mainPicture: {
-        field: ''
+        field: savedPictures[0] ? savedPictures[0] : ''
       },
       tags: [],
       errors: {}
@@ -59,13 +59,14 @@ class PostForm extends Component {
     if (this.props.post._id !== nextProps.post._id) {
       const { post, fields, savedPictures } = nextProps;
       const counter = Math.max(...fields.map(({ id }) => id.split('-')[1]));
-      const tags = post.tags.split(' ');
+      const tags = post.tags ? post.tags.split(' ') : [];
       post.tags = '';
       this.setState({
         post:   Object.assign({}, post),
         fields: [...fields],
         fieldsCounter: counter + 1,
         savedPictures: [...savedPictures],
+        mainPicture: { field: savedPictures[0] },
         tags
       });
     }
@@ -143,8 +144,9 @@ class PostForm extends Component {
 
     this.props.actions.savePost(formData).then(() => {
       this.redirect();
+      notifications.showSuccessMessage('Post saved!');
     }).catch(error => {
-      showReason(error);
+      notifications.showReason(error);
     });
   }
 
@@ -166,7 +168,7 @@ class PostForm extends Component {
         if (!post[name] || !post[name].trim()) {
           let errorMessage = `You must provide a value for ${name}`;
           errors[name] = errorMessage;
-          showErrorMessage(errorMessage);
+          notifications.showErrorMessage(errorMessage);
           formIsValid = false;
         }
       }
@@ -175,7 +177,7 @@ class PostForm extends Component {
     if (!errors.title && post.title.trim().length < 4) {
       let errorMessage = 'Title must be at least 4 characters!';
       errors.title = errorMessage;
-      showErrorMessage(errorMessage);
+      notifications.showErrorMessage(errorMessage);
       formIsValid = false;
     }
 
@@ -220,9 +222,9 @@ class PostForm extends Component {
 
   moveField (event) {
     const { fields, savedPictures, removedPictures } = this.state;
-    const idx = this.getFieldIndex(event, fields);
-    const type = this.getFieldType(event);
-    const field = `field-${idx}`;
+    const fieldId = this.getFieldId(event);
+    const idx = fields.findIndex(({ id }) => id === fieldId);
+    const type = this.getButtonType(event);
     const { type: fieldType } = fields[idx];
     switch (type) {
       case 'swap-up':
@@ -241,10 +243,10 @@ class PostForm extends Component {
       if (fieldType === 'text') {
         detachTextControls();
       }
-      if (savedPictures.includes(field)) {
+      if (savedPictures.includes(fieldId)) {
         this.setState({
-          savedPictures: savedPictures.filter(sField => sField !== field),
-          removedPictures: [...removedPictures, field],
+          savedPictures: savedPictures.filter(sField => sField !== fieldId),
+          removedPictures: [...removedPictures, fieldId],
           fields
         });
         return;
@@ -253,21 +255,20 @@ class PostForm extends Component {
     this.setState({ fields });
   }
 
-  getFieldIndex (event, fields) {
-    let target = event.target.parentNode;
-    while (target.className !== 'field-wrapper') {
-      target = target.parentNode;
+  getFieldId (event) {
+    let node = event.target.parentNode;
+    while (node.className !== 'field-wrapper') {
+      node = node.parentNode;
     }
-    const targetId = target.id;
-    return fields.findIndex(({ id }) => targetId === id);
+    return node.id;
   }
 
-  getFieldType (event) {
+  getButtonType (event) {
     let target = event.target;
     while (target.nodeName !== 'BUTTON') {
       target = target.parentNode;
     }
-    return target.className.slice(21);
+    return target.className.split(' ')[2];
   }
 
   addField (event) {

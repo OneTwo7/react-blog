@@ -1,7 +1,11 @@
-const path = require('path');
-const fs = require('fs');
 const User = require('mongoose').model('User');
 const keys = require('../keys');
+const path = require('path');
+const fs = require('fs');
+const util = require('util');
+const unlink = util.promisify(fs.unlink);
+const readFile = util.promisify(fs.readFile);
+const rename = util.promisify(fs.rename);
 let s3;
 
 if (keys.s3Region) {
@@ -21,18 +25,7 @@ const prepareUser = ({ _id, email, name, roles }) => ({
   _id, email, name, roles
 });
 
-const hasError = (err, res, status = 400) => {
-  if (err) {
-    res.status(status);
-    res.send({ reason: err.toString() });
-    return true;
-  }
-  return false;
-};
-
 exports.prepareUser = prepareUser;
-
-exports.hasError = hasError;
 
 exports.sendUser = (req, res) => {
   if (req.user) {
@@ -51,10 +44,10 @@ exports.redirect = (req, res) => {
   res.redirect('/');
 };
 
-exports.uploadPictures = (res, files, pictureFields) => {
-  return new Promise((resolve, reject) => {
+exports.uploadPictures = async (files, pictureFields) => {
+  try {
     if (!pictureFields) {
-      resolve([]);
+      return [];
     }
 
     const fiveMegaBytes = 5 * 1024 * 1024;
@@ -66,81 +59,55 @@ exports.uploadPictures = (res, files, pictureFields) => {
       const { originalname, filename, mimetype, size, path: tempPath } = file;
 
       if (mimetype !== 'image/png' && mimetype !== 'image/jpeg') {
-        fs.unlink(tempPath, err => {
-          if (!hasError(err, res, 500)) {
-            reject('Wrong file type!');
-          }
-        });
-        return;
+        await unlink(tempPath);
+        throw `File ${originalname} is not a picture!`;
       }
 
       if (size > fiveMegaBytes) {
-        fs.unlink(tempPath, err => {
-          if (!hasError(err, res, 500)) {
-            reject(`Picture ${originalname} is too big!`);
-          }
-        });
-        return;
+        await unlink(tempPath);
+        throw `Picture ${originalname} is too big!`;
       }
 
       if (s3) {
-        const target = path.join(
-          'blog', filename + path.extname(originalname)
-        );
+        const pictureName = filename + path.extname(originalname);
+        const target = path.join('blog', pictureName);
 
-        fs.readFile(tempPath, (err, data) => {
-          if (!hasError(err, res)) {
-            s3.upload({
-              Key: target,
-              Body: data,
-              ACL: 'public-read'
-            }, (err, data) => {
-              fs.unlink(tempPath, (err) => {
-                if (hasError(err, res, 500)) {
-                  return;
-                }
-              });
+        const data = await readFile(tempPath);
+        const options = { Key: target, Body: data, ACL: 'public-read' };
+        const uploadedPicture = await s3.upload(options);
 
-              if (!hasError(err, res)) {
-                pictures.push({
-                  field: fields.shift(),
-                  url: data.Location
-                });
-                if (pictures.length === fieldsLength) {
-                  resolve(pictures);
-                }
-              }
-            });
-          }
+        pictures.push({
+          field: fields.shift(),
+          url: uploadedPicture.Location
         });
       } else {
         const target = path.join(keys.uploadsPath, originalname);
 
-        fs.rename(tempPath, target, err => {
-          if (!hasError(err, res, 500)) {
-            pictures.push({
-              field: fields.shift(),
-              url: `/img/uploads/${originalname}`
-            });
-            if (pictures.length === fieldsLength) {
-              resolve(pictures);
-            }
-          }
+        await rename(tempPath, target);
+
+        pictures.push({
+          field: fields.shift(),
+          url: `/img/uploads/${originalname}`
         });
       }
     }
-  });
+
+    return pictures;
+  } catch (e) {
+    throw new Error(e);
+  }
 };
 
-exports.handleSocialLogin = (id, name, done) => {
-  User.findOne({ id }).exec((err, existingUser) => {
+exports.handleSocialLogin = async (id, name, done) => {
+  try {
+    const existingUser = await User.findOne({ id });
     if (existingUser) {
       done(null, existingUser);
     } else {
-      const user = new User({ id, name });
-      user.save().then(err => {
-        done(null, user);
-      });
+      const user = await new User({ id, name }).save();
+      done(null, user);
     }
-  });
-}
+  } catch (e) {
+    done(e);
+  }
+};

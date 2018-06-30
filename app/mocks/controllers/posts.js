@@ -1,8 +1,8 @@
 const Post = require('mongoose').model('Post');
-const { hasError, uploadPictures } = require('../../utils/helpers');
+const { uploadPictures } = require('../../utils/helpers');
 const { options, generateId, exceedsSizeLimit } = require('../helpers');
 
-exports.getPosts = (req, res) => {
+exports.getPosts = async (req, res) => {
   const posts = [];
   const { cookies } = req;
 
@@ -12,14 +12,16 @@ exports.getPosts = (req, res) => {
     }
   }
 
-  Post.find({}).exec(function (err, collection) {
-    if (!hasError(err, res)) {
-      res.send(collection.concat(posts));
-    }
-  });
+  try {
+    const dbPosts = await Post.find({});
+    res.send(dbPosts.concat(posts));
+  } catch (e) {
+    res.status(400);
+    res.send({ reason: e.toString() });
+  }
 };
 
-exports.createPost = (req, res) => {
+exports.createPost = async (req, res) => {
   const { body: data, files } = req;
   const { pictureFields } = data;
 
@@ -31,19 +33,20 @@ exports.createPost = (req, res) => {
   post._id = postId;
   post.created_at = new Date();
 
-  uploadPictures(res, files, pictureFields).then(pictures => {
-    post.pictures = pictures;
+  try {
+    post.pictures = await uploadPictures(files, pictureFields);
 
     if (!exceedsSizeLimit(post, 'posts', res)) {
       res.cookie(`post-${postId}`, post, options);
       res.send(post);
     }
-  }).catch(error => {
-    hasError(error, res, 403);
-  });
+  } catch (e) {
+    res.status(400);
+    res.send({ reason: e.toString() });
+  }
 };
 
-exports.updatePost = (req, res) => {
+exports.updatePost = async (req, res) => {
   const { body: data, files } = req;
   const { pictureFields, mainPicture } = data;
   let { removedPictures } = data;
@@ -52,15 +55,14 @@ exports.updatePost = (req, res) => {
     removedPictures = [removedPictures];
   }
 
-  uploadPictures(res, files, pictureFields).then(pictures => {
+  try {
+    const pictures = await uploadPictures(files, pictureFields);
     const cookieKey = `post-${data._id}`;
     const post = req.cookies[cookieKey];
-
     post.title = data.title;
     post.content = data.content;
     post.category = data.category;
     post.tags = data.tags;
-
     let postPictures = post.pictures;
 
     if (removedPictures !== 'undefined') {
@@ -73,11 +75,11 @@ exports.updatePost = (req, res) => {
 
     if (mainPicture) {
       let main;
-      const otherPictures = postPictures.filter(pic => {
-        if (pic.field !== mainPicture) {
+      const otherPictures = postPictures.filter(picture => {
+        if (picture.field !== mainPicture) {
           return true;
         } else {
-          main = pic;
+          main = picture;
           return false;
         }
       });
@@ -90,9 +92,10 @@ exports.updatePost = (req, res) => {
       res.cookie(cookieKey, post, options);
       res.send(post);
     }
-  }).catch(error => {
-    hasError(error, res, 403);
-  });
+  } catch (e) {
+    res.status(400);
+    res.send({ reason: e.toString() });
+  }
 };
 
 exports.deletePost = (req, res) => {

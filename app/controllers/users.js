@@ -1,14 +1,18 @@
 const User = require('mongoose').model('User');
-const { prepareUser, hasError } = require('../utils/helpers');
+const { prepareUser } = require('../utils/helpers');
 const encrypt = require('../utils/encrypt');
 
-exports.getUsers = (req, res) => {
-  User.find({}, { name: 1 }).exec(function (err, collection) {
-    res.send(collection);
-  });
+exports.getUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, { name: 1 });
+    res.send(users);
+  } catch (e) {
+    res.status(400);
+    res.send({ reason: e.toString() });
+  }
 };
 
-exports.createUser = (req, res) => {
+exports.createUser = async (req, res) => {
   const { email, name, password } = req.body;
 
   if (email.length < 6 || password.length < 6) {
@@ -17,28 +21,23 @@ exports.createUser = (req, res) => {
     });
   }
 
-  User.findOne({ email: email }).exec((err, user) => {
-    if (!hasError(err, res)) {
-      if (user) {
-        res.status(409).send({
-          reason: 'Duplicate email!'
-        });
-      } else {
-        const salt = encrypt.createSalt();
-        const pwd_hash = encrypt.hashPwd(salt, password);
+  try {
+    const user = await User.findOne({ email });
 
-        const data = { email, name, salt, pwd_hash };
+    if (user) {
+      res.status(409);
+      res.send({ reason: 'User with that email already exists!' });
+    } else {
+      const salt = encrypt.createSalt();
+      const pwd_hash = encrypt.hashPws(salt, password);
+      const data = { email, name, salt, pws_hash };
 
-        User.create(data, (err, user) => {
-          if (!hasError(err, res)) {
-            req.logIn(user, (err) => {
-              if (!hasError(err)) {
-                res.send(prepareUser(user));
-              }
-            });
-          }
-        });
-      }
+      const newUser = await User.create(data);
+      req.logIn(newUser);
+      res.send(prepareUser(newUser));
     }
-  });
+  } catch (e) {
+    res.status(400);
+    res.send({ reason: e.toString() });
+  }
 };

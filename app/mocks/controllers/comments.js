@@ -1,8 +1,7 @@
 const Comment = require('mongoose').model('Comment');
-const { hasError } = require('../../utils/helpers');
 const { options, generateId, exceedsSizeLimit } = require('../helpers');
 
-exports.getCommentsByPostId = (req, res) => {
+exports.getCommentsByPostId = async (req, res) => {
   const { id } = req.params;
   const cookieComments = req.cookies[`comments-${id}`];
 
@@ -15,15 +14,16 @@ exports.getCommentsByPostId = (req, res) => {
     return;
   }
 
-  Comment.find({ post_id: id }).exec(function (err, collection) {
-    if (!hasError(err, res)) {
-      let comments = collection;
-      if (cookieComments) {
-        comments = comments.concat(cookieComments);
-      }
-      res.send(comments);
+  try {
+    let comments = await Comment.find({ post_id: id });
+    if (cookieComments) {
+      comments = comments.concat(cookieComments);
     }
-  });
+    res.send(comments);
+  } catch (e) {
+    res.status(400);
+    res.send({ reason: e.toString() });
+  }
 };
 
 exports.createComment = (req, res) => {

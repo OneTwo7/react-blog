@@ -76,19 +76,22 @@ const samplePosts = [
   }
 ];
 
-Post.find({}).exec((err, collection) => {
-  if (collection.length === 0) {
-    User.findOne({ email: 'guest@example.com' }).exec((err, user) => {
-      samplePosts[2].author = user._id;
+(async () => {
+  try {
+    const posts = await Post.find({});
+    if (posts.length === 0) {
+      const guest = await User.findOne({ email: 'guest@example.com' });
+      const admin = await User.findOne({ email: 'admin@example.com' });
+      samplePosts[2].author = guest._id;
       for (let i = 0; i < 20; i++) {
         Post.create(samplePosts[2]);
       }
-    });
-    User.findOne({ email: 'admin@example.com' }).exec((err, user) => {
-      samplePosts[1].author = user._id;
+      samplePosts[1].author = admin._id;
+      samplePosts[0].author = admin._id;
       Post.create(samplePosts[1]);
-      samplePosts[0].author = user._id;
       Post.create(samplePosts[0]);
-    });
+    }
+  } catch (e) {
+    console.log(e);
   }
-});
+})();

@@ -36,12 +36,17 @@ const sampleUsers = [
   }
 ];
 
-User.find({}).exec((err, collection) => {
-  if (collection.length === 0) {
-    sampleUsers.forEach(user => {
-      user.salt = encrypt.createSalt();
-      user.pwd_hash = encrypt.hashPwd(user.salt, user.password);
-      User.create(user);
-    });
+(async () => {
+  try {
+    const users = await User.find({});
+    if (users.length === 0) {
+      sampleUsers.forEach(user => {
+        user.salt = encrypt.createSalt();
+        user.pwd_hash = encrypt.hashPwd(user.salt, user.password);
+        User.create(user);
+      });
+    }
+  } catch (e) {
+    console.log(e);
   }
-});
+})();
