@@ -1,7 +1,21 @@
 const path = require('path');
 const fs = require('fs');
 const User = require('mongoose').model('User');
-const { uploadsPath } = require('../keys');
+const keys = require('../keys');
+let s3;
+
+if (keys.s3Region) {
+  const AWS = require('aws-sdk');
+  AWS.config.update({
+    accessKeyId: keys.s3AccessKey,
+    secretAccessKey: keys.s3SecretKey,
+    region: keys.s3Region
+  });
+  s3 = new AWS.S3({
+    apiVersion: '2006-03-01',
+    params: { Bucket: keys.s3Bucket }
+  });
+}
 
 const prepareUser = ({ _id, email, name, roles }) => ({
   _id, email, name, roles
@@ -49,8 +63,7 @@ exports.uploadPictures = (res, files, pictureFields) => {
     const pictures = [];
 
     for (let file of files) {
-      const { originalname: name, path: tempPath, mimetype, size } = file;
-      const target = path.join(uploadsPath, name);
+      const { originalname, filename, mimetype, size, path: tempPath } = file;
 
       if (mimetype !== 'image/png' && mimetype !== 'image/jpeg') {
         fs.unlink(tempPath, err => {
@@ -58,27 +71,63 @@ exports.uploadPictures = (res, files, pictureFields) => {
             reject('Wrong file type!');
           }
         });
+        return;
       }
 
       if (size > fiveMegaBytes) {
         fs.unlink(tempPath, err => {
           if (!hasError(err, res, 500)) {
-            reject(`Picture ${name} is too big!`);
+            reject(`Picture ${originalname} is too big!`);
+          }
+        });
+        return;
+      }
+
+      if (s3) {
+        const target = path.join(
+          'blog', filename + path.extname(originalname)
+        );
+
+        fs.readFile(tempPath, (err, data) => {
+          if (!hasError(err, res)) {
+            s3.upload({
+              Key: target,
+              Body: data,
+              ACL: 'public-read'
+            }, (err, data) => {
+              fs.unlink(tempPath, (err) => {
+                if (hasError(err, res, 500)) {
+                  return;
+                }
+              });
+
+              if (!hasError(err, res)) {
+                pictures.push({
+                  field: fields.shift(),
+                  url: data.Location
+                });
+                if (pictures.length === fieldsLength) {
+                  resolve(pictures);
+                }
+              }
+            });
+          }
+        });
+      } else {
+        const target = path.join(keys.uploadsPath, originalname);
+
+        fs.rename(tempPath, target, err => {
+          if (!hasError(err, res, 500)) {
+            pictures.push({
+              field: fields.shift(),
+              url: `/img/uploads/${originalname}`
+            });
+            if (pictures.length === fieldsLength) {
+              resolve(pictures);
+            }
           }
         });
       }
-
-      fs.rename(tempPath, target, err => {
-        if (!hasError(err, res, 500)) {
-          pictures.push({
-            field: fields.shift(),
-            url: `/img/uploads/${name}`
-          });
-          if (pictures.length === fieldsLength) {
-            resolve(pictures);
-          }
-        }
-      });
     }
   });
 };

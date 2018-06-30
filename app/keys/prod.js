@@ -11,5 +11,9 @@ module.exports = {
   vkClientSecret: env.VK_CLIENT_SECRET,
   mongoURI: env.MONGO_URI,
   cookieKey: env.COOKIE_KEY,
+  s3AccessKey: env.S3_ACCESS_KEY,
+  s3SecretKey: env.S3_SECRET_KEY,
+  s3Bucket: env.S3_BUCKET,
+  s3Region: env.S3_REGION,
   uploadsPath
 };
