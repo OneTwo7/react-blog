@@ -95,13 +95,13 @@ class PostForm extends Component {
 
     this.grabContent();
 
-    const { pictures } = this.state;
+    const { pictures, savedPictures } = this.state;
 
     const postFields = [];
     fields.forEach(field => {
       const { id, type } = field;
       if (type === 'img') {
-        if (pictures[id]) {
+        if (pictures[id] || savedPictures.includes(id)) {
           postFields.push(field);
         }
       } else {
