@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/postActions';
 import PropTypes from 'prop-types';
 import PostList from '../posts/PostList';
-import PostPreview from '../posts/PostPreview';
 import ConfirmationModal from '../common/ConfirmationModal';
 import { showSuccessMessage, showReason } from '../../utils/notifications';
 import { setHeight, clipImage, reclipImages} from '../../utils/previewHelpers';
@@ -22,7 +20,7 @@ class HomePage extends Component {
     };
 
     this.onDeleteClick = this.onDeleteClick.bind(this);
-    //this.loadPosts = this.loadPosts.bind(this);
+    this.loadPosts = this.loadPosts.bind(this);
     this.confirm = this.confirm.bind(this);
   }
 
@@ -91,16 +89,17 @@ class HomePage extends Component {
     const { page, postsPerPage } = this.state;
     const posts = this.props.posts.slice(0, page * postsPerPage);
 
-    return [
-      <PostList
-        key="post-list"
-        auth={this.props.auth}
-        posts={posts}
-        onDeleteClick={this.onDeleteClick}
-        onLoad={this.onImageLoad}
-      />,
-      <ConfirmationModal key="confirmation-modal" confirm={this.confirm} />
-    ];
+    return (
+      <React.Fragment>
+        <PostList
+          posts={posts}
+          auth={this.props.auth}
+          onClick={this.onDeleteClick}
+          onLoad={this.onImageLoad}
+        />
+        <ConfirmationModal confirm={this.confirm} />
+      </React.Fragment>
+    );
   }
 }
 

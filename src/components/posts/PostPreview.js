@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { formatTitle } from '../../utils/formatText';
 import PropTypes from 'prop-types';
 
-const PostPreview = ({ auth, post, onClick, onLoad }) => {
+const PostPreview = ({ post, auth, onClick, onLoad }) => {
   const { _id, author, title, pictures } = post;
 
   return (

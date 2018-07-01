@@ -2,15 +2,15 @@ import React from 'react';
 import PostPreview from './PostPreview';
 import PropTypes from 'prop-types';
 
-const PostList = ({ auth, posts, onDeleteClick, onLoad }) => (
+const PostList = ({ posts, auth, onClick, onLoad }) => (
   <div className="row">
     {
       posts.map((post, idx) => (
         <PostPreview
           key={idx}
-          auth={auth}
           post={post}
-          onClick={onDeleteClick}
+          auth={auth}
+          onClick={onClick}
           onLoad={onLoad}
         />
       ))
@@ -19,9 +19,9 @@ const PostList = ({ auth, posts, onDeleteClick, onLoad }) => (
 );
 
 PostList.propTypes = {
-  auth: PropTypes.object,
   posts: PropTypes.array,
-  onDeleteClick: PropTypes.func.isRequired,
+  auth: PropTypes.object,
+  onClick: PropTypes.func.isRequired,
   onLoad: PropTypes.func.isRequired
 };
 

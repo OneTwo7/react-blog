@@ -33,7 +33,7 @@ export const deleteCommentSuccess = (id, postId) => {
 
 export const loadComments = (id) => (async dispatch => {
   try {
-    const { data } = axios.get(`/api/posts/${id}/comments`);
+    const { data } = await axios.get(`/api/posts/${id}/comments`);
     dispatch(loadPostCommentsSuccess(data));
   } catch (e) {
     throw(e);

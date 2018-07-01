@@ -3,9 +3,9 @@ import Comment from './Comment';
 import PropTypes from 'prop-types';
 
 const CommentsList = ({ auth, comments, users, onEdit, onDelete }) => {
-  return comments.map(comment => (
+  return comments.map((comment, idx) => (
     <Comment
-      key={comment._id}
+      key={idx}
       auth={auth}
       comment={comment}
       users={users}

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const ConfirmationModal = ({ confirm, message, id }) => (
+const ConfirmationModal = ({ message, id, confirm }) => (
   <div
     className="modal fade confirmation-modal"
     id={id || "confirmation-modal"}
@@ -45,9 +45,9 @@ const ConfirmationModal = ({ confirm, message, id }) => (
 );
 
 ConfirmationModal.propTypes = {
-  confirm: PropTypes.func.isRequired,
   message: PropTypes.string,
-  id: PropTypes.string
+  id: PropTypes.string,
+  confirm: PropTypes.func.isRequired
 };
 
 export default ConfirmationModal;
