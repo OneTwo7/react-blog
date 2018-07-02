@@ -1,5 +1,5 @@
 import React from 'react';
-import TextInput from '../common/TextInput';
+import TextInput from '../common/inputs/TextInput';
 import PostContent from './PostContent';
 import PropTypes from 'prop-types';
 

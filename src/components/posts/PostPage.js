@@ -6,7 +6,7 @@ import Post from './Post';
 import RecommendedPosts from './RecommendedPosts';
 import Comments from '../comments/Comments';
 import { deletePost } from '../../actions/postActions';
-import ConfirmationModal from '../common/ConfirmationModal';
+import ConfirmationModal from '../common/modals/ConfirmationModal';
 import { showSuccessMessage, showReason } from '../../utils/notifications';
 import PropTypes from 'prop-types';
 

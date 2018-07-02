@@ -1,5 +1,5 @@
 import React from 'react';
-import TextareaInput from '../common/TextareaInput';
+import TextareaInput from '../common/inputs/TextareaInput';
 import PropTypes from 'prop-types';
 
 const CommentForm = ({ comment, errors, onChange, onClick, cancelEdit }) => (

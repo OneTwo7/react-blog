@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/postActions';
 import PropTypes from 'prop-types';
 import PostList from '../posts/PostList';
-import ConfirmationModal from '../common/ConfirmationModal';
+import ConfirmationModal from '../common/modals/ConfirmationModal';
 import { showSuccessMessage, showReason } from '../../utils/notifications';
 import { setHeight, clipImage, reclipImages} from '../../utils/previewHelpers';
 

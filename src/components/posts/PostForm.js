@@ -5,8 +5,8 @@ import * as actions from '../../actions/postActions';
 import * as notifications from '../../utils/notifications';
 import { detachTextControls } from '../../utils/editorHelpers';
 import PostInputs from './PostInputs';
-import PreviewModal from '../common/PreviewModal';
-import Tags from '../common/Tags';
+import PreviewModal from '../common/modals/PreviewModal';
+import Tags from './Tags';
 import PropTypes from 'prop-types';
 
 import FIELDS from './formFields';

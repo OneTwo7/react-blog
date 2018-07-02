@@ -1,5 +1,5 @@
 import React from 'react';
-import Input from '../Input';
+import Input from '../inputs/Input';
 import PropTypes from 'prop-types';
 
 const ModalPane = (props) => {

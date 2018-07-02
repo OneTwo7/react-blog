@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/commentActions';
 import CommentForm from '../comments/CommentForm';
 import CommentsList from './CommentsList';
-import ConfirmationModal from '../common/ConfirmationModal';
+import ConfirmationModal from '../common/modals/ConfirmationModal';
 import { showSuccessMessage, showReason } from '../../utils/notifications';
 import PropTypes from 'prop-types';
 
