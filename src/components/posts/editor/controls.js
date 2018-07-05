@@ -8,11 +8,11 @@ export const textControls = [
 ];
 
 export const contentControls = [
-  { type: 'addField',    id: 'text-btn',  text: 'Text' },
-  { type: 'addField',    id: 'code-btn',  text: 'Code' },
-  { type: 'addField',    id: 'shell-btn', text: 'Shell' },
-  { type: 'addField',    id: 'img-btn',   text: 'Picture' },
-  { type: 'clearFields', id: 'clear-btn', text: 'Clear' },
+  { type: 'addField',    id: 'text-btn',         text: 'Text' },
+  { type: 'addField',    id: 'code-btn',         text: 'Code' },
+  { type: 'addField',    id: 'shell-btn',        text: 'Shell' },
+  { type: 'addField',    id: 'img-btn',          text: 'Picture' },
+  { type: 'clearFields', id: 'clear-btn',        text: 'Clear' },
   { type: 'cancelClear', id: 'cancel-clear-btn', text: 'Cancel' }
 ];
 

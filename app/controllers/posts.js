@@ -44,7 +44,7 @@ exports.updatePost = async (req, res) => {
     post.title = data.title;
     post.content = data.content;
     post.category = data.category;
-    post.tags = post.tags;
+    post.tags = data.tags;
     let postPictures = post.pictures;
 
     if (removedPictures !== 'undefined') {

@@ -174,9 +174,10 @@ export const handleKey = (e) => {
 
 export const change = (event) => {
   const input = event.target;
+  const { files } = input;
   const $label = $(`label[for="${input.id}"]`);
-  if (input.files && input.files[0]) {
-    const { size, type } = input.files[0];
+  if (files && files[0]) {
+    const { size, type } = files[0];
     if (type !== 'image/png' && type !== 'image/jpeg') {
       showErrorMessage('Wrong file type!');
       input.value = '';
@@ -188,8 +189,10 @@ export const change = (event) => {
       return;
     }
     $label.text('File chosen');
+    return files;
   } else {
     $label.text('Choose file');
+    return null;
   }
 };
 
@@ -206,4 +209,42 @@ export const detachTextControls = () => {
   const $textControls = $('#text-controls');
   $textControls.css('display', 'none').detach();
   $('form').eq(0).append($textControls);
+};
+
+export const insertContent = (fields, pictures = {}) => {
+  fields.forEach(({ type, id, content }) => {
+    if (type !== 'img') {
+      if (content) {
+        $(`#${id} pre`).html(content);
+      }
+    } else {
+      const $input = $(`#${id} .custom-file-input`);
+      if ($input.length) {
+        $input[0].files = pictures[id];
+      }
+      if (content) {
+        $(`#img-${id}-sign`).val(content);
+      }
+    }
+  });
+};
+
+export const preview = (buttonId, postPictures, savedPictures) => {
+  const fieldId = buttonId.split('-').slice(1, 3).join('-');
+  const $previewModal = $('#preview-modal');
+  let src;
+  if (savedPictures.includes(fieldId)) {
+    let picture = postPictures.find(picture => picture.field === fieldId);
+    src = picture.url;
+  } else {
+    const inputId = buttonId.split('-preview-')[0];
+    const input = document.getElementById(inputId);
+    if (input.files && input.files[0]) {
+      src = URL.createObjectURL(input.files[0]);
+    } else {
+      return;
+    }
+  }
+  $previewModal.find('.modal-body').html(`<img src="${src}">`);
+  $previewModal.modal('show');
 };

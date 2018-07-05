@@ -1,8 +1,7 @@
 import React from 'react';
 import TextInput from '../common/inputs/TextInput';
-import PostContent from './PostContent';
+import ContentEditor from './editor/ContentEditor';
 import PropTypes from 'prop-types';
-
 import FIELDS from './formFields';
 
 const PostInputs = (props) => {
@@ -11,16 +10,14 @@ const PostInputs = (props) => {
   return FIELDS.map(({ name, label }) => {
     if (name === 'content') {
       return (
-        <PostContent
+        <ContentEditor
           key={name}
           fields={props.fields}
-          moveField={props.move}
-          addField={props.add}
-          clear={props.clear}
-          cancel={props.cancel}
           pictures={props.pictures}
-          preview={props.preview}
-          reselect={props.reselect}
+          postPictures={post.pictures}
+          updateFields={props.updateFields}
+          updatePictures={props.updatePictures}
+          error={errors.content}
         />
       );
     } else {
@@ -40,17 +37,13 @@ const PostInputs = (props) => {
 };
 
 PostInputs.propTypes = {
+  post: PropTypes.object.isRequired,
   fields: PropTypes.array.isRequired,
-  move: PropTypes.func.isRequired,
-  add: PropTypes.func.isRequired,
-  clear: PropTypes.func.isRequired,
-  cancel: PropTypes.func.isRequired,
-  pictures: PropTypes.array.isRequired,
-  preview: PropTypes.func.isRequired,
-  reselect: PropTypes.func.isRequired,
+  pictures: PropTypes.object.isRequired,
+  updateFields: PropTypes.func.isRequired,
+  updatePictures: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onTagKeyDown: PropTypes.func.isRequired,
-  post: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
 };
 

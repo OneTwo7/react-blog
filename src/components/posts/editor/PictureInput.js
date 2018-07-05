@@ -1,8 +1,7 @@
 import React from 'react';
-import { change } from '../../utils/editorHelpers';
 import PropTypes from 'prop-types';
 
-const PictureInput = ({ id, pictures, preview, reselect }) => {
+const PictureInput = ({ id, pictures, preview, reselect, blur, change }) => {
   let pictureFile;
 
   if (pictures.includes(id)) {
@@ -35,40 +34,45 @@ const PictureInput = ({ id, pictures, preview, reselect }) => {
     );
   }
 
-  return [
-    <div key="picture-file" className="input-group">
-      <div className="input-group-prepend">
-        <button
-          className="btn btn-outline-secondary btn-preview"
-          id={`img-${id}-preview-btn`}
-          type="button"
-          onClick={preview}
-        >
-          Preview
-        </button>
+  return (
+    <React.Fragment>
+      <div className="input-group">
+        <div className="input-group-prepend">
+          <button
+            className="btn btn-outline-secondary btn-preview"
+            id={`img-${id}-preview-btn`}
+            type="button"
+            onClick={preview}
+          >
+            Preview
+          </button>
+        </div>
+        {pictureFile}
       </div>
-      {pictureFile}
-    </div>,
-    <div key="picture-sign" className="input-group">
-      <div className="input-group-prepend">
-        <label className="input-group-text" htmlFor={`img-${id}-sign`}>
-          Sign
-        </label>
+      <div className="input-group">
+        <div className="input-group-prepend">
+          <label className="input-group-text" htmlFor={`img-${id}-sign`}>
+            Sign
+          </label>
+        </div>
+        <input
+          className="form-control"
+          id={`img-${id}-sign`}
+          type="text"
+          onBlur={blur}
+        />
       </div>
-      <input
-        className="form-control"
-        id={`img-${id}-sign`}
-        type="text"
-      />
-    </div>
-  ];
+    </React.Fragment>
+  );
 };
 
 PictureInput.propTypes = {
   id: PropTypes.string.isRequired,
   pictures: PropTypes.array.isRequired,
   preview: PropTypes.func.isRequired,
-  reselect: PropTypes.func.isRequired
+  reselect: PropTypes.func.isRequired,
+  blur: PropTypes.func.isRequired,
+  change: PropTypes.func.isRequired
 };
 
 export default PictureInput;
