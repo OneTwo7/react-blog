@@ -29,12 +29,16 @@ exports.createUser = async (req, res) => {
       res.send({ reason: 'User with that email already exists!' });
     } else {
       const salt = encrypt.createSalt();
-      const pwd_hash = encrypt.hashPws(salt, password);
-      const data = { email, name, salt, pws_hash };
+      const pwd_hash = encrypt.hashPwd(salt, password);
+      const data = { email, name, salt, pwd_hash };
 
       const newUser = await User.create(data);
-      req.logIn(newUser);
-      res.send(prepareUser(newUser));
+      req.logIn(newUser, (err) => {
+        if (err) {
+          throw err;
+        }
+        res.send(prepareUser(newUser));
+      });
     }
   } catch (e) {
     res.status(400);
