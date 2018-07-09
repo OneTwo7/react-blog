@@ -15,7 +15,8 @@ exports.getCommentsByPostId = async (req, res) => {
   }
 
   try {
-    let comments = await Comment.find({ post_id: id });
+    let comments = await Comment.find({ post_id: req.params.id })
+    .populate('author', 'name').sort({ created_at: -1 });
     if (cookieComments) {
       comments = comments.concat(cookieComments);
     }
@@ -33,6 +34,10 @@ exports.createComment = (req, res) => {
   let cookieComments = req.cookies[cookieKey];
 
   comment._id = generateId();
+  comment.author = {
+    _id: req.user._id,
+    name: req.user.name
+  };
   comment.created_at = new Date();
 
   if (cookieComments) {

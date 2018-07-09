@@ -111,3 +111,9 @@ exports.handleSocialLogin = async (id, name, done) => {
     done(e);
   }
 };
+
+exports.populateAuthorField = (item, user) => {
+  const populatedItem = item.toObject();
+  populatedItem.author = { _id: user._id, name: user.name };
+  return populatedItem;
+};

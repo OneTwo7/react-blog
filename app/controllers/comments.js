@@ -1,11 +1,11 @@
 const Comment = require('mongoose').model('Comment');
 const { correctUser } = require('../utils/auth');
+const { populateAuthorField } = require('../utils/helpers');
 
 exports.getCommentsByPostId = async (req, res) => {
   try {
-    const comments = await Comment.find({ post_id: req.params.id }).sort({
-      created_at: -1
-    });
+    const comments = await Comment.find({ post_id: req.params.id })
+    .populate('author', 'name').sort({ created_at: -1 });
     res.send(comments);
   } catch (e) {
     res.status(400);
@@ -15,10 +15,11 @@ exports.getCommentsByPostId = async (req, res) => {
 
 exports.createComment = async (req, res) => {
   const data = req.body;
+  data.author = req.user._id;
 
   try {
     const comment = await Comment.create(data);
-    res.send(comment);
+    res.send(populateAuthorField(comment, req.user));
   } catch (e) {
     res.status(400);
     res.send({ reason: e.toString() });
@@ -26,20 +27,18 @@ exports.createComment = async (req, res) => {
 };
 
 exports.updateComment = async (req, res) => {
-  const { author, content } = req.body;
+  const { content } = req.body;
 
-  if (correctUser(req, res, author)) {
-    try {
-      const comment = await Comment.findByIdAndUpdate(
-        req.params.commentId,
-        { $set: { content } },
-        { new: true }
-      );
-      res.send(comment);
-    } catch (e) {
-      res.status(400);
-      res.send({ reason: e.toString() });
+  try {
+    const comment = await Comment.findOne({ _id: req.params.commentId });
+    if (correctUser(req, res, comment.author)) {
+      comment.content = content;
+      const updatedComment = await comment.save();
+      res.send(populateAuthorField(updatedComment, req.user));
     }
+  } catch (e) {
+    res.status(400);
+    res.send({ reason: e.toString() });
   }
 };
 

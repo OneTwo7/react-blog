@@ -45,11 +45,6 @@ class PostForm extends Component {
         tags
       });
     }
-    if (currentPost.author !== nextProps.post.author) {
-      this.setState({
-        post: Object.assign({}, nextProps.post)
-      });
-    }
   }
 
   onChange (event) {
@@ -251,7 +246,6 @@ PostForm.propTypes = {
 const mapStateToProps = (state, ownProps) => {
   const { auth, posts } = state;
   let post = {
-    author: auth ? auth._id : null,
     title: '',
     content: '',
     category: '',

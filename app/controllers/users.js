@@ -2,16 +2,6 @@ const User = require('mongoose').model('User');
 const { prepareUser } = require('../utils/helpers');
 const encrypt = require('../utils/encrypt');
 
-exports.getUsers = async (req, res) => {
-  try {
-    const users = await User.find({}, { name: 1 });
-    res.send(users);
-  } catch (e) {
-    res.status(400);
-    res.send({ reason: e.toString() });
-  }
-};
-
 exports.createUser = async (req, res) => {
   const { email, name, password } = req.body;
 

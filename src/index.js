@@ -7,13 +7,11 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import ScrollToTop from './components/common/ScrollToTop';
 import App from './components/App';
 import { loadPosts } from './actions/postActions';
-import { loadUsers } from './actions/userActions';
 import 'react-notifications/lib/notifications.css';
 import './styles/styles.scss';
 
 const store = configureStore();
 store.dispatch(loadPosts());
-store.dispatch(loadUsers());
 
 render(
   <Provider store={store}>

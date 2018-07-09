@@ -88,9 +88,6 @@ class Comments extends Component {
     if (!(auth && auth._id)) {
       $('#login-modal').modal('show');
     } else {
-      if (!comment.author) {
-        comment.author = auth._id;
-      }
       this.props.actions.saveComment(comment).then(() => {
         showSuccessMessage('Done!');
       }).catch(error => {
@@ -133,7 +130,7 @@ class Comments extends Component {
   }
 
   render () {
-    const { auth, comments, usersById, count } = this.props;
+    const { auth, comments, count } = this.props;
 
     return (
       <section id="comments" className="col-md-6 offset-md-3">
@@ -148,7 +145,6 @@ class Comments extends Component {
         <CommentsList
           auth={auth}
           comments={comments}
-          users={usersById}
           onEdit={this.onEditClick}
           onDelete={this.onDeleteClick}
         />
@@ -163,23 +159,16 @@ Comments.propTypes = {
   postId: PropTypes.string,
   auth: PropTypes.object,
   comments: PropTypes.array.isRequired,
-  actions: PropTypes.object.isRequired,
-  usersById: PropTypes.object.isRequired
+  actions: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => {
-  const { comments, auth, users } = state;
+  const { comments, auth } = state;
   const count = comments.length;
-  const usersById = {};
-
-  for (let i = 0, l = users.length; i < l; i++) {
-    usersById[users[i]._id] = users[i].name;
-  }
 
   return {
     auth,
     comments,
-    usersById,
     count
   };
 };

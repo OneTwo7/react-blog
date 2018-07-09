@@ -2,7 +2,7 @@ import React from 'react';
 import { fromNow } from '../../utils/formatDate';
 import PropTypes from 'prop-types';
 
-const Comment = ({ auth, comment, users, onEdit, onDelete }) => {
+const Comment = ({ auth, comment, onEdit, onDelete }) => {
   const { _id, author, content, created_at } = comment;
   const isAdmin = auth.roles && auth.roles.includes('admin');
 
@@ -11,11 +11,11 @@ const Comment = ({ auth, comment, users, onEdit, onDelete }) => {
       <div className="comment-wrapper">
         <div className="comment-top">
           <div>
-            <div>{users[author]}</div>
+            <div>{author.name}</div>
             <div className="timestamp">{fromNow(created_at)}</div>
           </div>
           {
-            auth && (isAdmin || auth._id === author) &&
+            auth && auth._id && (isAdmin || auth._id === author._id) &&
             <div className="comment-controls">
               <button
                 id={`edit-${_id}`}
@@ -45,7 +45,6 @@ const Comment = ({ auth, comment, users, onEdit, onDelete }) => {
 Comment.propTypes = {
   auth: PropTypes.object,
   comment: PropTypes.object,
-  users: PropTypes.object,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired
 };

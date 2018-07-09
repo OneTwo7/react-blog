@@ -89,11 +89,11 @@ class PostPage extends Component {
   }
 
   render () {
-    const { author, post, recommended, auth } = this.props;
+    const { post, recommended, auth } = this.props;
 
     return (
       <div className="row">
-        <Post author={author} post={post} auth={auth} onClick={this.remove} />
+        <Post post={post} auth={auth} onClick={this.remove} />
         <RecommendedPosts
           recommended={recommended}
           onLoad={this.onImageLoad}
@@ -111,7 +111,6 @@ class PostPage extends Component {
 
 PostPage.propTypes = {
   post: PropTypes.object.isRequired,
-  author: PropTypes.object.isRequired,
   recommended: PropTypes.array,
   auth: PropTypes.object,
   deletePost: PropTypes.func.isRequired,
@@ -120,7 +119,7 @@ PostPage.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   let post = {
-    author: '',
+    author: {},
     title: '',
     content: '',
     category: '',
@@ -130,11 +129,10 @@ const mapStateToProps = (state, ownProps) => {
 
   const postId = ownProps.match.params.id;
 
-  const { users, auth } = state;
+  const { auth } = state;
 
   let posts = [...state.posts];
   let recommended = [];
-  let author = {};
 
   if (postId && posts.length) {
     const postIndex = posts.findIndex(post => post._id === postId);
@@ -142,14 +140,9 @@ const mapStateToProps = (state, ownProps) => {
     recommended = getRecommended(post, posts);
   }
 
-  if (post.author && users.length) {
-    author = users.find(user => user._id === post.author);
-  }
-
   return {
     post,
     recommended,
-    author,
     auth
   };
 };

@@ -2,29 +2,11 @@ import test from 'ava';
 import * as types from '../../src/constants';
 import userReducer from '../../src/reducers/userReducer';
 
-const users = [
-  { _id: 1, name: 'John' },
-  { _id: 2, name: 'Mali' }
-];
-
-test('load users success', t => {
-  const initialState = [];
-
-  const action = {
-    type: types.LOAD_USERS_SUCCESS,
-    users
-  }
-
-  const expectedState = [...users];
-
-  const newState = userReducer(initialState, action);
-
-  t.deepEqual(newState, expectedState);
-});
-
-
 test('create user success', t => {
-  const initialState = users;
+  const initialState = [
+    { _id: 1, name: 'John' },
+    { _id: 2, name: 'Mali' }
+  ];
 
   const user = { _id: 3, name: 'Hideyoshi' };
 
@@ -33,7 +15,7 @@ test('create user success', t => {
     user
   };
 
-  const expectedState = [Object.assign({}, user), ...users];
+  const expectedState = [Object.assign({}, user), ...initialState];
 
   const newState = userReducer(initialState, action);
 

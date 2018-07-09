@@ -13,7 +13,8 @@ exports.getPosts = async (req, res) => {
   }
 
   try {
-    const dbPosts = await Post.find({});
+    const dbPosts = await Post.find({}).populate('author', 'name')
+    .sort({ created_at: -1 });
     res.send(dbPosts.concat(posts).reverse());
   } catch (e) {
     res.status(400);
@@ -31,6 +32,10 @@ exports.createPost = async (req, res) => {
   const post = Object.assign({}, data);
   const postId = generateId();
   post._id = postId;
+  post.author = {
+    _id: req.user._id,
+    name: req.user.name
+  };
   post.created_at = new Date();
 
   try {
