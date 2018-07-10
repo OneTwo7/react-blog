@@ -104,7 +104,7 @@ exports.handleSocialLogin = async (id, name, done) => {
     if (existingUser) {
       done(null, existingUser);
     } else {
-      const user = await new User({ id, name }).save();
+      const user = await new User({ id, name, activated: true }).save();
       done(null, user);
     }
   } catch (e) {

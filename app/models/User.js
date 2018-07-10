@@ -7,7 +7,10 @@ const userSchema = mongoose.Schema({
   name: { type: String, required: '{PATH} is required!' },
   salt: String,
   pwd_hash: String,
-  roles: [String]
+  roles: [String],
+  activated: { type: Boolean, default: false },
+  activation_digest: String,
+  reset_digest: String
 });
 
 userSchema.methods = {
@@ -26,13 +29,15 @@ const sampleUsers = [
     email: 'admin@example.com',
     password: 'foobar',
     name: 'John Doe',
-    roles: ['admin']
+    roles: ['admin'],
+    activated: true
   },
   {
     email: 'guest@example.com',
     password: 'foobar',
     name: 'John Doono',
-    roles: []
+    roles: [],
+    activated: true
   }
 ];
 

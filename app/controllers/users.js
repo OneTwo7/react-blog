@@ -2,9 +2,11 @@ const mongoose = require('mongoose');
 const User = mongoose.model('User');
 const Post = mongoose.model('Post');
 const Comment = mongoose.model('Comment');
-const { createSalt, hashPwd } = require('../utils/encrypt');
+const { createSalt, hashPwd, createToken } = require('../utils/encrypt');
 const { prepareUser, logoutUser } = require('../utils/helpers');
 const { correctUser } = require('../utils/auth');
+const sendEmail = require('../services/mailer');
+const template = require('../services/emailTemplates/template');
 
 exports.createUser = async (req, res) => {
   const { email, name, password } = req.body;
@@ -24,20 +26,53 @@ exports.createUser = async (req, res) => {
     } else {
       const salt = createSalt();
       const pwd_hash = hashPwd(salt, password);
-      const data = { email, name, salt, pwd_hash };
+      const token = createToken();
+      const activation_digest = hashPwd(salt, token);
+      const data = { email, name, salt, pwd_hash, activation_digest };
 
       const newUser = await User.create(data);
-      req.logIn(newUser, (err) => {
-        if (err) {
-          throw err;
-        }
-        res.send(prepareUser(newUser));
-      });
+      const encodedToken = encodeURIComponent(token);
+      const encodedEmail = encodeURIComponent(email);
+      const emailData = {
+        title: 'Welcome to React Blog App',
+        body: 'Follow the link to activate your account:',
+        link: `/api/users/activate/${encodedToken}/email/${encodedEmail}`,
+        text: 'activation link'
+      };
+      await sendEmail('Account activation', email, template(emailData));
+      res.status(200).end();
     }
   } catch (e) {
     res.status(400).send({ reason: e.toString() });
   }
 };
+
+exports.activateUser = async (req, res) => {
+  const { email, token } = req.params;
+
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      const { activated, activation_digest, salt } = user;
+      if (!activated && activation_digest === hashPwd(salt, token)) {
+        user.activated = true;
+        const activatedUser = await user.save();
+        req.logIn(activatedUser, (err) => {
+          if (err) {
+            throw err;
+          }
+          res.redirect('/');
+        });
+      } else {
+        res.status(400).send({ reason: 'Invalid activation link!' });
+      }
+    } else {
+      res.status(400).send({ reason: `${email} is not registered!` });
+    }
+  } catch (e) {
+    res.status(400).send({ reason: e.toString() });
+  }
+}
 
 exports.updateUser = async (req, res) => {
   const { name, password } = req.body;

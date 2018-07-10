@@ -26,7 +26,7 @@ const ModalHeader = (props) => {
       children.push(React.cloneElement(child, {
         key: idx,
         active: idx === 0 ? ' active' : '',
-        text: tab[0].toUpperCase() + tab.slice(1),
+        text: idx === 1 ? 'Email' : tab[0].toUpperCase() + tab.slice(1),
         tab
       }));
     });

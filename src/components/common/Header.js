@@ -110,7 +110,7 @@ class Header extends Component {
       this.setDefault();
       notifications.showSuccessMessage('You are now logged in!');
     }).catch(error => {
-      notifications.showErrorMessage('Invalid email/password combination!');
+      notifications.showReason(error);
     });
   }
 
@@ -345,7 +345,7 @@ Header.propTypes = {
   actions: PropTypes.object.isRequired
 };
 
-const mapStateToProps = ({ auth, ajaxCallsInProgress }) => {
+const mapStateToProps = ({ auth }) => {
   return {
     auth
   };

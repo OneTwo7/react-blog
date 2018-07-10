@@ -1,3 +1,5 @@
+const User = require('mongoose').model('User');
+
 exports.requiresLogin = (req, res, next) => {
   if (!req.isAuthenticated()) {
     res.status(403);
@@ -25,5 +27,26 @@ exports.correctUser = (req, res, id) => {
     return false;
   } else {
     return true;
+  }
+};
+
+exports.requiresActivation = async (req, res, next) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      const reason = 'Account with provided email does not exist!';
+      return res.status(403).send({ reason })
+    }
+    if (user.activated) {
+      next();
+    } else {
+      const reason = `
+        Your account is not activated. Check your email for activation link!
+      `;
+      res.status(403).send({ reason });
+    }
+  } catch (e) {
+    res.status(400).send({ reason: e.toString() });
   }
 };

@@ -5,6 +5,7 @@ const postRoutes = require('./posts');
 const commentRoutes = require('./comments');
 const authRoutes = require('./auth');
 const { sendUser, logoutUser } = require('../utils/helpers');
+const { requiresActivation } = require('../utils/auth');
 
 module.exports = (app) => {
 
@@ -18,7 +19,9 @@ module.exports = (app) => {
 
   router.use('/auth', authRoutes);
 
-  router.post('/api/login', passport.authenticate('local'), sendUser);
+  router.post(
+    '/api/login', requiresActivation, passport.authenticate('local'), sendUser
+  );
 
   router.get('/api/logout', logoutUser);
 
