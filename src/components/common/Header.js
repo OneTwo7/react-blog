@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/authActions';
-import { createUser } from '../../actions/userActions';
 import { Link } from 'react-router-dom';
-import LoginModal from './login/LoginModal';
+import AccountModal from './account/AccountModal';
+import ConfirmationModal from './modals/ConfirmationModal';
 import * as notifications from '../../utils/notifications';
 import PropTypes from 'prop-types';
 
@@ -29,15 +29,14 @@ class Header extends Component {
     this.signup = this.signup.bind(this);
     this.setDefault = this.setDefault.bind(this);
     this.validate = this.validate.bind(this);
+    this.update = this.update.bind(this);
+    this.remove = this.remove.bind(this);
+    this.confirm = this.confirm.bind(this);
   }
 
   componentDidMount () {
     this.props.actions.getCurrentUser();
-    $('#modal-login-list, #modal-signup-list').on('shown.bs.tab', (e) => {
-      const paneId = $(e.target).attr('href');
-      $(`${paneId} input[type="email"]`).focus();
-    });
-    $('#list-signup input').on('input', this.validate);
+    this.attachFocus();
   }
 
   componentWillReceiveProps (nextProps) {
@@ -48,40 +47,56 @@ class Header extends Component {
     }
   }
 
+  componentDidUpdate () {
+    this.attachFocus();
+  }
+
+  attachFocus () {
+    const focus = () => {
+      $('#account-modal form > div:first-child input').focus();
+    };
+    $('#account-modal').on('shown.bs.modal', focus);
+    $('#account-modal a[data-toggle="list"]').on('shown.bs.tab', focus);
+  }
+
   onChange (event) {
     const name = event.target.name;
     const auth = this.state.auth;
     auth[name] = event.target.value;
-    this.setState({ auth });
+    const errors = this.validate(name, auth);
+    this.setState({ auth, errors });
   }
 
   onKeyDown (event) {
     if (event.keyCode === 13) {
-      if (event.target.id.includes('login')) {
+      event.preventDefault();
+      const { id } = event.target;
+      if (id.includes('login')) {
         this.login();
+      } else if (id.includes('modify')) {
+        this.update();
+      } else if (id.includes('delete')) {
+        this.remove();
       } else {
         this.signup();
       }
     }
   }
 
-  validate (event) {
-    this.onChange(event);
-    const { name: inputName } = event.target;
+  validate (input, { email, name, password, password_confirmation }) {
     const { errors } = this.state;
-    const { email, name, password, password_confirmation } = this.state.auth;
     let error;
-    if (inputName === 'email') {
+    if (input === 'email') {
       error = email.length < 6;
-    } else if (inputName === 'name') {
+    } else if (input === 'name') {
       error = !name.length;
-    } else if (inputName === 'password') {
+    } else if (input === 'password') {
       error = password.length < 6;
     } else {
       error = password !== password_confirmation;
     }
-    errors[inputName] = error;
-    this.setState({ errors });
+    errors[input] = error;
+    return errors;
   }
 
   login () {
@@ -91,7 +106,7 @@ class Header extends Component {
       return;
     }
     this.props.actions.login(email.toLowerCase(), password).then(() => {
-      $('#login-modal').modal('hide');
+      $('#account-modal').modal('hide');
       this.setDefault();
       notifications.showSuccessMessage('You are now logged in!');
     }).catch(error => {
@@ -125,8 +140,8 @@ class Header extends Component {
       password
     };
 
-    this.props.createUser(user).then(() => {
-      $('#login-modal').modal('hide');
+    this.props.actions.createUser(user).then(() => {
+      $('#account-modal').modal('hide');
       this.setDefault();
       notifications.showSuccessMessage('You have successfully signed up!');
     }).catch(error => {
@@ -142,10 +157,68 @@ class Header extends Component {
     });
   }
 
+  update () {
+    const { name, password, password_confirmation } = this.state.auth;
+    if (!name) {
+      notifications.showErrorMessage('You must provide name!');
+      return;
+    }
+    if (password && password.length < 6) {
+      notifications
+      .showErrorMessage('Password should be at least 6 characters long!');
+      return;
+    }
+    if (password && password !== password_confirmation) {
+      notifications.showErrorMessage('Passwords don\'t match!');
+      return;
+    }
+
+    const data = { name, password };
+
+    this.props.actions.updateUser(data, this.props.auth._id).then(() => {
+      $('#account-modal').modal('hide');
+      this.setDefault();
+      notifications.showSuccessMessage('Account successfully updated!');
+    }).catch(error => {
+      notifications.showReason(error);
+    });
+  }
+
+  remove () {
+    const { email } = this.state.auth;
+    if (email.length < 6) {
+      notifications.showErrorMessage('You must input email!');
+      return;
+    }
+
+    const { _id, email: requiredEmail } = this.props.auth;
+    if (email !== requiredEmail) {
+      notifications.showErrorMessage('Wrong email!');
+      return;
+    }
+
+    this.props.actions.deleteUser(_id).then(() => {
+      $('#account-modal').modal('hide');
+      this.setDefault();
+      notifications.showSuccessMessage('Account successfully removed!');
+    }).catch(error => {
+      notifications.showReason(error);
+    });
+  }
+
   setDefault () {
     this.setState({
       auth: { email: '', password: '', name: '', password_confirmation: '' }
     });
+  }
+
+  confirm () {
+    this.props.actions.deleteUser(this.state.auth._id).then(() => {
+      notifications.showSuccessMessage('Account successfully removed!');
+    }).catch(error => {
+      notifications.showReason(error);
+    });
+    $('#account-confirmation-modal').modal('hide');
   }
 
   renderLoginButton (auth) {
@@ -155,17 +228,18 @@ class Header extends Component {
       return (
         <li className="nav-item">
           <button
-            key="lodin-modal-btn"
+            key="account-modal-btn"
             type="button"
             className="btn btn-outline-light"
             data-toggle="modal"
-            data-target="#login-modal"
+            data-target="#account-modal"
           >
             Login
           </button>
         </li>
       );
     } else {
+      const { name, email } = auth;
       return (
         <li className="nav-item dropdown">
           <button
@@ -177,11 +251,18 @@ class Header extends Component {
             aria-haspopup="true"
             aria-expanded="false"
           >
-            {auth.name}
+            {name}
           </button>
           <div className="dropdown-menu" aria-labelledby="navbarDropdown">
             <button
-              key="2"
+              type="button"
+              className="btn btn-link dropdown-item"
+              data-toggle="modal"
+              data-target={email ? '#account-modal' : '#account-confirmation-modal'}
+            >
+              {email ? 'Account' : 'Delete Account'}
+            </button>
+            <button
               type="button"
               className="btn btn-link dropdown-item"
               onClick={this.logout}
@@ -237,16 +318,23 @@ class Header extends Component {
           </div>
 
 
-          <LoginModal
+          <AccountModal
             onChange={this.onChange}
             onKeyDown={this.onKeyDown}
             auth={auth}
             login={this.login}
             signup={this.signup}
-            onFocus={this.onFocus}
             errors={errors}
+            update={this.update}
+            remove={this.remove}
+            user={user}
           />
         </nav>
+        <ConfirmationModal
+          id="account-confirmation-modal"
+          confirm={this.confirm}
+          message="Are you sure you want to delete your account?"
+        />
       </header>
     );
   }
@@ -254,11 +342,10 @@ class Header extends Component {
 
 Header.propTypes = {
   auth: PropTypes.object,
-  actions: PropTypes.object.isRequired,
-  createUser: PropTypes.func.isRequired
+  actions: PropTypes.object.isRequired
 };
 
-const mapStateToProps = ({ auth }) => {
+const mapStateToProps = ({ auth, ajaxCallsInProgress }) => {
   return {
     auth
   };
@@ -266,8 +353,7 @@ const mapStateToProps = ({ auth }) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    actions: bindActionCreators(actions, dispatch),
-    createUser: bindActionCreators(createUser, dispatch)
+    actions: bindActionCreators(actions, dispatch)
   };
 };
 

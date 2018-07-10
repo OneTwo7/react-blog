@@ -13,7 +13,7 @@ test('load post comments success', t => {
   const initialState = [];
 
   const action = {
-    type: types.LOAD_POST_COMMENTS_SUCCESS,
+    type: types.LOAD_POST_COMMENTS,
     comments
   };
 

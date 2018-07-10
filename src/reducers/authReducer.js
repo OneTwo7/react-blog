@@ -1,21 +1,23 @@
 import * as types from '../constants';
 
-const authReducer = (state = null, action) => {
-  let currentUser = null;
-
-  switch (action.type) {
+const authReducer = (state = null, { type, user }) => {
+  switch (type) {
     case types.LOGIN_SUCCESS:
-      currentUser = Object.assign({}, action.user);
-      return currentUser;
+      return Object.assign({}, user);
     case types.LOGOUT_SUCCESS:
       return {};
     case types.GET_CURRENT_USER_SUCCESS:
-      if (action.user) {
-        currentUser = Object.assign({}, action.user);
+      if (user) {
+        return Object.assign({}, user);
       } else {
-        currentUser = {};
+        return {};
       }
-      return currentUser;
+    case types.CREATE_USER_SUCCESS:
+      return Object.assign({}, user);
+    case types.UPDATE_USER_SUCCESS:
+      return Object.assign({}, user);
+    case types.DELETE_USER_SUCCESS:
+      return {};
     default:
       return state;
   }

@@ -9,7 +9,7 @@ const commentReducer = (state = [], action) => {
   let idx = -1;
 
   switch (action.type) {
-    case types.LOAD_POST_COMMENTS_SUCCESS:
+    case types.LOAD_POST_COMMENTS:
       return [...action.comments];
     case types.CREATE_COMMENT_SUCCESS:
       return [Object.assign({}, action.comment), ...state];

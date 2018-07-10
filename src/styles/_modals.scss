@@ -6,7 +6,15 @@
   }
 }
 
-#login-modal {
+#account-modal {
+  .modal-header {
+    justify-content: center;
+    .close {
+      position: absolute;
+      margin-top: -1rem;
+      right: 1rem;
+    }
+  }
   .list-group {
     flex-direction: row;
   }
@@ -21,6 +29,9 @@
     &:last-child {
       border-top-right-radius: .25rem;
       border-bottom-left-radius: 0;
+    }
+    &:only-child {
+      border-bottom-left-radius: .25rem;
     }
   }
   .list-group-item-action {
@@ -83,6 +94,10 @@
       margin-top: 0;
     }
   }
+}
+
+#repeat-notice {
+  margin-bottom: 1rem;
 }
 
 #google-btn:before {

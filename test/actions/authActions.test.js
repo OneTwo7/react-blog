@@ -37,3 +37,35 @@ test('getCurrentUserSuccess', t => {
 
   t.deepEqual(action, expectedAction);
 });
+
+test('createUserSuccess', t => {
+  const expectedAction = {
+    type: types.CREATE_USER_SUCCESS,
+    user
+  };
+
+  const action = authActions.createUserSuccess(user);
+
+  t.deepEqual(action, expectedAction);
+});
+
+test('updateUserSuccess', t => {
+  const expectedAction = {
+    type: types.UPDATE_USER_SUCCESS,
+    user
+  };
+
+  const action = authActions.updateUserSuccess(user);
+
+  t.deepEqual(action, expectedAction);
+});
+
+test('deleteUserSuccess', t => {
+  const expectedAction = {
+    type: types.DELETE_USER_SUCCESS
+  };
+
+  const action = authActions.deleteUserSuccess();
+
+  t.deepEqual(action, expectedAction);
+});

@@ -3,7 +3,7 @@ import Input from '../inputs/Input';
 import PropTypes from 'prop-types';
 
 const ModalPane = (props) => {
-  const { type, auth, onChange, onKeyDown, signup, login, errors } = props;
+  const { type, auth, onChange, onKeyDown, errors, user } = props;
   let modalBody;
   let paneClass = 'tab-pane fade';
   let submitButton = null;
@@ -13,17 +13,20 @@ const ModalPane = (props) => {
     modalBody = (
       <div id="social-login">
         <a href="/auth/google" id="google-btn">
-          Sign in with Google
+          Log in with Google
         </a>
         <a href="/auth/github" id="github-btn">
-          Sign in with Github
+          Log in with Github
         </a>
         <a href="/auth/vk" id="vk-btn">
-          Sign in with VK
+          Log in with VK
         </a>
       </div>
     );
   } else {
+    let submitButtonClass = 'btn btn-primary';
+    let clickHandler;
+    let submitButtonText;
     const inputs = [];
     const emailInput = (
       <Input
@@ -41,9 +44,10 @@ const ModalPane = (props) => {
     const nameInput = (
       <Input
         key="name"
-        id="signup-name"
+        id={`${type}-name`}
         type="text"
         val={auth && auth.name}
+        placeholder={user && user.name}
         name="name"
         onChange={onChange}
         onKeyDown={onKeyDown}
@@ -67,7 +71,7 @@ const ModalPane = (props) => {
     const confirmationInput = (
       <Input
         key="password_confirmation"
-        id="signup-password_confirmation"
+        id={`${type}-password_confirmation`}
         type="password"
         val={auth && auth.password_confirmation}
         name="password_confirmation"
@@ -77,19 +81,42 @@ const ModalPane = (props) => {
         error={errors && errors.password_confirmation}
       />
     );
-    if (type === 'login') {
+    if (type === 'modify') {
+      paneClass += ' show active';
+      clickHandler = props.update;
+      submitButtonText = 'Update';
+      inputs.push(nameInput, passwordInput, confirmationInput);
+    } else if (type === 'delete') {
+      submitButtonClass = 'btn btn-danger';
+      clickHandler = props.remove;
+      submitButtonText = 'Remove Account';
+      inputs.push(emailInput);
+    } else if (type === 'login') {
+      clickHandler = props.login;
+      submitButtonText = 'Login';
       inputs.push(emailInput, passwordInput);
     } else {
+      clickHandler = props.signup;
+      submitButtonText = 'Sign Up';
       inputs.push(emailInput, nameInput, passwordInput, confirmationInput);
     }
-    modalBody = <form>{inputs}</form>;
+    if (type === 'delete') {
+      modalBody = (
+        <React.Fragment>
+          <div id="repeat-notice">Input your email to confirm:</div>
+          <form>{inputs}</form>
+        </React.Fragment>
+      );
+    } else {
+      modalBody = <form>{inputs}</form>;
+    }
     submitButton = (
       <button
         type="button"
-        className="btn btn-primary"
-        onClick={type === 'login' ? login : signup}
+        className={submitButtonClass}
+        onClick={clickHandler}
       >
-        {type === 'login' ? 'Login' : 'Sign Up'}
+        {submitButtonText}
       </button>
     );
   }
@@ -125,7 +152,10 @@ ModalPane.propTypes = {
   auth: PropTypes.object,
   signup: PropTypes.func,
   login: PropTypes.func,
-  errors: PropTypes.object
+  errors: PropTypes.object,
+  user: PropTypes.object,
+  update: PropTypes.func,
+  remove: PropTypes.func
 };
 
 export default ModalPane;

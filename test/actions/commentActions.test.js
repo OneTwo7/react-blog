@@ -13,7 +13,7 @@ test('loadPostCommentsSuccess', t => {
   ];
 
   const expectedAction = {
-    type: types.LOAD_POST_COMMENTS_SUCCESS,
+    type: types.LOAD_POST_COMMENTS,
     comments
   };
 

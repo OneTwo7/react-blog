@@ -59,3 +59,39 @@ test('get current user success without user', t => {
 
   t.deepEqual(newState, expectedState);
 });
+
+test('create user success', t => {
+  const action = {
+    type: types.CREATE_USER_SUCCESS,
+    user
+  };
+
+  const newState = authReducer(initialState, action);
+
+  t.deepEqual(newState, expectedState);
+});
+
+test('update user success', t => {
+  const action = {
+    type: types.UPDATE_USER_SUCCESS,
+    user
+  };
+
+  const initialState = { _id: 2, name: 'Bob' };
+
+  const newState = authReducer(initialState, action);
+
+  t.deepEqual(newState, expectedState);
+});
+
+test('delete user success', t => {
+  const action = {
+    type: types.DELETE_USER_SUCCESS
+  };
+
+  const expectedState = {};
+
+  const newState = authReducer(initialState, action);
+
+  t.deepEqual(newState, expectedState);
+});

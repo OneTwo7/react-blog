@@ -86,7 +86,7 @@ class Comments extends Component {
     comment.post_id = this.props.postId;
 
     if (!(auth && auth._id)) {
-      $('#login-modal').modal('show');
+      $('#account-modal').modal('show');
     } else {
       this.props.actions.saveComment(comment).then(() => {
         showSuccessMessage('Done!');

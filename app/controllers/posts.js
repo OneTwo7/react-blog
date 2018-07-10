@@ -83,7 +83,7 @@ exports.deletePost = async (req, res) => {
   const postId = req.params.id;
 
   try {
-    await Post.remove({ _id: postId });
+    await Post.findOneAndRemove({ _id: postId });
     await Comment.remove({ post_id: postId });
     res.status(200);
     res.end();

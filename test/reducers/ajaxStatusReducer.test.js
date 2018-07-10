@@ -6,7 +6,7 @@ test('load post comments', t => {
   const initialState = 0;
 
   const action = {
-    type: types.LOAD_POST_COMMENTS_SUCCESS
+    type: types.LOAD_POST_COMMENTS
   };
 
   const expectedState = 0;

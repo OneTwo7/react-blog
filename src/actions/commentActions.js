@@ -4,7 +4,7 @@ import axios from 'axios';
 
 export const loadPostCommentsSuccess = (comments) => {
   return {
-    type: types.LOAD_POST_COMMENTS_SUCCESS,
+    type: types.LOAD_POST_COMMENTS,
     comments
   };
 };

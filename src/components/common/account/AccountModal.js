@@ -1,33 +1,32 @@
 import React from 'react';
-import LoginModalContainer from './LoginModalContainer';
+import AccountModalContainer from './AccountModalContainer';
 import ModalHeader from './ModalHeader';
 import ModalTab from './ModalTab';
 import ModalBody from './ModalBody';
 import ModalPane from './ModalPane';
 import PropTypes from 'prop-types';
 
-const LoginModal = (props) => (
-  <LoginModalContainer {...props}>
+const AccountModal = (props) => (
+  <AccountModalContainer {...props}>
     <ModalHeader>
-      <ModalTab />
-      <ModalTab />
       <ModalTab />
     </ModalHeader>
     <ModalBody>
       <ModalPane />
-      <ModalPane />
-      <ModalPane />
     </ModalBody>
-  </LoginModalContainer>
+  </AccountModalContainer>
 );
 
-LoginModal.propTypes = {
+AccountModal.propTypes = {
   onChange: PropTypes.func.isRequired,
   onKeyDown: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   login: PropTypes.func.isRequired,
   signup: PropTypes.func.isRequired,
-  errors: PropTypes.object.isRequired
+  errors: PropTypes.object.isRequired,
+  update: PropTypes.func.isRequired,
+  remove: PropTypes.func.isRequired,
+  user: PropTypes.object
 };
 
-export default LoginModal;
+export default AccountModal;

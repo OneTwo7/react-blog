@@ -1,15 +1,11 @@
 import * as types from '../constants';
 
 const typeEndsInSuccess = (type) => {
-  return type.slice(-8) === '_SUCCESS';
+  return type.split('_').pop() === 'SUCCESS';
 };
 
 const ajaxStatusReducer = (state = 0, action) => {
   const { type } = action;
-
-  if (type === types.LOAD_POST_COMMENTS_SUCCESS) {
-    return state;
-  }
 
   if (type === types.BEGIN_AJAX_CALL) {
     return state + 1;

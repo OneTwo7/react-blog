@@ -1,47 +1,46 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const LoginModalContainer = (props) => {
-  const { onChange, onKeyDown, auth, login, signup, errors } = props;
+const AccountModalContainer = (props) => {
   const children = React.Children.map(props.children, (child, idx) => {
     if (idx === 0) {
-      return React.cloneElement(child);
+      return React.cloneElement(child, { user: props.user });
     } else {
-      return React.cloneElement(child, {
-        onChange,
-        onKeyDown,
-        auth,
-        login,
-        signup,
-        errors
-      });
+      const newProps = Object.assign({}, props);
+      delete newProps.children;
+      return React.cloneElement(child, newProps);
     }
   });
 
   return (
     <div
       className="modal fade"
-      id="login-modal"
+      id="account-modal"
       tabIndex="-1"
       role="dialog"
-      aria-labelledby="loginModalLabel"
+      aria-labelledby="AccountModalLabel"
       aria-hidden="true"
     >
       <div className="modal-dialog" role="document">
-        <div className="modal-content">{children}</div>
+        <div className="modal-content">
+          {children}
+        </div>
       </div>
     </div>
   );
 };
 
-LoginModalContainer.propTypes = {
+AccountModalContainer.propTypes = {
   children: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
   onKeyDown: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   login: PropTypes.func.isRequired,
   signup: PropTypes.func.isRequired,
-  errors: PropTypes.object.isRequired
+  errors: PropTypes.object.isRequired,
+  update: PropTypes.func.isRequired,
+  remove: PropTypes.func.isRequired,
+  user: PropTypes.object
 };
 
-export default LoginModalContainer;
+export default AccountModalContainer;
