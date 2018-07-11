@@ -4,7 +4,11 @@ const { requiresLogin } = require('../utils/auth');
 
 router.post('/', users.createUser);
 
-router.get('/activate/:token/email/:email', users.activateUser);
+router.get('/:email/activate/:token', users.activateUser);
+
+router.post('/password_reset', users.generateResetToken);
+
+router.get('/:email/reset/:token', users.authenticateResetToken);
 
 router.patch('/:id', requiresLogin, users.updateUser);
 

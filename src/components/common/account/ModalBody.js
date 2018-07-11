@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const ModalBody = (props) => {
-  const { onChange, onKeyDown, auth, login, signup, errors, user } = props;
+  const { onChange, onKeyDown, auth, login, signup, errors, reset } = props;
+  const { user } = props;
   const child = React.Children.only(props.children);
   const children = [];
 
@@ -38,6 +39,7 @@ const ModalBody = (props) => {
       onKeyDown,
       auth,
       login,
+      reset,
       errors
     }));
     children.push(React.cloneElement(child, {
@@ -64,7 +66,8 @@ ModalBody.propTypes = {
   errors: PropTypes.object,
   user: PropTypes.object,
   update: PropTypes.func,
-  remove: PropTypes.func
+  remove: PropTypes.func,
+  reset: PropTypes.func
 };
 
 export default ModalBody;

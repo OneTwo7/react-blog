@@ -36,7 +36,7 @@ exports.createUser = async (req, res) => {
       const emailData = {
         title: 'Welcome to React Blog App',
         body: 'Follow the link to activate your account:',
-        link: `/api/users/activate/${encodedToken}/email/${encodedEmail}`,
+        link: `/api/users/${encodedEmail}/activate/${encodedToken}`,
         text: 'activation link'
       };
       await sendEmail('Account activation', email, template(emailData));
@@ -72,11 +72,69 @@ exports.activateUser = async (req, res) => {
   } catch (e) {
     res.status(400).send({ reason: e.toString() });
   }
-}
+};
+
+exports.generateResetToken = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      const token = createToken();
+      user.reset_digest = hashPwd(user.salt, token);
+      await user.save();
+
+      const encodedToken = encodeURIComponent(token);
+      const encodedEmail = encodeURIComponent(email);
+      const emailData = {
+        title: 'Password Reset',
+        body: 'Use the following link to reset your password:',
+        link: `/api/users/${encodedEmail}/reset/${encodedToken}`,
+        text: 'reset link'
+      };
+      await sendEmail('Password reset', email, template(emailData));
+      res.status(200).end();
+    } else {
+      res.status(400).send({ reason: `${email} is not registered!` });
+    }
+  } catch (e) {
+    res.status(400).send({ reason: e.toString() });
+  }
+};
+
+exports.authenticateResetToken = async (req, res) => {
+  const { email, token } = req.params;
+
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      if (hashPwd(user.salt, token) === user.reset_digest) {
+        user.reset_digest = null;
+        const updatedUser = await user.save();
+        req.logIn(updatedUser, (err) => {
+          if (err) {
+            throw err;
+          }
+          res.redirect('/password_reset');
+        });
+      } else {
+        res.status(400).send({ reason: `Invalid reset link!` });
+      }
+    } else {
+      res.status(400).send({ reason: `${email} is not registered!` });
+    }
+  } catch (e) {
+    res.status(400).send({ reason: e.toString() });
+  }
+};
 
 exports.updateUser = async (req, res) => {
   const { name, password } = req.body;
   const { id } = req.params;
+
+  if (!name && !password) {
+    return res.status(400).send({ reason: 'No update data provided!' });
+  }
 
   if (correctUser(req, res, id)) {
     try {

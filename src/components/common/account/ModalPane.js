@@ -7,6 +7,7 @@ const ModalPane = (props) => {
   let modalBody;
   let paneClass = 'tab-pane fade';
   let submitButton = null;
+  let resetButton = null;
 
   if (type === 'social') {
     paneClass += ' show active';
@@ -95,6 +96,15 @@ const ModalPane = (props) => {
       clickHandler = props.login;
       submitButtonText = 'Login';
       inputs.push(emailInput, passwordInput);
+      resetButton = (
+        <button
+          type="button"
+          className="btn btn-dark"
+          onClick={props.reset}
+        >
+          Reset Password
+        </button>
+      );
     } else {
       clickHandler = props.signup;
       submitButtonText = 'Sign Up';
@@ -139,6 +149,7 @@ const ModalPane = (props) => {
         >
           Close
         </button>
+        {resetButton}
         {submitButton}
       </div>
     </div>
@@ -155,7 +166,8 @@ ModalPane.propTypes = {
   errors: PropTypes.object,
   user: PropTypes.object,
   update: PropTypes.func,
-  remove: PropTypes.func
+  remove: PropTypes.func,
+  reset: PropTypes.func
 };
 
 export default ModalPane;

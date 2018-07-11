@@ -42,6 +42,12 @@ export const deleteUserSuccess = () => {
   };
 };
 
+export const sendResetLinkSuccess = () => {
+  return {
+    type: types.SEND_RESET_LINK_SUCCESS
+  };
+};
+
 export const login = (email, password) => (async dispatch => {
   dispatch(beginAjaxCall());
   try {
@@ -97,6 +103,16 @@ export const deleteUser = (id) => (async dispatch => {
   try {
     await axios.delete(`/api/users/${id}`);
     dispatch(deleteUserSuccess());
+  } catch (e) {
+    dispatchAjaxCallError(e, dispatch);
+  }
+});
+
+export const sendResetLink = (email) => (async dispatch => {
+  dispatch(beginAjaxCall());
+  try {
+    await axios.post(`/api/users/password_reset`, { email });
+    dispatch(sendResetLinkSuccess());
   } catch (e) {
     dispatchAjaxCallError(e, dispatch);
   }

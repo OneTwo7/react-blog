@@ -32,6 +32,7 @@ class Header extends Component {
     this.update = this.update.bind(this);
     this.remove = this.remove.bind(this);
     this.confirm = this.confirm.bind(this);
+    this.reset = this.reset.bind(this);
   }
 
   componentDidMount () {
@@ -143,7 +144,9 @@ class Header extends Component {
     this.props.actions.createUser(user).then(() => {
       $('#account-modal').modal('hide');
       this.setDefault();
-      notifications.showSuccessMessage('You have successfully signed up!');
+      notifications.showSuccessMessage(
+        'Account is created. Check your email for activation link!'
+      );
     }).catch(error => {
       notifications.showReason(error);
     });
@@ -221,6 +224,22 @@ class Header extends Component {
     $('#account-confirmation-modal').modal('hide');
   }
 
+  reset () {
+    const { email } = this.state.auth;
+    if (email.length < 6) {
+      notifications.showErrorMessage('You must input email!');
+      return;
+    }
+
+    this.props.actions.sendResetLink(email).then(() => {
+      $('#account-modal').modal('hide');
+      this.setDefault();
+      notifications.showSuccessMessage('Check your email for reset link!');
+    }).catch(error => {
+      notifications.showReason(error);
+    });
+  }
+
   renderLoginButton (auth) {
     if (!auth) {
       return;
@@ -258,7 +277,9 @@ class Header extends Component {
               type="button"
               className="btn btn-link dropdown-item"
               data-toggle="modal"
-              data-target={email ? '#account-modal' : '#account-confirmation-modal'}
+              data-target={
+                email ? '#account-modal' : '#account-confirmation-modal'
+              }
             >
               {email ? 'Account' : 'Delete Account'}
             </button>
@@ -327,6 +348,7 @@ class Header extends Component {
             errors={errors}
             update={this.update}
             remove={this.remove}
+            reset={this.reset}
             user={user}
           />
         </nav>
