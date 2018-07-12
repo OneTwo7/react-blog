@@ -9,8 +9,9 @@ export const showErrorMessage = (message) => {
 };
 
 export const showReason = (error) => {
-  if (error.response) {
-    NotificationManager.error(error.response.data.reason);
+  const { response } = error;
+  if (response && response.data && response.data.reason) {
+    NotificationManager.error(response.data.reason);
   } else {
     NotificationManager.error(error.toString());
   }

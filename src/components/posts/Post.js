@@ -21,7 +21,6 @@ const Post = ({ post, post: { _id, author, tags }, auth, onClick }) => (
           edit
         </Link>
         <button
-          id={`delete-${_id}`}
           type="button"
           className="btn btn-link"
           onClick={onClick}

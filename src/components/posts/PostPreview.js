@@ -22,13 +22,13 @@ const PostPreview = ({ post, auth, onClick, onLoad }) => {
         </div>
       </Link>
       {
-        auth && auth._id === author &&
+        auth && auth._id === author._id &&
         <div className="post-controls">
           <Link to={`/posts/${_id}/edit`}>
             edit
           </Link>
           <button
-            id={`delete-${_id}`}
+            data-target={_id}
             type="button"
             className="btn btn-link"
             onClick={onClick}

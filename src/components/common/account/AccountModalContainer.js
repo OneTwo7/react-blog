@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const AccountModalContainer = (props) => {
   const children = React.Children.map(props.children, (child, idx) => {
     if (idx === 0) {
-      return React.cloneElement(child, { user: props.user });
+      return React.cloneElement(child, { auth: props.auth });
     } else {
       const newProps = Object.assign({}, props);
       delete newProps.children;
@@ -34,15 +34,14 @@ AccountModalContainer.propTypes = {
   children: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
   onKeyDown: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired,
+  data: PropTypes.object.isRequired,
   login: PropTypes.func.isRequired,
   signup: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired,
   update: PropTypes.func.isRequired,
   remove: PropTypes.func.isRequired,
-  reset: PropTypes.func.isRequired,
-  resend: PropTypes.func.isRequired,
-  user: PropTypes.object
+  send: PropTypes.func.isRequired,
+  auth: PropTypes.object
 };
 
 export default AccountModalContainer;

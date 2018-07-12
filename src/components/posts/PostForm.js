@@ -171,9 +171,9 @@ class PostForm extends Component {
 
   onTagClick (event) {
     const { post, tags } = this.state;
-    const idx = event.target.id.split('-')[1];
-    const tag = tags[idx];
-    tags.splice(idx, 1);
+    const { index } = event.target.dataset;
+    const tag = tags[index];
+    tags.splice(index, 1);
     post.tags = tag;
     this.setState({ post, tags });
     $('#tags').focus();

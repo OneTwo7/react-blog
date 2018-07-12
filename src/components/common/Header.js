@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/authActions';
 import { Link } from 'react-router-dom';
+import NavbarMenu from './navbar/NavbarMenu';
 import AccountModal from './account/AccountModal';
 import ConfirmationModal from './modals/ConfirmationModal';
 import * as notifications from '../../utils/notifications';
@@ -13,10 +14,10 @@ class Header extends Component {
     super(props);
 
     this.state = {
-      auth: {
+      data: {
         email: '',
-        password: '',
         name: '',
+        password: '',
         password_confirmation: ''
       },
       errors: {}
@@ -32,8 +33,7 @@ class Header extends Component {
     this.update = this.update.bind(this);
     this.remove = this.remove.bind(this);
     this.confirm = this.confirm.bind(this);
-    this.reset = this.reset.bind(this);
-    this.resend = this.resend.bind(this);
+    this.send = this.send.bind(this);
   }
 
   componentDidMount () {
@@ -42,9 +42,7 @@ class Header extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    const { auth } = this.props;
-    const { auth: nextAuth } = nextProps;
-    if (!auth && nextAuth._id) {
+    if (!this.props.auth && nextProps.auth._id) {
       notifications.showSuccessMessage('You are logged in!');
     }
   }
@@ -54,34 +52,27 @@ class Header extends Component {
   }
 
   attachFocus () {
-    const focus = () => {
-      $('#account-modal form > div:first-child input').focus();
-    };
-    $('#account-modal').on('shown.bs.modal', focus);
-    $('#account-modal a[data-toggle="list"]').on('shown.bs.tab', focus);
+    $('#account-modal').on('shown.bs.modal', this.focus);
+    $('#account-modal a[data-toggle="list"]').on('shown.bs.tab', this.focus);
+  }
+
+  focus () {
+    $('#account-modal form > div:first-child input').focus();
   }
 
   onChange (event) {
-    const name = event.target.name;
-    const auth = this.state.auth;
-    auth[name] = event.target.value;
-    const errors = this.validate(name, auth);
-    this.setState({ auth, errors });
+    const { name } = event.target;
+    const { data } = this.state;
+    data[name] = event.target.value;
+    const errors = this.validate(name, data);
+    this.setState({ data, errors });
   }
 
   onKeyDown (event) {
     if (event.keyCode === 13) {
       event.preventDefault();
-      const { id } = event.target;
-      if (id.includes('login')) {
-        this.login();
-      } else if (id.includes('modify')) {
-        this.update();
-      } else if (id.includes('delete')) {
-        this.remove();
-      } else {
-        this.signup();
-      }
+      const action = event.target.id.split('-')[0];
+      this[action]();
     }
   }
 
@@ -101,56 +92,62 @@ class Header extends Component {
     return errors;
   }
 
-  login () {
-    const { email, password } = this.state.auth;
-    if (!email || !password) {
-      notifications.showErrorMessage('You must provide email and password!');
-      return;
+  inputsFilled ({ email, name, password, password_confirmation }) {
+    let result = true;
+    if (email !== undefined && email.trim().length < 6) {
+      notifications.showErrorMessage('Email should be at least 6 characters!');
+      result = false;
     }
-    this.props.actions.login(email.toLowerCase(), password).then(() => {
-      $('#account-modal').modal('hide');
-      this.setDefault();
-      notifications.showSuccessMessage('You are now logged in!');
-    }).catch(error => {
-      notifications.showReason(error);
-    });
+    if (name !== undefined && name.trim() === '') {
+      notifications.showErrorMessage('You must provide name!');
+      result = false;
+    }
+    if (password !== undefined && password.length < 6) {
+      notifications.showErrorMessage(
+        'Password should be at least 6 characters!'
+      );
+      result = false;
+    }
+    if (password_confirmation !== undefined) {
+      if (password !== password_confirmation) {
+        notifications.showErrorMessage('Passwords don\'t match!');
+        result = false;
+      }
+    }
+    return result;
+  }
+
+  login () {
+    const { email, password } = this.state.data;
+    if (this.inputsFilled({ email, password })) {
+      this.props.actions.login(email.toLowerCase(), password).then(() => {
+        $('#account-modal').modal('hide');
+        this.setDefault();
+        notifications.showSuccessMessage('You are now logged in!');
+      }).catch(error => {
+        notifications.showReason(error);
+      });
+    }
   }
 
   signup () {
-    const { email, name, password, password_confirmation } = this.state.auth;
-    if (!email || !name || !password) {
-      notifications.showErrorMessage('You must fill in all inputs!');
-      return;
+    const { email, name, password, password_confirmation } = this.state.data;
+    if (this.inputsFilled({ email, name, password, password_confirmation })) {
+      const data = {
+        email: email.toLowerCase(),
+        name,
+        password
+      };
+      this.props.actions.createUser(data).then(() => {
+        $('#account-modal').modal('hide');
+        this.setDefault();
+        notifications.showSuccessMessage(
+          'Account is created. Check your email for activation link!'
+        );
+      }).catch(error => {
+        notifications.showReason(error);
+      });
     }
-    if (email.length < 6) {
-      notifications.showErrorMessage('Email should be at least 6 characters!');
-      return;
-    }
-    if (password.length < 6) {
-      notifications
-      .showErrorMessage('Password should be at least 6 characters!');
-      return;
-    }
-    if (password !== password_confirmation) {
-      notifications.showErrorMessage('Passwords don\'t match!');
-      return;
-    }
-
-    const user = {
-      email: email.toLowerCase(),
-      name,
-      password
-    };
-
-    this.props.actions.createUser(user).then(() => {
-      $('#account-modal').modal('hide');
-      this.setDefault();
-      notifications.showSuccessMessage(
-        'Account is created. Check your email for activation link!'
-      );
-    }).catch(error => {
-      notifications.showReason(error);
-    });
   }
 
   logout () {
@@ -162,62 +159,53 @@ class Header extends Component {
   }
 
   update () {
-    const { name, password, password_confirmation } = this.state.auth;
-    if (!name) {
-      notifications.showErrorMessage('You must provide name!');
-      return;
+    const { name, password, password_confirmation } = this.state.data;
+    const inputs = {};
+    if (name) {
+      inputs.name = name;
     }
-    if (password && password.length < 6) {
-      notifications
-      .showErrorMessage('Password should be at least 6 characters long!');
-      return;
+    if (password) {
+      inputs.password = password;
+      inputs.password_confirmation = password_confirmation;
     }
-    if (password && password !== password_confirmation) {
-      notifications.showErrorMessage('Passwords don\'t match!');
-      return;
+    if (this.inputsFilled(inputs)) {
+      const data = { name, password };
+      this.props.actions.updateUser(data, this.props.auth._id).then(() => {
+        $('#account-modal').modal('hide');
+        this.setDefault();
+        notifications.showSuccessMessage('Account successfully updated!');
+      }).catch(error => {
+        notifications.showReason(error);
+      });
     }
-
-    const data = { name, password };
-
-    this.props.actions.updateUser(data, this.props.auth._id).then(() => {
-      $('#account-modal').modal('hide');
-      this.setDefault();
-      notifications.showSuccessMessage('Account successfully updated!');
-    }).catch(error => {
-      notifications.showReason(error);
-    });
   }
 
   remove () {
-    const { email } = this.state.auth;
-    if (email.length < 6) {
-      notifications.showErrorMessage('You must input email!');
-      return;
+    const { email } = this.state.data;
+    if (this.inputsFilled({ email })) {
+      const { _id, email: requiredEmail } = this.props.auth;
+      if (email !== requiredEmail) {
+        notifications.showErrorMessage('Wrong email!');
+        return;
+      }
+      this.props.actions.deleteUser(_id).then(() => {
+        $('#account-modal').modal('hide');
+        this.setDefault();
+        notifications.showSuccessMessage('Account successfully removed!');
+      }).catch(error => {
+        notifications.showReason(error);
+      });
     }
-
-    const { _id, email: requiredEmail } = this.props.auth;
-    if (email !== requiredEmail) {
-      notifications.showErrorMessage('Wrong email!');
-      return;
-    }
-
-    this.props.actions.deleteUser(_id).then(() => {
-      $('#account-modal').modal('hide');
-      this.setDefault();
-      notifications.showSuccessMessage('Account successfully removed!');
-    }).catch(error => {
-      notifications.showReason(error);
-    });
   }
 
   setDefault () {
     this.setState({
-      auth: { email: '', password: '', name: '', password_confirmation: '' }
+      data: { email: '', password: '', name: '', password_confirmation: '' }
     });
   }
 
   confirm () {
-    this.props.actions.deleteUser(this.state.auth._id).then(() => {
+    this.props.actions.deleteUser(this.props.auth._id).then(() => {
       notifications.showSuccessMessage('Account successfully removed!');
     }).catch(error => {
       notifications.showReason(error);
@@ -225,151 +213,48 @@ class Header extends Component {
     $('#account-confirmation-modal').modal('hide');
   }
 
-  resend () {
-    const { email } = this.state.auth;
-    if (email.length < 6) {
-      notifications.showErrorMessage('You must input email!');
-      return;
+  send (event) {
+    const { email } = this.state.data;
+    if (this.inputsFilled({ email })) {
+      const { action } = event.target.dataset;
+      let sendAction, message;
+      if (action === 'resend-activation') {
+        sendAction = this.props.actions.resendActivationLink;
+        message = 'Check your email for activation link!';
+      } else {
+        sendAction = this.props.actions.sendResetLink;
+        message = 'Check your email for reset link!';
+      }
+      sendAction(email).then(() => {
+        $('#account-modal').modal('hide');
+        this.setDefault();
+        notifications.showSuccessMessage(message);
+      }).catch(error => {
+        notifications.showReason(error);
+      });
     }
-
-    this.props.actions.resendActivationLink(email).then(() => {
-      $('#account-modal').modal('hide');
-      this.setDefault();
-      notifications.showSuccessMessage(
-        'Check your email for activation link!'
-      );
-    }).catch(error => {
-      notifications.showReason(error);
-    });
-  }
-
-  reset () {
-    const { email } = this.state.auth;
-    if (email.length < 6) {
-      notifications.showErrorMessage('You must input email!');
-      return;
-    }
-
-    this.props.actions.sendResetLink(email).then(() => {
-      $('#account-modal').modal('hide');
-      this.setDefault();
-      notifications.showSuccessMessage('Check your email for reset link!');
-    }).catch(error => {
-      notifications.showReason(error);
-    });
-  }
-
-  renderLoginButton (auth) {
-    if (!auth) {
-      return;
-    } else if (!auth._id) {
-      return (
-        <li className="nav-item">
-          <button
-            key="account-modal-btn"
-            type="button"
-            className="btn btn-outline-light"
-            data-toggle="modal"
-            data-target="#account-modal"
-          >
-            Login
-          </button>
-        </li>
-      );
-    } else {
-      const { name, email } = auth;
-      return (
-        <li className="nav-item dropdown">
-          <button
-            key="navbarDropdown"
-            className="btn btn-link dropdown-toggle"
-            id="navbarDropdown"
-            type="button"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            {name}
-          </button>
-          <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-            <button
-              type="button"
-              className="btn btn-link dropdown-item"
-              data-toggle="modal"
-              data-target={
-                email ? '#account-modal' : '#account-confirmation-modal'
-              }
-            >
-              {email ? 'Account' : 'Delete Account'}
-            </button>
-            <button
-              type="button"
-              className="btn btn-link dropdown-item"
-              onClick={this.logout}
-            >
-              Logout
-            </button>
-          </div>
-        </li>
-      );
-    }
-  }
-
-  renderNewPostButton (auth) {
-    if (auth && auth._id) {
-      return (
-        <li className="nav-item active">
-          <Link className="nav-link" to="/new_post">
-            New Post
-          </Link>
-        </li>
-      );
-    }
-    return null;
   }
 
   render () {
-    const { auth, errors } = this.state;
-    const { auth: user } = this.props;
+    const { data, errors } = this.state;
+    const { auth } = this.props;
 
     return (
       <header className="navbar navbar-expand-md navbar-dark bg-primary">
         <nav className="container">
           <Link className="navbar-brand" to="/">Home</Link>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarMenu"
-            aria-controls="navbarMenu"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon" />
-          </button>
-
-          <div className="collapse navbar-collapse" id="navbarMenu">
-            <ul className="navbar-nav mr-auto">
-              {this.renderNewPostButton(user)}
-            </ul>
-            <ul className="navbar-nav">
-              {this.renderLoginButton(user)}
-            </ul>
-          </div>
-
-
+          <NavbarMenu auth={auth} logout={this.logout} />
           <AccountModal
             onChange={this.onChange}
             onKeyDown={this.onKeyDown}
-            auth={auth}
+            data={data}
             login={this.login}
             signup={this.signup}
             errors={errors}
             update={this.update}
             remove={this.remove}
-            reset={this.reset}
-            resend={this.resend}
-            user={user}
+            send={this.send}
+            auth={auth}
           />
         </nav>
         <ConfirmationModal

@@ -20,15 +20,14 @@ const AccountModal = (props) => (
 AccountModal.propTypes = {
   onChange: PropTypes.func.isRequired,
   onKeyDown: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired,
+  data: PropTypes.object.isRequired,
   login: PropTypes.func.isRequired,
   signup: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired,
   update: PropTypes.func.isRequired,
   remove: PropTypes.func.isRequired,
-  reset: PropTypes.func.isRequired,
-  resend: PropTypes.func.isRequired,
-  user: PropTypes.object
+  send: PropTypes.func.isRequired,
+  auth: PropTypes.object
 };
 
 export default AccountModal;

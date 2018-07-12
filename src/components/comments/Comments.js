@@ -64,12 +64,8 @@ class Comments extends Component {
     this.setState({ comment: { content: '' }, errors: {} });
   }
 
-  getCommentId (btnId) {
-    return btnId.split('-')[1];
-  }
-
   onChange (event) {
-    const comment = this.state.comment;
+    const { comment } = this.state;
     comment.content = event.target.value;
     this.setState({ comment });
   }
@@ -89,16 +85,16 @@ class Comments extends Component {
       $('#account-modal').modal('show');
     } else {
       this.props.actions.saveComment(comment).then(() => {
+        this.setDefaultComment();
         showSuccessMessage('Done!');
       }).catch(error => {
         showReason(error);
       });
-      this.setDefaultComment();
     }
   }
 
   onEditClick (event) {
-    const commentId = this.getCommentId(event.target.id);
+    const commentId = event.target.dataset.target;
     const comment = Object.assign(
       {}, this.props.comments.find(c => c._id === commentId)
     );
@@ -111,7 +107,7 @@ class Comments extends Component {
   }
 
   onDeleteClick (event) {
-    const commentId = this.getCommentId(event.target.id);
+    const commentId = event.target.dataset.target;
     if (commentId === this.state.comment._id) {
       this.setDefaultComment();
     }

@@ -69,3 +69,23 @@ test('deleteUserSuccess', t => {
 
   t.deepEqual(action, expectedAction);
 });
+
+test('sendResetLinkSuccess', t => {
+  const expectedAction = {
+    type: types.SEND_RESET_LINK_SUCCESS
+  };
+
+  const action = authActions.sendResetLinkSuccess();
+
+  t.deepEqual(action, expectedAction);
+});
+
+test('resendActivationLinkSuccess', t => {
+  const expectedAction = {
+    type: types.RESEND_ACTIVATION_LINK_SUCCESS
+  };
+
+  const action = authActions.resendActivationLinkSuccess();
+
+  t.deepEqual(action, expectedAction);
+});

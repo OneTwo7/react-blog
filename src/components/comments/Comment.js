@@ -18,7 +18,7 @@ const Comment = ({ auth, comment, onEdit, onDelete }) => {
             auth && auth._id && (isAdmin || auth._id === author._id) &&
             <div className="comment-controls">
               <button
-                id={`edit-${_id}`}
+                data-target={_id}
                 type="button"
                 onClick={onEdit}
                 className="btn btn-link"
@@ -26,7 +26,7 @@ const Comment = ({ auth, comment, onEdit, onDelete }) => {
                 edit
               </button>
               <button
-                id={`delete-${_id}`}
+                data-target={_id}
                 type="button"
                 onClick={onDelete}
                 className="btn btn-link"

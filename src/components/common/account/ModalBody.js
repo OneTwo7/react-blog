@@ -2,29 +2,28 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const ModalBody = (props) => {
-  const { onChange, onKeyDown, auth, login, signup, errors, reset } = props;
-  const { user, resend } = props;
+  const { onChange, onKeyDown, data, login, signup, errors, send } = props;
+  const { auth } = props;
   const child = React.Children.only(props.children);
   const children = [];
 
-  if (user && user._id) {
+  if (auth && auth._id) {
     children.push(React.cloneElement(child, {
-      key: 'modify',
-      type: 'modify',
+      key: 'update',
+      type: 'update',
       update: props.update,
       onChange,
       onKeyDown,
-      auth,
-      errors,
-      user
+      data,
+      errors
     }));
     children.push(React.cloneElement(child, {
-      key: 'delete',
-      type: 'delete',
+      key: 'remove',
+      type: 'remove',
       remove: props.remove,
       onChange,
       onKeyDown,
-      auth,
+      data,
       errors
     }));
   } else {
@@ -37,10 +36,9 @@ const ModalBody = (props) => {
       type: 'login',
       onChange,
       onKeyDown,
-      auth,
+      data,
       login,
-      reset,
-      resend,
+      send,
       errors
     }));
     children.push(React.cloneElement(child, {
@@ -48,7 +46,7 @@ const ModalBody = (props) => {
       type: 'signup',
       onChange,
       onKeyDown,
-      auth,
+      data,
       signup,
       errors
     }));
@@ -61,15 +59,14 @@ ModalBody.propTypes = {
   children: PropTypes.object.isRequired,
   onChange: PropTypes.func,
   onKeyDown: PropTypes.func,
-  auth: PropTypes.object,
+  data: PropTypes.object,
   login: PropTypes.func,
   signup: PropTypes.func,
   errors: PropTypes.object,
-  user: PropTypes.object,
+  auth: PropTypes.object,
   update: PropTypes.func,
   remove: PropTypes.func,
-  reset: PropTypes.func,
-  resend: PropTypes.func
+  send: PropTypes.func
 };
 
 export default ModalBody;

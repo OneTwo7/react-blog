@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 const tabs = ['social', 'login', 'signup'];
 
 const ModalHeader = (props) => {
-  const { user } = props;
+  const { auth } = props;
   const child = React.Children.only(props.children);
   const children = [];
 
-  if (user && user._id) {
+  if (auth && auth._id) {
     children.push(React.cloneElement(child, {
       key: 'modify',
       active: ' active',
@@ -51,7 +51,7 @@ const ModalHeader = (props) => {
 
 ModalHeader.propTypes = {
   children: PropTypes.object.isRequired,
-  user: PropTypes.object
+  auth: PropTypes.object
 };
 
 export default ModalHeader;

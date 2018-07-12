@@ -7,7 +7,7 @@ const Tags = ({ tags, onClick}) => (
       tags.map((tag, idx) => (
         <button
           key={idx}
-          id={`tag-${idx}`}
+          data-index={idx}
           className="post-tag"
           type="button"
           onClick={onClick}

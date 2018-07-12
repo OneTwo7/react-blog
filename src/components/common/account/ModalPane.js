@@ -3,7 +3,7 @@ import Input from '../inputs/Input';
 import PropTypes from 'prop-types';
 
 const ModalPane = (props) => {
-  const { type, auth, onChange, onKeyDown, errors, user } = props;
+  const { type, data, onChange, onKeyDown, errors } = props;
   let modalBody;
   let paneClass = 'tab-pane fade';
   let submitButton = null;
@@ -35,7 +35,7 @@ const ModalPane = (props) => {
         key="email"
         id={`${type}-email`}
         type="email"
-        val={auth && auth.email}
+        val={data && data.email}
         name="email"
         onChange={onChange}
         onKeyDown={onKeyDown}
@@ -48,12 +48,11 @@ const ModalPane = (props) => {
         key="name"
         id={`${type}-name`}
         type="text"
-        val={auth && auth.name}
-        placeholder={user && user.name}
+        val={data && data.name}
+        label="Name"
         name="name"
         onChange={onChange}
         onKeyDown={onKeyDown}
-        label="Name"
         error={errors && errors.name}
       />
     );
@@ -62,7 +61,7 @@ const ModalPane = (props) => {
         key="password"
         id={`${type}-password`}
         type="password"
-        val={auth && auth.password}
+        val={data && data.password}
         name="password"
         onChange={onChange}
         onKeyDown={onKeyDown}
@@ -75,7 +74,7 @@ const ModalPane = (props) => {
         key="password_confirmation"
         id={`${type}-password_confirmation`}
         type="password"
-        val={auth && auth.password_confirmation}
+        val={data && data.password_confirmation}
         name="password_confirmation"
         onChange={onChange}
         onKeyDown={onKeyDown}
@@ -83,12 +82,12 @@ const ModalPane = (props) => {
         error={errors && errors.password_confirmation}
       />
     );
-    if (type === 'modify') {
+    if (type === 'update') {
       paneClass += ' show active';
       clickHandler = props.update;
       submitButtonText = 'Update';
       inputs.push(nameInput, passwordInput, confirmationInput);
-    } else if (type === 'delete') {
+    } else if (type === 'remove') {
       submitButtonClass = 'btn btn-danger';
       clickHandler = props.remove;
       submitButtonText = 'Remove Account';
@@ -100,8 +99,9 @@ const ModalPane = (props) => {
       resetButton = (
         <button
           type="button"
+          data-action="reset-password"
           className="btn btn-dark"
-          onClick={props.reset}
+          onClick={props.send}
         >
           Reset Password
         </button>
@@ -109,8 +109,9 @@ const ModalPane = (props) => {
       resendButton = (
         <button
           type="button"
+          data-action="resend-activation"
           className="btn btn-dark"
-          onClick={props.resend}
+          onClick={props.send}
         >
           Resend Activation
         </button>
@@ -120,7 +121,7 @@ const ModalPane = (props) => {
       submitButtonText = 'Sign Up';
       inputs.push(emailInput, nameInput, passwordInput, confirmationInput);
     }
-    if (type === 'delete') {
+    if (type === 'remove') {
       modalBody = (
         <React.Fragment>
           <div id="repeat-notice">Input your email to confirm:</div>
@@ -171,15 +172,13 @@ ModalPane.propTypes = {
   type: PropTypes.string,
   onChange: PropTypes.func,
   onKeyDown: PropTypes.func,
-  auth: PropTypes.object,
+  data: PropTypes.object,
   signup: PropTypes.func,
   login: PropTypes.func,
   errors: PropTypes.object,
-  user: PropTypes.object,
   update: PropTypes.func,
   remove: PropTypes.func,
-  reset: PropTypes.func,
-  resend: PropTypes.func
+  send: PropTypes.func
 };
 
 export default ModalPane;
