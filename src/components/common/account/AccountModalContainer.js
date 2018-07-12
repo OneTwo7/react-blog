@@ -41,6 +41,7 @@ AccountModalContainer.propTypes = {
   update: PropTypes.func.isRequired,
   remove: PropTypes.func.isRequired,
   reset: PropTypes.func.isRequired,
+  resend: PropTypes.func.isRequired,
   user: PropTypes.object
 };
 

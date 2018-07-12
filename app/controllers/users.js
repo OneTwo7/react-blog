@@ -47,6 +47,37 @@ exports.createUser = async (req, res) => {
   }
 };
 
+exports.resendActivationLink = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      if (!user.activated) {
+        const token = createToken();
+        user.activation_digest = hashPwd(user.salt, token);
+        await user.save();
+        const encodedToken = encodeURIComponent(token);
+        const encodedEmail = encodeURIComponent(email);
+        const emailData = {
+          title: 'Welcome to React Blog App',
+          body: 'Follow the link to activate your account:',
+          link: `/api/users/${encodedEmail}/activate/${encodedToken}`,
+          text: 'activation link'
+        };
+        await sendEmail('Account activation', email, template(emailData));
+        res.status(200).end();
+      } else {
+        res.status(400).send({ reason: `Account is already activated!` });
+      }
+    } else {
+      res.status(400).send({ reason: `${email} is not registered!` });
+    }
+  } catch (e) {
+    res.status(400).send({ reason: e.toString() });
+  }
+};
+
 exports.activateUser = async (req, res) => {
   const { email, token } = req.params;
 
@@ -80,20 +111,24 @@ exports.generateResetToken = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (user) {
-      const token = createToken();
-      user.reset_digest = hashPwd(user.salt, token);
-      await user.save();
+      if (user.activated) {
+        const token = createToken();
+        user.reset_digest = hashPwd(user.salt, token);
+        await user.save();
 
-      const encodedToken = encodeURIComponent(token);
-      const encodedEmail = encodeURIComponent(email);
-      const emailData = {
-        title: 'Password Reset',
-        body: 'Use the following link to reset your password:',
-        link: `/api/users/${encodedEmail}/reset/${encodedToken}`,
-        text: 'reset link'
-      };
-      await sendEmail('Password reset', email, template(emailData));
-      res.status(200).end();
+        const encodedToken = encodeURIComponent(token);
+        const encodedEmail = encodeURIComponent(email);
+        const emailData = {
+          title: 'Password Reset',
+          body: 'Use the following link to reset your password:',
+          link: `/api/users/${encodedEmail}/reset/${encodedToken}`,
+          text: 'reset link'
+        };
+        await sendEmail('Password reset', email, template(emailData));
+        res.status(200).end();
+      } else {
+        res.status(400).send({ reason: `Account is not activated!` });
+      }
     } else {
       res.status(400).send({ reason: `${email} is not registered!` });
     }

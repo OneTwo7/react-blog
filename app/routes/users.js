@@ -6,6 +6,8 @@ router.post('/', users.createUser);
 
 router.get('/:email/activate/:token', users.activateUser);
 
+router.post('/resend_activation_link', users.resendActivationLink);
+
 router.post('/password_reset', users.generateResetToken);
 
 router.get('/:email/reset/:token', users.authenticateResetToken);

@@ -48,6 +48,12 @@ export const sendResetLinkSuccess = () => {
   };
 };
 
+export const resendActivationLinkSuccess = () => {
+  return {
+    type: types.RESEND_ACTIVATION_LINK_SUCCESS
+  };
+};
+
 export const login = (email, password) => (async dispatch => {
   dispatch(beginAjaxCall());
   try {
@@ -117,3 +123,14 @@ export const sendResetLink = (email) => (async dispatch => {
     dispatchAjaxCallError(e, dispatch);
   }
 });
+
+export const resendActivationLink = (email) => (async dispatch => {
+  dispatch(beginAjaxCall());
+  try {
+    await axios.post(`/api/users/resend_activation_link`, { email });
+    dispatch(resendActivationLinkSuccess());
+  } catch (e) {
+    dispatchAjaxCallError(e, dispatch);
+  }
+});
+

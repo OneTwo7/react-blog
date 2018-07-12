@@ -8,12 +8,7 @@
 
 #account-modal {
   .modal-header {
-    justify-content: center;
-    .close {
-      position: absolute;
-      margin-top: -1rem;
-      right: 1rem;
-    }
+    justify-content: space-between;
   }
   .list-group {
     flex-direction: row;

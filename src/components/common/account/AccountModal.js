@@ -26,6 +26,8 @@ AccountModal.propTypes = {
   errors: PropTypes.object.isRequired,
   update: PropTypes.func.isRequired,
   remove: PropTypes.func.isRequired,
+  reset: PropTypes.func.isRequired,
+  resend: PropTypes.func.isRequired,
   user: PropTypes.object
 };
 

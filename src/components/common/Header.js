@@ -33,6 +33,7 @@ class Header extends Component {
     this.remove = this.remove.bind(this);
     this.confirm = this.confirm.bind(this);
     this.reset = this.reset.bind(this);
+    this.resend = this.resend.bind(this);
   }
 
   componentDidMount () {
@@ -224,6 +225,24 @@ class Header extends Component {
     $('#account-confirmation-modal').modal('hide');
   }
 
+  resend () {
+    const { email } = this.state.auth;
+    if (email.length < 6) {
+      notifications.showErrorMessage('You must input email!');
+      return;
+    }
+
+    this.props.actions.resendActivationLink(email).then(() => {
+      $('#account-modal').modal('hide');
+      this.setDefault();
+      notifications.showSuccessMessage(
+        'Check your email for activation link!'
+      );
+    }).catch(error => {
+      notifications.showReason(error);
+    });
+  }
+
   reset () {
     const { email } = this.state.auth;
     if (email.length < 6) {
@@ -349,6 +368,7 @@ class Header extends Component {
             update={this.update}
             remove={this.remove}
             reset={this.reset}
+            resend={this.resend}
             user={user}
           />
         </nav>
