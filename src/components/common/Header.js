@@ -7,6 +7,7 @@ import NavbarMenu from './navbar/NavbarMenu';
 import AccountModal from './account/AccountModal';
 import ConfirmationModal from './modals/ConfirmationModal';
 import * as notifications from '../../utils/notifications';
+import AccountContext from './AccountContext';
 import PropTypes from 'prop-types';
 
 class Header extends Component {
@@ -244,18 +245,20 @@ class Header extends Component {
         <nav className="container">
           <Link className="navbar-brand" to="/">Home</Link>
           <NavbarMenu auth={auth} logout={this.logout} />
-          <AccountModal
-            onChange={this.onChange}
-            onKeyDown={this.onKeyDown}
-            data={data}
-            login={this.login}
-            signup={this.signup}
-            errors={errors}
-            update={this.update}
-            remove={this.remove}
-            send={this.send}
-            auth={auth}
-          />
+          <AccountContext.Provider value={{
+            onChange: this.onChange,
+            onKeyDown: this.onKeyDown,
+            login: this.login,
+            signup: this.signup,
+            update: this.update,
+            remove: this.remove,
+            send: this.send,
+            auth,
+            data,
+            errors
+          }}>
+            <AccountModal />
+          </AccountContext.Provider>
         </nav>
         <ConfirmationModal
           id="account-confirmation-modal"
