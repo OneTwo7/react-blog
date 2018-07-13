@@ -1,15 +1,18 @@
 const express = require('express');
 const path = require('path');
-const keys = require('./app/keys');
 const app = express();
 
 const PORT = process.env.PORT || 3000;
-const env = process.env.NODE_ENV || 'development';
+const environment = process.env.NODE_ENV || 'development';
 const mode = process.env.MODE || 'standard';
+
+require('dotenv').config();
+
+const keys = require('./app/keys');
 
 require('./app/config/mongoose')(keys);
 
-if (env === 'development') {
+if (environment === 'development') {
   require('./app/services/webpack.js')(app);
 }
 
@@ -23,7 +26,7 @@ if (mode === 'demo') {
   require('./app/routes/routes')(app);
 }
 
-if (env === 'production') {
+if (environment === 'production') {
   const compression = require('compression');
 
   app.use(compression());
