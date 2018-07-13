@@ -116,6 +116,7 @@ class PostForm extends Component {
       this.redirect();
       notifications.showSuccessMessage('Post saved!');
     }).catch(error => {
+      post.tags = '';
       notifications.showReason(error);
     });
   }

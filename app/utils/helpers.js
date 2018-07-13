@@ -2,10 +2,10 @@ const User = require('mongoose').model('User');
 const keys = require('../keys');
 const path = require('path');
 const fs = require('fs');
-const util = require('util');
-const unlink = util.promisify(fs.unlink);
-const readFile = util.promisify(fs.readFile);
-const rename = util.promisify(fs.rename);
+const { promisify } = require('util');
+const unlink = promisify(fs.unlink);
+const readFile = promisify(fs.readFile);
+const rename = promisify(fs.rename);
 let s3;
 
 if (keys.s3Region) {
@@ -70,11 +70,11 @@ exports.uploadPictures = async (files, pictureFields) => {
 
       if (s3) {
         const pictureName = filename + path.extname(originalname);
-        const target = path.join('blog', pictureName);
+        const target = path.join('blog', `${Date.now()}-${pictureName}`);
 
         const data = await readFile(tempPath);
         const options = { Key: target, Body: data, ACL: 'public-read' };
-        const uploadedPicture = await s3.upload(options);
+        const uploadedPicture = await s3.upload(options).promise();
 
         pictures.push({
           field: fields.shift(),
