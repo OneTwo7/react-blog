@@ -25,6 +25,7 @@ exports.getPosts = async (req, res) => {
 exports.createPost = async (req, res) => {
   const { body: data, files } = req;
   const { pictureFields } = data;
+  const { lang } = req.cookies;
 
   delete data.mainPicture;
   delete data.pictureFields;
@@ -39,7 +40,7 @@ exports.createPost = async (req, res) => {
   post.created_at = new Date();
 
   try {
-    post.pictures = await uploadPictures(files, pictureFields);
+    post.pictures = await uploadPictures(files, pictureFields, lang);
 
     if (!exceedsSizeLimit(post, 'posts', res)) {
       res.cookie(`post-${postId}`, post, options);
@@ -55,13 +56,14 @@ exports.updatePost = async (req, res) => {
   const { body: data, files } = req;
   const { pictureFields, mainPicture } = data;
   let { removedPictures } = data;
+  const { lang } = req.cookies;
 
   if (removedPictures !== 'undefined' && !Array.isArray(removedPictures)) {
     removedPictures = [removedPictures];
   }
 
   try {
-    const pictures = await uploadPictures(files, pictureFields);
+    const pictures = await uploadPictures(files, pictureFields, lang);
     const cookieKey = `post-${data._id}`;
     const post = req.cookies[cookieKey];
     post.title = data.title;

@@ -7,22 +7,21 @@ const { prepareUser, logoutUser } = require('../utils/helpers');
 const { correctUser } = require('../utils/auth');
 const sendEmail = require('../services/mailer');
 const template = require('../services/emailTemplates/template');
+const strings = require('../strings/controllers');
 
 exports.createUser = async (req, res) => {
   const { email, name, password } = req.body;
+  const { lang = 'ru' } = req.cookies;
 
   if (email.length < 6 || password.length < 6) {
-    return res.status(400).send({
-      reason: 'Email/Password should be at least 6 characters long!'
-    });
+    return res.status(400).send({ reason: strings[lang].users.emailPasError });
   }
 
   try {
     const user = await User.findOne({ email });
 
     if (user) {
-      res.status(409);
-      res.send({ reason: 'User with that email already exists!' });
+      res.status(409).send({ reason: strings[lang].users.duplicateError });
     } else {
       const salt = createSalt();
       const pwd_hash = hashPwd(salt, password);
@@ -34,12 +33,14 @@ exports.createUser = async (req, res) => {
       const encodedToken = encodeURIComponent(token);
       const encodedEmail = encodeURIComponent(email);
       const emailData = {
-        title: 'Welcome to React Blog App',
-        body: 'Follow the link to activate your account:',
+        title: strings[lang].users.activeTitle,
+        body: strings[lang].users.activeBody,
         link: `/api/users/${encodedEmail}/activate/${encodedToken}`,
-        text: 'activation link'
+        text: strings[lang].users.activeText
       };
-      await sendEmail('Account activation', email, template(emailData));
+      await sendEmail(
+        strings[lang].users.activeSubject, email, template(emailData)
+      );
       res.status(200).end();
     }
   } catch (e) {
@@ -49,6 +50,7 @@ exports.createUser = async (req, res) => {
 
 exports.resendActivationLink = async (req, res) => {
   const { email } = req.body;
+  const { lang = 'ru' } = req.cookies;
 
   try {
     const user = await User.findOne({ email });
@@ -60,18 +62,22 @@ exports.resendActivationLink = async (req, res) => {
         const encodedToken = encodeURIComponent(token);
         const encodedEmail = encodeURIComponent(email);
         const emailData = {
-          title: 'Welcome to React Blog App',
-          body: 'Follow the link to activate your account:',
+          title: strings[lang].users.activeTitle,
+          body: strings[lang].users.activeBody,
           link: `/api/users/${encodedEmail}/activate/${encodedToken}`,
-          text: 'activation link'
+          text: strings[lang].users.activeText
         };
-        await sendEmail('Account activation', email, template(emailData));
+        await sendEmail(
+          strings[lang].users.activeSubject, email, template(emailData)
+        );
         res.status(200).end();
       } else {
-        res.status(400).send({ reason: `Account is already activated!` });
+        res.status(400).send({
+          reason: strings[lang].users.alreadyActiveError
+        });
       }
     } else {
-      res.status(400).send({ reason: `${email} is not registered!` });
+      res.status(400).send({ reason: strings[lang].users.notFoundError });
     }
   } catch (e) {
     res.status(400).send({ reason: e.toString() });
@@ -80,6 +86,7 @@ exports.resendActivationLink = async (req, res) => {
 
 exports.activateUser = async (req, res) => {
   const { email, token } = req.params;
+  const { lang = 'ru' } = req.cookies;
 
   try {
     const user = await User.findOne({ email });
@@ -95,10 +102,12 @@ exports.activateUser = async (req, res) => {
           res.redirect('/');
         });
       } else {
-        res.status(400).send({ reason: 'Invalid activation link!' });
+        res.status(400).send({
+          reason: strings[lang].users.invalidActiveLink
+        });
       }
     } else {
-      res.status(400).send({ reason: `${email} is not registered!` });
+      res.status(400).send({ reason: strings[lang].users.notFoundError });
     }
   } catch (e) {
     res.status(400).send({ reason: e.toString() });
@@ -107,6 +116,7 @@ exports.activateUser = async (req, res) => {
 
 exports.generateResetToken = async (req, res) => {
   const { email } = req.body;
+  const { lang = 'ru' } = req.cookies;
 
   try {
     const user = await User.findOne({ email });
@@ -119,18 +129,20 @@ exports.generateResetToken = async (req, res) => {
         const encodedToken = encodeURIComponent(token);
         const encodedEmail = encodeURIComponent(email);
         const emailData = {
-          title: 'Password Reset',
-          body: 'Use the following link to reset your password:',
+          title: strings[lang].users.resetTitle,
+          body: strings[lang].users.resetBody,
           link: `/api/users/${encodedEmail}/reset/${encodedToken}`,
-          text: 'reset link'
+          text: strings[lang].users.resetText
         };
-        await sendEmail('Password reset', email, template(emailData));
+        await sendEmail(
+          strings[lang].users.resetSubject, email, template(emailData)
+        );
         res.status(200).end();
       } else {
-        res.status(400).send({ reason: `Account is not activated!` });
+        res.status(400).send({ reason: strings[lang].users.notActiveError });
       }
     } else {
-      res.status(400).send({ reason: `${email} is not registered!` });
+      res.status(400).send({ reason: strings[lang].users.notFoundError });
     }
   } catch (e) {
     res.status(400).send({ reason: e.toString() });
@@ -139,6 +151,7 @@ exports.generateResetToken = async (req, res) => {
 
 exports.authenticateResetToken = async (req, res) => {
   const { email, token } = req.params;
+  const { lang = 'ru' } = req.cookies;
 
   try {
     const user = await User.findOne({ email });
@@ -153,10 +166,10 @@ exports.authenticateResetToken = async (req, res) => {
           res.redirect('/password_reset');
         });
       } else {
-        res.status(400).send({ reason: `Invalid reset link!` });
+        res.status(400).send({ reason: strings[lang].users.invalidResetLink });
       }
     } else {
-      res.status(400).send({ reason: `${email} is not registered!` });
+      res.status(400).send({ reason: strings[lang].users.notFoundError });
     }
   } catch (e) {
     res.status(400).send({ reason: e.toString() });
@@ -166,9 +179,10 @@ exports.authenticateResetToken = async (req, res) => {
 exports.updateUser = async (req, res) => {
   const { name, password } = req.body;
   const { id } = req.params;
+  const { lang = 'ru' } = req.cookies;
 
   if (!name && !password) {
-    return res.status(400).send({ reason: 'No update data provided!' });
+    return res.status(400).send({ reason: strings[lang].users.noDataError });
   }
 
   if (correctUser(req, res, id)) {
@@ -180,7 +194,7 @@ exports.updateUser = async (req, res) => {
       if (password) {
         if (password.length < 6) {
           return res.status(400).send({
-            reason: 'Password should be at least 6 characters long!'
+            reason: strings[lang].users.shortPasError
           });
         }
         user.salt = createSalt();

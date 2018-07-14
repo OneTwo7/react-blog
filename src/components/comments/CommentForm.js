@@ -2,27 +2,41 @@ import React from 'react';
 import TextareaInput from '../common/inputs/TextareaInput';
 import PropTypes from 'prop-types';
 
-const CommentForm = ({ comment, errors, onChange, onClick, cancelEdit }) => (
+const CommentForm = ({ auth, comment, errors, change, click, cancel }) => (
   <form id="comment-form">
     <TextareaInput
       name="content"
       value={comment.content}
-      onChange={onChange}
+      onChange={change}
       error={errors.content}
       placeholder="Write a response..."
     />
-    <input
-      type="submit"
-      value="Submit"
-      onClick={onClick}
-      className="btn btn-primary"
-    />
+    {
+      !(auth && auth._id) &&
+      <button
+        type="button"
+        className="btn btn-info"
+        data-toggle="modal"
+        data-target="#account-modal"
+      >
+        Login
+      </button>
+    }
+    {
+      auth && auth._id &&
+      <input
+        type="submit"
+        value="Submit"
+        onClick={click}
+        className="btn btn-primary"
+      />
+    }
     {
       comment._id &&
       <button
         id="cancel-edit"
         type="button"
-        onClick={cancelEdit}
+        onClick={cancel}
         className="btn btn-secondary"
       >
         Cancel
@@ -32,11 +46,12 @@ const CommentForm = ({ comment, errors, onChange, onClick, cancelEdit }) => (
 );
 
 CommentForm.propTypes = {
+  auth: PropTypes.object,
   comment: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
-  onClick: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired,
-  cancelEdit: PropTypes.func.isRequired
+  click: PropTypes.func.isRequired,
+  change: PropTypes.func.isRequired,
+  cancel: PropTypes.func.isRequired
 };
 
 export default CommentForm;

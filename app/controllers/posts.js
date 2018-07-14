@@ -18,11 +18,12 @@ exports.createPost = async (req, res) => {
   const { body: data, files } = req;
   const { pictureFields } = data;
   data.author = req.user._id;
+  const { lang } = req.cookies;
 
   delete data.pictureFields;
 
   try {
-    data.pictures = await uploadPictures(files, pictureFields);
+    data.pictures = await uploadPictures(files, pictureFields, lang);
     const post = await Post.create(data);
     res.send(populateAuthorField(post, req.user));
   } catch (e) {
@@ -35,13 +36,14 @@ exports.updatePost = async (req, res) => {
   const { body: data, files } = req;
   const { pictureFields, mainPicture } = data;
   let { removedPictures } = data;
+  const { lang } = req.cookies;
 
   if (removedPictures !== 'undefined' && !Array.isArray(removedPictures)) {
     removedPictures = [removedPictures];
   }
 
   try {
-    const pictures = await uploadPictures(files, pictureFields);
+    const pictures = await uploadPictures(files, pictureFields, lang);
     const post = await Post.findOne({ _id: data._id });
     post.title = data.title;
     post.content = data.content;

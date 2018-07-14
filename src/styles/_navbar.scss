@@ -13,12 +13,56 @@ header {
   }
 }
 
+.navbar-brand {
+  margin-right: 4rem;
+}
+
 .navbar-dark {
   .navbar-toggler {
     border-color: rgba(255,255,255,.5);
   }
 }
 
-#navbar-brand {
+#home-selector-container {
+  display: flex;
+}
+
+#language-selector {
+  display: inline-block;
   margin-right: 4rem;
+  .dropdown-menu {
+    padding: 0;
+  }
+  .dropdown-toggle:after {
+    margin-left: .75rem;
+  }
+  button {
+    box-sizing: border-box;
+    position: relative;
+    font-weight: bold;
+    text-align: left;
+    color: $grey;
+    background-color: $white;
+    padding: .5rem .75rem .5rem 3.5rem;
+    border-radius: .25rem;
+    &:before {
+      content: "";
+      box-sizing: border-box;
+      position: absolute;
+      top: 0;
+      left: .75rem;
+      width: 1.8rem;
+      height: 100%;
+    }
+  }
+}
+
+#ru-btn:before {
+  background: url('/img/ru.png') center center no-repeat;
+  background-size: contain;
+}
+
+#en-btn:before {
+  background: url('/img/en.png') center center no-repeat;
+  background-size: contain;
 }

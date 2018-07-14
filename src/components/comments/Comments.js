@@ -127,16 +127,18 @@ class Comments extends Component {
 
   render () {
     const { auth, comments, count } = this.props;
+    const { comment, errors } = this.state;
 
     return (
       <section id="comments" className="col-md-6 offset-md-3">
         <h2>Comments ({count})</h2>
         <CommentForm
-          comment={this.state.comment}
-          errors={this.state.errors}
-          onChange={this.onChange}
-          onClick={this.onClick}
-          cancelEdit={this.cancelEdit}
+          auth={auth}
+          comment={comment}
+          errors={errors}
+          change={this.onChange}
+          click={this.onClick}
+          cancel={this.cancelEdit}
         />
         <CommentsList
           auth={auth}

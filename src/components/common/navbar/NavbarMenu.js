@@ -9,14 +9,14 @@ const NavbarMenu = (props) => (
       className="navbar-toggler"
       type="button"
       data-toggle="collapse"
-      data-target="#navbarMenu"
+      data-target="#navbar-menu"
       aria-controls="navbarMenu"
       aria-expanded="false"
       aria-label="Toggle navigation"
     >
       <span className="navbar-toggler-icon" />
     </button>
-    <div className="collapse navbar-collapse" id="navbarMenu">
+    <div className="collapse navbar-collapse" id="navbar-menu">
       <ul className="navbar-nav mr-auto">
         <NewPostButton auth={props.auth} />
       </ul>

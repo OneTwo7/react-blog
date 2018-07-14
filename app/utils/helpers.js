@@ -7,6 +7,7 @@ const unlink = promisify(fs.unlink);
 const readFile = promisify(fs.readFile);
 const rename = promisify(fs.rename);
 let s3;
+const strings = require('../strings/utils');
 
 if (keys.s3Region) {
   const AWS = require('aws-sdk');
@@ -44,7 +45,7 @@ exports.redirect = (req, res) => {
   res.redirect('/');
 };
 
-exports.uploadPictures = async (files, pictureFields) => {
+exports.uploadPictures = async (files, pictureFields, lang = 'ru') => {
   try {
     if (!pictureFields) {
       return [];
@@ -60,12 +61,12 @@ exports.uploadPictures = async (files, pictureFields) => {
 
       if (mimetype !== 'image/png' && mimetype !== 'image/jpeg') {
         await unlink(tempPath);
-        throw `File ${originalname} is not a picture!`;
+        throw strings[lang].helpers.wrongType(originalname);
       }
 
       if (size > fiveMegaBytes) {
         await unlink(tempPath);
-        throw `Picture ${originalname} is too big!`;
+        throw strings[lang].helpers.tooBig(originalname);
       }
 
       if (s3) {

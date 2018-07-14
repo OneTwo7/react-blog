@@ -1,6 +1,14 @@
+const strings = require('../strings/mocks');
+
 const errorMessages = {
-  'posts': 'Post is too long!',
-  'comments': 'The comments size limit for this post exceeded!'
+  ru: {
+    posts: strings.ru.helpers.postLimit,
+    comments: strings.ru.helpers.commentsLimit
+  },
+  en: {
+    posts: strings.en.helpers.postLimit,
+    comments: strings.en.helpers.commentsLimit
+  }
 };
 
 exports.options = {
@@ -11,10 +19,10 @@ exports.generateId = () => (
   'id' + Math.random().toString(36).split('.')[1]
 );
 
-exports.exceedsSizeLimit = (object, type, res) => {
+exports.exceedsSizeLimit = (object, type, res, lang = 'ru') => {
   if (object.toString().length > 2048) {
     res.status(400);
-    res.send({ reason: errorMessages[type] });
+    res.send({ reason: errorMessages[lang][type] });
     return true;
   } else {
     return false;

@@ -23,3 +23,7 @@ export const DELETE_COMMENT_SUCCESS = 'DELETE_COMMENT_SUCCESS';
 // ajax status
 export const BEGIN_AJAX_CALL = 'BEGIN_AJAX_CALL';
 export const AJAX_CALL_ERROR = 'AJAX_CALL_ERROR';
+
+// language
+export const GET_LANGUAGE = 'GET_LANGUAGE';
+export const SET_LANGUAGE = 'SET_LANGUAGE';

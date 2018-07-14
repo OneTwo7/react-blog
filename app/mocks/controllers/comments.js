@@ -31,6 +31,7 @@ exports.createComment = (req, res) => {
   const { id } = req.params;
   const comment = Object.assign({}, req.body);
   const cookieKey = `comments-${id}`;
+  const { lang } = req.cookies;
   let cookieComments = req.cookies[cookieKey];
 
   comment._id = generateId();
@@ -46,7 +47,7 @@ exports.createComment = (req, res) => {
     cookieComments = [comment];
   }
 
-  if (!exceedsSizeLimit(cookieComments, 'comments', res)) {
+  if (!exceedsSizeLimit(cookieComments, 'comments', res, lang)) {
     res.cookie(cookieKey, cookieComments, options);
     res.send(comment);
   }
@@ -56,6 +57,7 @@ exports.updateComment = (req, res) => {
   const { id, commentId } = req.params;
   const { content } = req.body;
   const cookieKey = `comments-${id}`;
+  const { lang } = req.cookies
   const cookieComments = req.cookies[cookieKey];
 
   if (!Array.isArray(cookieComments)) {
@@ -68,7 +70,7 @@ exports.updateComment = (req, res) => {
   comment.content = content;
   cookieComments.splice(idx, 1, comment);
 
-  if (!exceedsSizeLimit(cookieComments, 'comments', res)) {
+  if (!exceedsSizeLimit(cookieComments, 'comments', res, lang)) {
     res.cookie(cookieKey, cookieComments, options);
     res.send(comment);
   }

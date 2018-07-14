@@ -7,6 +7,15 @@ const ModalPane = ({ type }) => (
   <AccountContext.Consumer>
     {context => {
       const { auth, data, onChange, onKeyDown, errors, send } = context;
+      if (auth && auth._id) {
+        if (type === 'social' || type === 'login' || type === 'signup') {
+          return null;
+        }
+      } else {
+        if (type === 'update' || type === 'remove') {
+          return null;
+        }
+      }
       let modalBody;
       let paneClass = 'tab-pane fade';
       let submitButton = null;
@@ -14,7 +23,7 @@ const ModalPane = ({ type }) => (
       let resendButton = null;
 
       if (type === 'social') {
-        paneClass += auth && auth._id ? '' : ' show active';
+        paneClass += ' show active';
         modalBody = (
           <div id="social-login">
             <a href="/auth/google" id="google-btn">
@@ -86,7 +95,7 @@ const ModalPane = ({ type }) => (
           />
         );
         if (type === 'update') {
-          paneClass += auth && auth._id ? ' show active' : '';
+          paneClass += ' show active';
           clickHandler = context.update;
           submitButtonText = 'Update';
           inputs.push(nameInput, passwordInput, confirmationInput);

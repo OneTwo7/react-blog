@@ -84,6 +84,7 @@
     }
     &:hover {
       text-decoration: none;
+      box-shadow: 3px 3px $light-grey;
     }
     &:first-child {
       margin-top: 0;

@@ -25,8 +25,4 @@ module.exports = (app) => {
 
   router.get('/api/current_user', sendUser);
 
-  router.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../src/index.html'));
-  });
-
 };

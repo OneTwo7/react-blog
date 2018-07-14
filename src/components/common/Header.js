@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/authActions';
+import { setLanguage } from '../../actions/langActions';
 import { Link } from 'react-router-dom';
+import LanguageSelector from './LanguageSelector';
 import NavbarMenu from './navbar/NavbarMenu';
 import AccountModal from './account/AccountModal';
 import ConfirmationModal from './modals/ConfirmationModal';
@@ -35,6 +37,7 @@ class Header extends Component {
     this.remove = this.remove.bind(this);
     this.confirm = this.confirm.bind(this);
     this.send = this.send.bind(this);
+    this.setLanguage = this.setLanguage.bind(this);
   }
 
   componentDidMount () {
@@ -236,14 +239,24 @@ class Header extends Component {
     }
   }
 
+  setLanguage (event) {
+    const { lang } = event.target.dataset;
+    document.title = lang === 'en' ? 'Blog' : 'Блог';
+    document.documentElement.lang = lang;
+    this.props.setLanguage(lang);
+  }
+
   render () {
     const { data, errors } = this.state;
-    const { auth } = this.props;
+    const { auth, lang } = this.props;
 
     return (
       <header className="navbar navbar-expand-md navbar-dark bg-primary">
         <nav className="container">
-          <Link className="navbar-brand" to="/">Home</Link>
+          <div id="home-selector-container">
+            <Link className="navbar-brand" to="/">Home</Link>
+            <LanguageSelector lang={lang} select={this.setLanguage} />
+          </div>
           <NavbarMenu auth={auth} logout={this.logout} />
           <AccountContext.Provider value={{
             onChange: this.onChange,
@@ -272,18 +285,22 @@ class Header extends Component {
 
 Header.propTypes = {
   auth: PropTypes.object,
-  actions: PropTypes.object.isRequired
+  lang: PropTypes.string.isRequired,
+  actions: PropTypes.object.isRequired,
+  setLanguage: PropTypes.func.isRequired
 };
 
-const mapStateToProps = ({ auth }) => {
+const mapStateToProps = ({ auth, lang }) => {
   return {
-    auth
+    auth,
+    lang
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    actions: bindActionCreators(actions, dispatch)
+    actions: bindActionCreators(actions, dispatch),
+    setLanguage: bindActionCreators(setLanguage, dispatch)
   };
 };
 
