@@ -7,6 +7,7 @@ import PreviewModal from '../common/modals/PreviewModal';
 import Tags from './Tags';
 import PropTypes from 'prop-types';
 import FIELDS from './formFields';
+import strings from '../../strings/components/posts/postForm';
 
 class PostForm extends Component {
   constructor (props) {
@@ -57,6 +58,7 @@ class PostForm extends Component {
   onClick (event) {
     event.preventDefault();
 
+    const { savePost, lang } = this.props;
     const { post, fields, pictures, tags } = this.state;
     const savedPictures = post.pictures.map(({ field }) => field);
     const removedPictures = [...savedPictures];
@@ -112,9 +114,9 @@ class PostForm extends Component {
 
     formData.append('mainPicture', mainPicture);
 
-    this.props.savePost(formData).then(() => {
+    savePost(formData).then(() => {
       this.redirect();
-      notifications.showSuccessMessage('Post saved!');
+      notifications.showSuccessMessage(strings[lang].saveMessage);
     }).catch(error => {
       post.tags = '';
       notifications.showReason(error);
@@ -131,14 +133,15 @@ class PostForm extends Component {
 
   isFormValid () {
     const { post } = this.state;
+    const { lang } = this.props;
     let formIsValid = true;
     let errors = {};
 
-    FIELDS.forEach(({ name }) => {
-      if (name !== 'tags') {
-        if (!post[name] || !post[name].trim() || post[name] === '[]') {
-          let errorMessage = `You must provide a value for ${name}`;
-          errors[name] = errorMessage;
+    FIELDS.forEach(field => {
+      if (field !== 'tags') {
+        if (!post[field] || !post[field].trim() || post[field] === '[]') {
+          let errorMessage = strings[lang].emptyFieldError(field);
+          errors[field] = errorMessage;
           notifications.showErrorMessage(errorMessage);
           formIsValid = false;
         }
@@ -146,7 +149,7 @@ class PostForm extends Component {
     });
 
     if (!errors.title && post.title.trim().length < 4) {
-      let errorMessage = 'Title must be at least 4 characters!';
+      let errorMessage = strings[lang].shortTitleError;
       errors.title = errorMessage;
       notifications.showErrorMessage(errorMessage);
       formIsValid = false;
@@ -198,13 +201,15 @@ class PostForm extends Component {
   }
 
   render () {
+    const { lang } = this.props;
     const { post, fields, pictures, tags } = this.state;
 
     return (
       <form>
-        <h1>{post._id ? 'Edit Post' : 'New Post'}</h1>
+        <h1>{post._id ? strings[lang].editPost : strings[lang].newPost}</h1>
         <PostInputs
           post={post}
+          lang={lang}
           fields={fields}
           pictures={pictures}
           updateFields={this.updateFields}
@@ -220,7 +225,7 @@ class PostForm extends Component {
         <input
           type="submit"
           onClick={this.onClick}
-          value="Save"
+          value={strings[lang].save}
           className="btn btn-primary"
         />
         <button
@@ -229,7 +234,7 @@ class PostForm extends Component {
           onClick={this.onCancel}
           className="btn btn-secondary"
         >
-          Cancel
+          {strings[lang].cancel}
         </button>
         <PreviewModal />
       </form>
@@ -238,6 +243,7 @@ class PostForm extends Component {
 }
 
 PostForm.propTypes = {
+  lang:     PropTypes.string.isRequired,
   savePost: PropTypes.func.isRequired,
   history:  PropTypes.object.isRequired,
   post:     PropTypes.object.isRequired,
@@ -245,7 +251,7 @@ PostForm.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => {
-  const { auth, posts } = state;
+  const { lang, posts } = state;
   let post = {
     title: '',
     content: '',
@@ -262,6 +268,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   return {
+    lang,
     post,
     fields
   };

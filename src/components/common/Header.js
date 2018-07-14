@@ -11,6 +11,7 @@ import ConfirmationModal from './modals/ConfirmationModal';
 import * as notifications from '../../utils/notifications';
 import AccountContext from './AccountContext';
 import PropTypes from 'prop-types';
+import strings from '../../strings/components/common/header';
 
 class Header extends Component {
   constructor (props) {
@@ -47,7 +48,8 @@ class Header extends Component {
 
   componentWillReceiveProps (nextProps) {
     if (!this.props.auth && nextProps.auth._id) {
-      notifications.showSuccessMessage('You are logged in!');
+      const { lang = 'ru' } = this.props;
+      notifications.showSuccessMessage(strings[lang].loginNotification);
     }
   }
 
@@ -96,25 +98,23 @@ class Header extends Component {
     return errors;
   }
 
-  inputsFilled ({ email, name, password, password_confirmation }) {
+  inputsFilled ({ email, name, password, password_confirmation }, lang) {
     let result = true;
     if (email !== undefined && email.trim().length < 6) {
-      notifications.showErrorMessage('Email should be at least 6 characters!');
+      notifications.showErrorMessage(strings[lang].shortEmailError);
       result = false;
     }
     if (name !== undefined && name.trim() === '') {
-      notifications.showErrorMessage('You must provide name!');
+      notifications.showErrorMessage(strings[lang].noNameError);
       result = false;
     }
     if (password !== undefined && password.length < 6) {
-      notifications.showErrorMessage(
-        'Password should be at least 6 characters!'
-      );
+      notifications.showErrorMessage(strings[lang].shortPasError);
       result = false;
     }
     if (password_confirmation !== undefined) {
       if (password !== password_confirmation) {
-        notifications.showErrorMessage('Passwords don\'t match!');
+        notifications.showErrorMessage(strings[lang].pasMatchError);
         result = false;
       }
     }
@@ -123,11 +123,12 @@ class Header extends Component {
 
   login () {
     const { email, password } = this.state.data;
-    if (this.inputsFilled({ email, password })) {
-      this.props.actions.login(email.toLowerCase(), password).then(() => {
+    const { lang, actions } = this.props;
+    if (this.inputsFilled({ email, password }, lang)) {
+      actions.login(email.toLowerCase(), password).then(() => {
         $('#account-modal').modal('hide');
         this.setDefault();
-        notifications.showSuccessMessage('You are now logged in!');
+        notifications.showSuccessMessage(strings[lang].loginMessage);
       }).catch(error => {
         notifications.showReason(error);
       });
@@ -136,18 +137,19 @@ class Header extends Component {
 
   signup () {
     const { email, name, password, password_confirmation } = this.state.data;
-    if (this.inputsFilled({ email, name, password, password_confirmation })) {
+    const { lang, actions } = this.props;
+    if (this.inputsFilled(
+      { email, name, password, password_confirmation }, lang
+    )) {
       const data = {
         email: email.toLowerCase(),
         name,
         password
       };
-      this.props.actions.createUser(data).then(() => {
+      actions.createUser(data).then(() => {
         $('#account-modal').modal('hide');
         this.setDefault();
-        notifications.showSuccessMessage(
-          'Account is created. Check your email for activation link!'
-        );
+        notifications.showSuccessMessage(strings[lang].accountCreated);
       }).catch(error => {
         notifications.showReason(error);
       });
@@ -155,8 +157,9 @@ class Header extends Component {
   }
 
   logout () {
-    this.props.actions.logout().then(() => {
-      notifications.showSuccessMessage('You successfully logged out!');
+    const { actions, lang } = this.props;
+    actions.logout().then(() => {
+      notifications.showSuccessMessage(strings[lang].logoutMessage);
     }).catch(error => {
       notifications.showReason(error);
     });
@@ -164,6 +167,7 @@ class Header extends Component {
 
   update () {
     const { name, password, password_confirmation } = this.state.data;
+    const { lang, auth, actions } = this.props;
     const inputs = {};
     if (name) {
       inputs.name = name;
@@ -172,12 +176,12 @@ class Header extends Component {
       inputs.password = password;
       inputs.password_confirmation = password_confirmation;
     }
-    if (this.inputsFilled(inputs)) {
+    if (this.inputsFilled(inputs, lang)) {
       const data = { name, password };
-      this.props.actions.updateUser(data, this.props.auth._id).then(() => {
+      actions.updateUser(data, auth._id).then(() => {
         $('#account-modal').modal('hide');
         this.setDefault();
-        notifications.showSuccessMessage('Account successfully updated!');
+        notifications.showSuccessMessage(strings[lang].updateMessage);
       }).catch(error => {
         notifications.showReason(error);
       });
@@ -186,16 +190,17 @@ class Header extends Component {
 
   remove () {
     const { email } = this.state.data;
-    if (this.inputsFilled({ email })) {
-      const { _id, email: requiredEmail } = this.props.auth;
+    const { lang, auth, actions } = this.props;
+    if (this.inputsFilled({ email }, lang)) {
+      const { _id, email: requiredEmail } = auth;
       if (email !== requiredEmail) {
-        notifications.showErrorMessage('Wrong email!');
+        notifications.showErrorMessage(strings[lang].wrongEmailError);
         return;
       }
-      this.props.actions.deleteUser(_id).then(() => {
+      actions.deleteUser(_id).then(() => {
         $('#account-modal').modal('hide');
         this.setDefault();
-        notifications.showSuccessMessage('Account successfully removed!');
+        notifications.showSuccessMessage(strings[lang].removeMessage);
       }).catch(error => {
         notifications.showReason(error);
       });
@@ -209,8 +214,9 @@ class Header extends Component {
   }
 
   confirm () {
-    this.props.actions.deleteUser(this.props.auth._id).then(() => {
-      notifications.showSuccessMessage('Account successfully removed!');
+    const { lang, actions } = this.props;
+    actions.deleteUser(this.props.auth._id).then(() => {
+      notifications.showSuccessMessage(strings[lang].removeMessage);
     }).catch(error => {
       notifications.showReason(error);
     });
@@ -219,15 +225,16 @@ class Header extends Component {
 
   send (event) {
     const { email } = this.state.data;
-    if (this.inputsFilled({ email })) {
+    const { lang, actions } = this.props;
+    if (this.inputsFilled({ email }, lang)) {
       const { action } = event.target.dataset;
       let sendAction, message;
       if (action === 'resend-activation') {
-        sendAction = this.props.actions.resendActivationLink;
-        message = 'Check your email for activation link!';
+        sendAction = actions.resendActivationLink;
+        message = strings[lang].activationSentMessage;
       } else {
-        sendAction = this.props.actions.sendResetLink;
-        message = 'Check your email for reset link!';
+        sendAction = actions.sendResetLink;
+        message = strings[lang].resetSentMessage;
       }
       sendAction(email).then(() => {
         $('#account-modal').modal('hide');
@@ -241,8 +248,6 @@ class Header extends Component {
 
   setLanguage (event) {
     const { lang } = event.target.dataset;
-    document.title = lang === 'en' ? 'Blog' : 'Блог';
-    document.documentElement.lang = lang;
     this.props.setLanguage(lang);
   }
 
@@ -254,10 +259,10 @@ class Header extends Component {
       <header className="navbar navbar-expand-md navbar-dark bg-primary">
         <nav className="container">
           <div id="home-selector-container">
-            <Link className="navbar-brand" to="/">Home</Link>
+            <Link className="navbar-brand" to="/">{strings[lang].home}</Link>
             <LanguageSelector lang={lang} select={this.setLanguage} />
           </div>
-          <NavbarMenu auth={auth} logout={this.logout} />
+          <NavbarMenu auth={auth} lang={lang} logout={this.logout} />
           <AccountContext.Provider value={{
             onChange: this.onChange,
             onKeyDown: this.onKeyDown,
@@ -267,6 +272,7 @@ class Header extends Component {
             remove: this.remove,
             send: this.send,
             auth,
+            lang,
             data,
             errors
           }}>
@@ -275,8 +281,9 @@ class Header extends Component {
         </nav>
         <ConfirmationModal
           id="account-confirmation-modal"
+          lang={lang}
           confirm={this.confirm}
-          message="Are you sure you want to delete your account?"
+          message={strings[lang].confirmationMessage}
         />
       </header>
     );

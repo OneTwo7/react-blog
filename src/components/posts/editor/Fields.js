@@ -4,13 +4,13 @@ import * as helpers from '../../../utils/editorHelpers';
 import PropTypes from 'prop-types';
 
 const Fields = (props) => {
-  const { fields, pictures, move, preview, reselect, blur, change } = props;
+  const { lang, pictures, move, preview, reselect, blur, change } = props;
   const { onPaste, handleKey, attachTextControls } = helpers;
 
   return (
     <div id="content" onPaste={onPaste} onKeyDown={handleKey}>
       {
-        fields.map(({ type, id }) => (
+        props.fields.map(({ type, id }) => (
           <div
             key={id}
             id={id}
@@ -21,6 +21,7 @@ const Fields = (props) => {
               type === 'img' ?
               <PictureInput
                 id={id}
+                lang={lang}
                 pictures={pictures}
                 preview={preview}
                 reselect={reselect}
@@ -67,6 +68,7 @@ const Fields = (props) => {
 };
 
 Fields.propTypes = {
+  lang: PropTypes.string.isRequired,
   fields: PropTypes.array.isRequired,
   pictures: PropTypes.array.isRequired,
   move: PropTypes.func.isRequired,

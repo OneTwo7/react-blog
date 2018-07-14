@@ -3,15 +3,17 @@ import TextInput from '../common/inputs/TextInput';
 import ContentEditor from './editor/ContentEditor';
 import PropTypes from 'prop-types';
 import FIELDS from './formFields';
+import strings from '../../strings/components/posts/postInputs';
 
 const PostInputs = (props) => {
-  const { onChange, post, errors } = props;
+  const { onChange, post, lang, errors } = props;
 
-  return FIELDS.map(({ name, label }) => {
-    if (name === 'content') {
+  return FIELDS.map(field => {
+    if (field === 'content') {
       return (
         <ContentEditor
-          key={name}
+          key={field}
+          lang={lang}
           fields={props.fields}
           pictures={props.pictures}
           postPictures={post.pictures}
@@ -23,13 +25,13 @@ const PostInputs = (props) => {
     } else {
       return (
         <TextInput
-          key={name}
-          name={name}
-          label={label}
+          key={field}
+          name={field}
+          label={strings[lang][field]}
           onChange={onChange}
-          value={post[name]}
-          onKeyDown={name === 'tags' ? props.onTagKeyDown : null}
-          error={errors[name]}
+          value={post[field]}
+          onKeyDown={field === 'tags' ? props.onTagKeyDown : null}
+          error={errors[field]}
         />
       );
     }
@@ -37,6 +39,7 @@ const PostInputs = (props) => {
 };
 
 PostInputs.propTypes = {
+  lang: PropTypes.string.isRequired,
   post: PropTypes.object.isRequired,
   fields: PropTypes.array.isRequired,
   pictures: PropTypes.object.isRequired,

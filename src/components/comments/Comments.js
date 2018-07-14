@@ -7,6 +7,7 @@ import CommentsList from './CommentsList';
 import ConfirmationModal from '../common/modals/ConfirmationModal';
 import { showSuccessMessage, showReason } from '../../utils/notifications';
 import PropTypes from 'prop-types';
+import strings from '../../strings/components/comments/comments';
 
 class Comments extends Component {
   constructor (props) {
@@ -47,12 +48,12 @@ class Comments extends Component {
     this.props.actions.loadComments(postId);
   }
 
-  commentFormIsValid () {
+  commentFormIsValid (lang) {
     let formIsValid = true;
     const errors = {};
 
     if (this.state.comment.content.trim().length === 0) {
-      errors.content = 'You must provide content.';
+      errors.content = strings[lang].noContentError;
       formIsValid = false;
     }
 
@@ -72,13 +73,13 @@ class Comments extends Component {
 
   onClick (event) {
     event.preventDefault();
+    const { auth, lang } = this.props;
 
-    if (!this.commentFormIsValid()) {
+    if (!this.commentFormIsValid(lang)) {
       return;
     }
 
     const comment = Object.assign({}, this.state.comment);
-    const { auth } = this.props;
     comment.post_id = this.props.postId;
 
     if (!(auth && auth._id)) {
@@ -86,7 +87,7 @@ class Comments extends Component {
     } else {
       this.props.actions.saveComment(comment).then(() => {
         this.setDefaultComment();
-        showSuccessMessage('Done!');
+        showSuccessMessage(strings[lang].saveMessage);
       }).catch(error => {
         showReason(error);
       });
@@ -112,28 +113,30 @@ class Comments extends Component {
       this.setDefaultComment();
     }
     this.setState({ commentId });
-    $('#confirmation-modal').modal('show');
+    $('#confirm-delete-comment').modal('show');
   }
 
   confirm () {
-    this.props.actions.deleteComment(this.state.commentId, this.props.postId)
+    const { actions, lang } = this.props;
+    actions.deleteComment(this.state.commentId, this.props.postId)
     .then(() => {
-      showSuccessMessage('Comment has been deleted.');
+      showSuccessMessage(strings[lang].deleteMessage);
     }).catch(error => {
       showReason(error);
     });
-    $('#confirmation-modal').modal('hide');
+    $('#confirm-delete-comment').modal('hide');
   }
 
   render () {
-    const { auth, comments, count } = this.props;
+    const { auth, lang, comments, count } = this.props;
     const { comment, errors } = this.state;
 
     return (
       <section id="comments" className="col-md-6 offset-md-3">
-        <h2>Comments ({count})</h2>
+        <h2>{`${strings[lang].comments} (${count})`}</h2>
         <CommentForm
           auth={auth}
+          lang={lang}
           comment={comment}
           errors={errors}
           change={this.onChange}
@@ -142,11 +145,17 @@ class Comments extends Component {
         />
         <CommentsList
           auth={auth}
+          lang={lang}
           comments={comments}
           onEdit={this.onEditClick}
           onDelete={this.onDeleteClick}
         />
-        <ConfirmationModal confirm={this.confirm} />
+        <ConfirmationModal
+          id="confirm-delete-comment"
+          lang={lang}
+          message={strings[lang].confirmationMessage}
+          confirm={this.confirm}
+        />
       </section>
     );
   }
@@ -156,16 +165,17 @@ Comments.propTypes = {
   count: PropTypes.number,
   postId: PropTypes.string,
   auth: PropTypes.object,
+  lang: PropTypes.string.isRequired,
   comments: PropTypes.array.isRequired,
   actions: PropTypes.object.isRequired
 };
 
-const mapStateToProps = (state) => {
-  const { comments, auth } = state;
+const mapStateToProps = ({ auth, lang, comments }) => {
   const count = comments.length;
 
   return {
     auth,
+    lang,
     comments,
     count
   };

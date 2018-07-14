@@ -4,6 +4,7 @@ import EditorControls from './EditorControls';
 import PreviewModal from '../../common/modals/PreviewModal';
 import * as helpers from '../../../utils/editorHelpers';
 import PropTypes from 'prop-types';
+import strings from '../../../strings/components/posts/editor/contentEditor';
 
 class ContentEditor extends Component {
   constructor (props) {
@@ -181,14 +182,15 @@ class ContentEditor extends Component {
   }
 
   render () {
-    const { fields, error } = this.props;
+    const { lang, fields, error } = this.props;
 
     return (
       <React.Fragment>
         <div className="form-group">
-          <label>Content</label>
+          <label>{strings[lang].content}</label>
           <Fields
             fields={fields}
+            lang={lang}
             move={this.moveField}
             pictures={this.state.savedPictures}
             preview={this.onPreview}
@@ -196,8 +198,9 @@ class ContentEditor extends Component {
             blur={this.onBlur}
             change={this.onChange}
           />
-          <EditorControls id="text-controls" />
+          <EditorControls lang={lang} id="text-controls" />
           <EditorControls
+            lang={lang}
             id="content-controls"
             addField={this.addField}
             clearFields={this.clearFields}
@@ -212,6 +215,7 @@ class ContentEditor extends Component {
 }
 
 ContentEditor.propTypes = {
+  lang:           PropTypes.string.isRequired,
   fields:         PropTypes.array.isRequired,
   pictures:       PropTypes.object.isRequired,
   postPictures:   PropTypes.array.isRequired,

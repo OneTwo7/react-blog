@@ -1,3 +1,5 @@
+import strings from '../strings/utils/formatDate';
+
 const periods = {
   second: 1000,
   minute: 60000,
@@ -5,7 +7,7 @@ const periods = {
   day:    86400000
 };
 
-export const fromNow = (date) => {
+export const fromNow = (date, lang) => {
   const parsedDate = Date.parse(date);
 
   if (isNaN(parsedDate)) {
@@ -19,37 +21,41 @@ export const fromNow = (date) => {
     const seconds = Math.ceil(time / second);
     switch (true) {
       case seconds < 15:
-        return 'a few seconds ago';
+        return strings[lang].fewSeconds;
       case seconds < 45:
-        return seconds + ' seconds ago';
+        return strings[lang].getSeconds(seconds);
       default:
-        return 'a minute ago';
+        return strings[lang].aMinute;
     }
   }
 
   if (time < 90 * minute) {
     const minutes = Math.ceil(time / minute);
-    return minutes < 45 ? minutes + ' minutes ago' : 'an hour ago';
+    if (minutes < 45) {
+      return strings[lang].getMinutes(minutes);
+    } else {
+      return strings[lang].anHour;
+    }
   }
 
   if (time < 35 * hour) {
     const hours = Math.ceil(time / hour);
-    return hours < 21 ? hours + ' hours ago' : 'a day ago';
+    return hours < 21 ? strings[lang].getHours(hours) : strings[lang].aDay;
   }
 
   if (time < 547 * day) {
     const days = Math.ceil(time / day);
     switch (true) {
       case days < 25:
-        return days + ' days ago';
+        return strings[lang].getDays(days);
       case days < 45:
-        return 'a month ago';
+        return strings[lang].aMonth;
       case days < 319:
-        return Math.ceil(days / 30) + ' months ago';
+        return strings[lang].getMonths(Math.ceil(days / 30));
       default:
-        return 'a year ago';
+        return strings[lang].aYear;
     }
   }
 
-  return Math.ceil(time / (day * 365)) + ' years ago';
+  return strings[lang].getYears(Math.ceil(time / (day * 365)));
 };

@@ -1,8 +1,9 @@
 import React from 'react';
 import { fromNow } from '../../utils/formatDate';
 import PropTypes from 'prop-types';
+import strings from '../../strings/components/comments/comment';
 
-const Comment = ({ auth, comment, onEdit, onDelete }) => {
+const Comment = ({ auth, lang, comment, onEdit, onDelete }) => {
   const { _id, author, content, created_at } = comment;
   const isAdmin = auth.roles && auth.roles.includes('admin');
 
@@ -12,7 +13,7 @@ const Comment = ({ auth, comment, onEdit, onDelete }) => {
         <div className="comment-top">
           <div>
             <div>{author.name}</div>
-            <div className="timestamp">{fromNow(created_at)}</div>
+            <div className="timestamp">{fromNow(created_at, lang)}</div>
           </div>
           {
             auth && auth._id && (isAdmin || auth._id === author._id) &&
@@ -23,7 +24,7 @@ const Comment = ({ auth, comment, onEdit, onDelete }) => {
                 onClick={onEdit}
                 className="btn btn-link"
               >
-                edit
+                {strings[lang].edit}
               </button>
               <button
                 data-target={_id}
@@ -31,7 +32,7 @@ const Comment = ({ auth, comment, onEdit, onDelete }) => {
                 onClick={onDelete}
                 className="btn btn-link"
               >
-                delete
+                {strings[lang].remove}
               </button>
             </div>
           }
@@ -45,6 +46,7 @@ const Comment = ({ auth, comment, onEdit, onDelete }) => {
 Comment.propTypes = {
   auth: PropTypes.object,
   comment: PropTypes.object,
+  lang: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired
 };

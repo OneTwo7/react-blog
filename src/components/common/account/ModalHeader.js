@@ -1,20 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const TABS = [
-  { tab: 'update', text: 'Modify' },
-  { tab: 'remove', text: 'delete' },
-  { tab: 'social', text: 'Social' },
-  { tab: 'login',  text: 'Email' },
-  { tab: 'signup', text: 'Signup' }
-];
+const TABS = ['update', 'remove', 'social', 'login', 'signup'];
 
 const ModalHeader = ({ children }) => {
   const child = React.Children.only(children);
-  const elements = TABS.map(({ tab, text }) => (
+  const elements = TABS.map(tab => (
     React.cloneElement(child, {
       key: tab,
-      text,
       tab
     })
   ));

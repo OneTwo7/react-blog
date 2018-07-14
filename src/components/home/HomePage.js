@@ -7,6 +7,7 @@ import PostList from '../posts/PostList';
 import ConfirmationModal from '../common/modals/ConfirmationModal';
 import { showSuccessMessage, showReason } from '../../utils/notifications';
 import { setHeight, clipImage, reclipImages} from '../../utils/previewHelpers';
+import strings from '../../strings/components/home/homePage';
 
 class HomePage extends Component {
   constructor (props) {
@@ -63,16 +64,17 @@ class HomePage extends Component {
 
   onDeleteClick (event) {
     this.setState({ postId: event.target.dataset.target });
-    $('#confirmation-modal').modal('show');
+    $('#delete-post-confirmation').modal('show');
   }
 
   confirm () {
-    this.props.actions.deletePost(this.state.postId).then(() => {
-      showSuccessMessage('Post has been deleted.');
+    const { actions, lang } = this.props;
+    actions.deletePost(this.state.postId).then(() => {
+      showSuccessMessage(strings[lang].deleteMessage);
     }).catch(error => {
       showReason(error);
     });
-    $('#confirmation-modal').modal('hide');
+    $('#delete-post-confirmation').modal('hide');
   }
 
   loadPosts () {
@@ -87,17 +89,24 @@ class HomePage extends Component {
 
   render () {
     const { page, postsPerPage } = this.state;
-    const posts = this.props.posts.slice(0, page * postsPerPage);
+    const { posts: propsPosts, lang } = this.props;
+    const posts = propsPosts.slice(0, page * postsPerPage);
 
     return (
       <React.Fragment>
         <PostList
           posts={posts}
+          lang={lang}
           auth={this.props.auth}
           onClick={this.onDeleteClick}
           onLoad={this.onImageLoad}
         />
-        <ConfirmationModal confirm={this.confirm} />
+        <ConfirmationModal
+          id="delete-post-confirmation"
+          lang={lang}
+          message={strings[lang].confirmation}
+          confirm={this.confirm}
+        />
       </React.Fragment>
     );
   }
@@ -106,16 +115,17 @@ class HomePage extends Component {
 HomePage.propTypes = {
   auth: PropTypes.object,
   posts: PropTypes.array,
+  lang: PropTypes.string.isRequired,
   postsLength: PropTypes.number.isRequired,
   actions: PropTypes.object.isRequired
 };
 
-const mapStateToProps = (state) => {
-  const { posts, auth } = state;
+const mapStateToProps = ({ posts, auth, lang }) => {
   const postsLength = posts.length;
 
   return {
     auth,
+    lang,
     posts,
     postsLength
   };

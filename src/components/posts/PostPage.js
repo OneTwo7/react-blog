@@ -9,6 +9,7 @@ import { deletePost } from '../../actions/postActions';
 import ConfirmationModal from '../common/modals/ConfirmationModal';
 import { showSuccessMessage, showReason } from '../../utils/notifications';
 import PropTypes from 'prop-types';
+import strings from '../../strings/components/posts/postPage';
 
 /* eslint-disable no-undef */
 
@@ -79,9 +80,10 @@ class PostPage extends Component {
   }
 
   confirm () {
-    this.props.deletePost(this.props.post._id).then(() => {
+    const { deletePost, post, lang } = this.props;
+    deletePost(post._id).then(() => {
       this.props.history.push('/');
-      showSuccessMessage('Post has been deleted.');
+      showSuccessMessage(strings[lang].deleteMessage);
     }).catch(error => {
       showReason(error);
     });
@@ -89,19 +91,21 @@ class PostPage extends Component {
   }
 
   render () {
-    const { post, recommended, auth } = this.props;
+    const { post, recommended, auth, lang } = this.props;
 
     return (
       <div className="row">
-        <Post post={post} auth={auth} onClick={this.remove} />
+        <Post post={post} auth={auth} lang={lang} onClick={this.remove} />
         <RecommendedPosts
+          lang={lang}
           recommended={recommended}
           onLoad={this.onImageLoad}
         />
         <Comments postId={post._id} />
         <ConfirmationModal
           id="post-remove-modal"
-          message="Are you sure you want to delete this post?"
+          lang={lang}
+          message={strings[lang].confirmationMessage}
           confirm={this.confirm}
         />
       </div>
@@ -113,6 +117,7 @@ PostPage.propTypes = {
   post: PropTypes.object.isRequired,
   recommended: PropTypes.array,
   auth: PropTypes.object,
+  lang: PropTypes.string.isRequired,
   deletePost: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired
 };
@@ -129,7 +134,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const postId = ownProps.match.params.id;
 
-  const { auth } = state;
+  const { auth, lang } = state;
 
   let posts = [...state.posts];
   let recommended = [];
@@ -143,7 +148,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     post,
     recommended,
-    auth
+    auth,
+    lang
   };
 };
 

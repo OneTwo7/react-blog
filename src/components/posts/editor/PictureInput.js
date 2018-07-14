@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import strings from '../../../strings/components/posts/editor/pictureInput';
 
-const PictureInput = ({ id, pictures, preview, reselect, blur, change }) => {
+const PictureInput = (props) => {
+  const { id, lang, pictures, reselect, change, preview, blur } = props;
   let pictureFile;
 
   if (pictures.includes(id)) {
@@ -13,7 +15,7 @@ const PictureInput = ({ id, pictures, preview, reselect, blur, change }) => {
           type="button"
           onClick={reselect}
         >
-          Change
+          {strings[lang].change}
         </button>
       </div>
     );
@@ -25,10 +27,11 @@ const PictureInput = ({ id, pictures, preview, reselect, blur, change }) => {
           id={`img-${id}`}
           type="file"
           accept="image/*"
+          lang={lang}
           onChange={change}
         />
         <label className="custom-file-label" htmlFor={`img-${id}`}>
-          Choose file
+          {strings[lang].choose}
         </label>
       </div>
     );
@@ -44,7 +47,7 @@ const PictureInput = ({ id, pictures, preview, reselect, blur, change }) => {
             type="button"
             onClick={preview}
           >
-            Preview
+            {strings[lang].preview}
           </button>
         </div>
         {pictureFile}
@@ -52,7 +55,7 @@ const PictureInput = ({ id, pictures, preview, reselect, blur, change }) => {
       <div className="input-group">
         <div className="input-group-prepend">
           <label className="input-group-text" htmlFor={`img-${id}-sign`}>
-            Sign
+            {strings[lang].sign}
           </label>
         </div>
         <input
@@ -68,6 +71,7 @@ const PictureInput = ({ id, pictures, preview, reselect, blur, change }) => {
 
 PictureInput.propTypes = {
   id: PropTypes.string.isRequired,
+  lang: PropTypes.string.isRequired,
   pictures: PropTypes.array.isRequired,
   preview: PropTypes.func.isRequired,
   reselect: PropTypes.func.isRequired,

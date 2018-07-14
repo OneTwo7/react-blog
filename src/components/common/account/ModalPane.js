@@ -2,11 +2,12 @@ import React from 'react';
 import Input from '../inputs/Input';
 import PropTypes from 'prop-types';
 import AccountContext from '../AccountContext';
+import strings from '../../../strings/components/common/account/modalPane';
 
 const ModalPane = ({ type }) => (
   <AccountContext.Consumer>
     {context => {
-      const { auth, data, onChange, onKeyDown, errors, send } = context;
+      const { auth, lang, data, onChange, onKeyDown, errors, send } = context;
       if (auth && auth._id) {
         if (type === 'social' || type === 'login' || type === 'signup') {
           return null;
@@ -26,15 +27,9 @@ const ModalPane = ({ type }) => (
         paneClass += ' show active';
         modalBody = (
           <div id="social-login">
-            <a href="/auth/google" id="google-btn">
-              Log in with Google
-            </a>
-            <a href="/auth/github" id="github-btn">
-              Log in with Github
-            </a>
-            <a href="/auth/vk" id="vk-btn">
-              Log in with VK
-            </a>
+            <a href="/auth/google" id="google-btn">{strings[lang].google}</a>
+            <a href="/auth/github" id="github-btn">{strings[lang].github}</a>
+            <a href="/auth/vk" id="vk-btn">{strings[lang].vk}</a>
           </div>
         );
       } else {
@@ -51,7 +46,7 @@ const ModalPane = ({ type }) => (
             name="email"
             onChange={onChange}
             onKeyDown={onKeyDown}
-            label="Email"
+            label={strings[lang].email}
             error={errors && errors.email}
           />
         );
@@ -61,10 +56,10 @@ const ModalPane = ({ type }) => (
             id={`${type}-name`}
             type="text"
             val={data && data.name}
-            label="Name"
             name="name"
             onChange={onChange}
             onKeyDown={onKeyDown}
+            label={strings[lang].name}
             error={errors && errors.name}
           />
         );
@@ -77,7 +72,7 @@ const ModalPane = ({ type }) => (
             name="password"
             onChange={onChange}
             onKeyDown={onKeyDown}
-            label="Password"
+            label={strings[lang].password}
             error={errors && errors.password}
           />
         );
@@ -90,23 +85,23 @@ const ModalPane = ({ type }) => (
             name="password_confirmation"
             onChange={onChange}
             onKeyDown={onKeyDown}
-            label="Password Confirmation"
+            label={strings[lang].password_confirmation}
             error={errors && errors.password_confirmation}
           />
         );
         if (type === 'update') {
           paneClass += ' show active';
           clickHandler = context.update;
-          submitButtonText = 'Update';
+          submitButtonText = strings[lang].update;
           inputs.push(nameInput, passwordInput, confirmationInput);
         } else if (type === 'remove') {
           submitButtonClass = 'btn btn-danger';
           clickHandler = context.remove;
-          submitButtonText = 'Remove Account';
+          submitButtonText = strings[lang].remove;
           inputs.push(emailInput);
         } else if (type === 'login') {
           clickHandler = context.login;
-          submitButtonText = 'Login';
+          submitButtonText = strings[lang].login;
           inputs.push(emailInput, passwordInput);
           resetButton = (
             <button
@@ -115,7 +110,7 @@ const ModalPane = ({ type }) => (
               className="btn btn-dark"
               onClick={send}
             >
-              Reset Password
+              {strings[lang].reset}
             </button>
           );
           resendButton = (
@@ -125,18 +120,18 @@ const ModalPane = ({ type }) => (
               className="btn btn-dark"
               onClick={send}
             >
-              Resend Activation
+              {strings[lang].resend}
             </button>
           );
         } else {
           clickHandler = context.signup;
-          submitButtonText = 'Sign Up';
+          submitButtonText = strings[lang].signup;
           inputs.push(emailInput, nameInput, passwordInput, confirmationInput);
         }
         if (type === 'remove') {
           modalBody = (
             <React.Fragment>
-              <div id="repeat-notice">Input your email to confirm:</div>
+              <div id="remove-notice">{strings[lang].removeNotice}</div>
               <form>{inputs}</form>
             </React.Fragment>
           );
@@ -169,7 +164,7 @@ const ModalPane = ({ type }) => (
               className="btn btn-secondary"
               data-dismiss="modal"
             >
-              Close
+              {strings[lang].close}
             </button>
             {resetButton}
             {resendButton}

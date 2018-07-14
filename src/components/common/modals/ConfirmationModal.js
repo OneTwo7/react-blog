@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import strings from '../../../strings/components/common/modals/confirmation';
 
-const ConfirmationModal = ({ message, id, confirm }) => (
+const ConfirmationModal = ({ message, id, confirm, lang }) => (
   <div
     className="modal fade confirmation-modal"
-    id={id || "confirmation-modal"}
+    id={id}
     tabIndex="-1"
     role="dialog"
     aria-labelledby="confirmationModalLabel"
@@ -13,7 +14,7 @@ const ConfirmationModal = ({ message, id, confirm }) => (
     <div className="modal-dialog" role="document">
       <div className="modal-content">
         <div className="modal-body">
-          <div>{message || 'Are you sure you want to delete this?'}</div>
+          <div>{message}</div>
           <button
             type="button"
             className="close"
@@ -29,14 +30,14 @@ const ConfirmationModal = ({ message, id, confirm }) => (
             className="btn btn-secondary"
             data-dismiss="modal"
           >
-            Close
+            {strings[lang].close}
           </button>
           <button
             type="button"
             className="btn btn-primary"
             onClick={confirm}
           >
-            Confirm
+            {strings[lang].confirm}
           </button>
         </div>
       </div>
@@ -45,9 +46,10 @@ const ConfirmationModal = ({ message, id, confirm }) => (
 );
 
 ConfirmationModal.propTypes = {
-  message: PropTypes.string,
-  id: PropTypes.string,
-  confirm: PropTypes.func.isRequired
+  message: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  confirm: PropTypes.func.isRequired,
+  lang: PropTypes.string.isRequired
 };
 
 export default ConfirmationModal;

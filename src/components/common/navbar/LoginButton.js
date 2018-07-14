@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import strings from '../../../strings/components/common/navbar/loginButton';
 
-const LoginButton = ({ auth, logout }) => {
+const LoginButton = ({ auth, lang, logout }) => {
   if (!auth) {
     return null;
   }
@@ -15,7 +16,7 @@ const LoginButton = ({ auth, logout }) => {
           data-toggle="modal"
           data-target="#account-modal"
         >
-          Login
+          {strings[lang].login}
         </button>
       </li>
     );
@@ -43,14 +44,14 @@ const LoginButton = ({ auth, logout }) => {
               email ? '#account-modal' : '#account-confirmation-modal'
             }
           >
-            {email ? 'Account' : 'Delete Account'}
+            {email ? strings[lang].account : strings[lang].remove}
           </button>
           <button
             type="button"
             className="btn btn-link dropdown-item"
             onClick={logout}
           >
-            Logout
+            {strings[lang].logout}
           </button>
         </div>
       </li>
@@ -60,6 +61,7 @@ const LoginButton = ({ auth, logout }) => {
 
 LoginButton.propTypes = {
   auth: PropTypes.object,
+  lang: PropTypes.string.isRequired,
   logout: PropTypes.func.isRequired
 };
 

@@ -18,7 +18,7 @@ const NavbarMenu = (props) => (
     </button>
     <div className="collapse navbar-collapse" id="navbar-menu">
       <ul className="navbar-nav mr-auto">
-        <NewPostButton auth={props.auth} />
+        <NewPostButton auth={props.auth} lang={props.lang} />
       </ul>
       <ul className="navbar-nav">
         <LoginButton {...props} />
@@ -29,6 +29,7 @@ const NavbarMenu = (props) => (
 
 NavbarMenu.propTypes = {
   auth: PropTypes.object,
+  lang: PropTypes.string.isRequired,
   logout: PropTypes.func.isRequired
 };
 

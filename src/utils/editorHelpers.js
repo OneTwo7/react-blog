@@ -1,4 +1,5 @@
 import { showErrorMessage } from './notifications';
+import strings from '../strings/utils/editorHelpers';
 
 const fiveMegaBytes = 5 * 1024 * 1024;
 
@@ -22,15 +23,16 @@ const isField = (selection, type) => {
 
 const getSelectionText = (emptyCheck) => {
   const selection = window.getSelection();
+  const { lang } = document.documentElement;
   if (!isField(selection, 'text')) {
-    showErrorMessage('Wrong selection!');
+    showErrorMessage(strings[lang].wrongSelection);
     return;
   }
 
   const text = selection.toString();
   if (emptyCheck) {
     if (selection.isCollapsed) {
-      showErrorMessage('Nothing is selected!');
+      showErrorMessage(strings[lang].nothingSelected);
       return;
     }
   }
@@ -61,6 +63,7 @@ export const addElement = (e) => {
 };
 
 export const createElement = (type) => {
+  const { lang } = document.documentElement;
   let element;
   let text;
   if (type === 'ol-btn' || type === 'ul-btn') {
@@ -89,9 +92,9 @@ export const createElement = (type) => {
         element = `<em>${text}</em>`;
         break;
       case 'link-btn':
-        url = prompt('Provide an address', '');
+        url = prompt(strings[lang].inputURL, '');
         if (!url) {
-          showErrorMessage('You need to provide a URL!');
+          showErrorMessage(strings[lang].noURL);
           return;
         }
         element = `<a href="${url}">${text}</a>`;
@@ -173,25 +176,28 @@ export const handleKey = (e) => {
 };
 
 export const change = (event) => {
+  const { lang } = document.documentElement;
   const input = event.target;
   const { files } = input;
   const $label = $(`label[for="${input.id}"]`);
   if (files && files[0]) {
     const { size, type } = files[0];
     if (type !== 'image/png' && type !== 'image/jpeg') {
-      showErrorMessage('Wrong file type!');
+      showErrorMessage(strings[lang].wrongFileType);
       input.value = '';
+      $label.text(strings[lang].chooseFile);
       return;
     }
     if (size > fiveMegaBytes) {
-      showErrorMessage('File should be less than 5MB!');
+      showErrorMessage(strings[lang].fileIsTooBig);
       input.value = '';
+      $label.text(strings[lang].chooseFile);
       return;
     }
-    $label.text('File chosen');
+    $label.text(strings[lang].fileChosen);
     return files;
   } else {
-    $label.text('Choose file');
+    $label.text(strings[lang].chooseFile);
     return null;
   }
 };

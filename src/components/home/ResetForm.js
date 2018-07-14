@@ -4,6 +4,7 @@ import { updateUser } from '../../actions/authActions';
 import Input from '../common/inputs/Input';
 import PropTypes from 'prop-types';
 import * as notifications from '../../utils/notifications';
+import strings from '../../strings/components/home/resetForm';
 
 class ResetForm extends Component {
   constructor (props) {
@@ -49,26 +50,26 @@ class ResetForm extends Component {
   }
 
   resetPassword () {
-    const { auth } = this.props;
+    const { auth, lang, updateUser } = this.props;
     const { password, password_confirmation } = this.state.data;
 
     if (!(auth && auth._id)) {
-      notifications.showErrorMessage('Your are not authenticated!');
+      notifications.showErrorMessage(strings[lang].notAuthenticated);
       return;
     }
 
     if (password.trim().length < 6) {
-      notifications.showErrorMessage('Password is too short!');
+      notifications.showErrorMessage(strings[lang].shortPasError);
       return;
     }
 
     if (password !== password_confirmation) {
-      notifications.showErrorMessage('Passwords don\'t match!');
+      notifications.showErrorMessage(strings[lang].noMatchError);
       return;
     }
 
-    this.props.updateUser({ password }, auth._id).then(() => {
-      notifications.showSuccessMessage('Password successfully updated!');
+    updateUser({ password }, auth._id).then(() => {
+      notifications.showSuccessMessage(strings[lang].updateMessage);
       this.props.history.push('/');
     }).catch(error => {
       notifications.showReason(error);
@@ -76,6 +77,7 @@ class ResetForm extends Component {
   }
 
   render () {
+    const { lang } = this.props;
     const { data: { password, password_confirmation }, errors } = this.state;
     const { onChange, onKeyDown } = this;
 
@@ -85,7 +87,7 @@ class ResetForm extends Component {
           <form id="password-reset-form">
             <Input
               id="reset-password"
-              label="Password"
+              label={strings[lang].password}
               type="password"
               name="password"
               value={password}
@@ -95,7 +97,7 @@ class ResetForm extends Component {
             />
             <Input
               id="reset-password_confirmation"
-              label="Password Confirmation"
+              label={strings[lang].password_confirmation}
               type="password"
               name="password_confirmation"
               value={password_confirmation}
@@ -108,7 +110,7 @@ class ResetForm extends Component {
               type="button"
               onClick={this.resetPassword}
             >
-              Reset Password
+              {strings[lang].reset}
             </button>
           </form>
         </div>
@@ -119,10 +121,11 @@ class ResetForm extends Component {
 
 ResetForm.propTypes = {
   auth: PropTypes.object,
+  lang: PropTypes.string.isRequired,
   history: PropTypes.object.isRequired,
   updateUser: PropTypes.func.isRequired
 };
 
-const mapStateToProps = ({ auth }) => ({ auth });
+const mapStateToProps = ({ auth, lang }) => ({ auth, lang });
 
 export default connect(mapStateToProps, { updateUser })(ResetForm);

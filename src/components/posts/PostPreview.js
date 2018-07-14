@@ -2,8 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { formatTitle } from '../../utils/formatText';
 import PropTypes from 'prop-types';
+import strings from '../../strings/components/posts/postPreview';
 
-const PostPreview = ({ post, auth, onClick, onLoad }) => {
+const PostPreview = ({ lang, post, auth, onClick, onLoad }) => {
   const { _id, author, title, pictures } = post;
 
   return (
@@ -25,7 +26,7 @@ const PostPreview = ({ post, auth, onClick, onLoad }) => {
         auth && auth._id === author._id &&
         <div className="post-controls">
           <Link to={`/posts/${_id}/edit`}>
-            edit
+            {strings[lang].edit}
           </Link>
           <button
             data-target={_id}
@@ -33,7 +34,7 @@ const PostPreview = ({ post, auth, onClick, onLoad }) => {
             className="btn btn-link"
             onClick={onClick}
           >
-            delete
+            {strings[lang].remove}
           </button>
         </div>
       }
@@ -43,6 +44,7 @@ const PostPreview = ({ post, auth, onClick, onLoad }) => {
 
 PostPreview.propTypes = {
   auth: PropTypes.object,
+  lang: PropTypes.string.isRequired,
   post: PropTypes.object.isRequired,
   onClick: PropTypes.func.isRequired,
   onLoad: PropTypes.func.isRequired

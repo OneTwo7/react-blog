@@ -1,19 +1,19 @@
 export const textControls = [
-  { type: 'addElement',  id: 'title-btn', text: 'Title' },
-  { type: 'addElement',  id: 'link-btn',  text: 'Link' },
-  { type: 'addElement',  id: 'bold-btn',  text: 'A' },
-  { type: 'addElement',  id: 'em-btn',    text: 'A' },
-  { type: 'addElement',  id: 'ol-btn',    text: 'ol' },
-  { type: 'addElement',  id: 'ul-btn',    text: 'ul' },
+  { type: 'addElement',  id: 'title-btn' },
+  { type: 'addElement',  id: 'link-btn' },
+  { type: 'addElement',  id: 'bold-btn' },
+  { type: 'addElement',  id: 'em-btn' },
+  { type: 'addElement',  id: 'ol-btn' },
+  { type: 'addElement',  id: 'ul-btn' },
 ];
 
 export const contentControls = [
-  { type: 'addField',    id: 'text-btn',         text: 'Text' },
-  { type: 'addField',    id: 'code-btn',         text: 'Code' },
-  { type: 'addField',    id: 'shell-btn',        text: 'Shell' },
-  { type: 'addField',    id: 'img-btn',          text: 'Picture' },
-  { type: 'clearFields', id: 'clear-btn',        text: 'Clear' },
-  { type: 'cancelClear', id: 'cancel-clear-btn', text: 'Cancel' }
+  { type: 'addField',    id: 'text-btn' },
+  { type: 'addField',    id: 'code-btn' },
+  { type: 'addField',    id: 'shell-btn' },
+  { type: 'addField',    id: 'img-btn' },
+  { type: 'clearFields', id: 'clear-btn' },
+  { type: 'cancelClear', id: 'cancel-clear-btn' }
 ];
 
 export const btnClass = {
