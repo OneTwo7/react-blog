@@ -243,6 +243,8 @@ class Header extends Component {
       }).catch(error => {
         notifications.showReason(error);
       });
+    } else {
+      this.focus();
     }
   }
 

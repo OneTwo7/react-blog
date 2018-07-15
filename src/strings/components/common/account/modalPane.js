@@ -11,8 +11,8 @@ export default {
     remove: 'Удалить аккаунт',
     login: 'Войти',
     signup: 'Создать аккаунт',
-    reset: 'Забыли пароль',
-    resend: 'Активация',
+    reset: 'Восстановить пароль',
+    resend: 'Повторно отправить ссылку на активацию',
     removeNotice: 'Введите адрес электронной почты для подтверждения:',
     close: 'Закрыть'
   },
@@ -28,8 +28,8 @@ export default {
     remove: 'Remove Account',
     login: 'Login',
     signup: 'Sign Up',
-    reset: 'Reset Password',
-    resend: 'Resend Activation',
+    reset: 'Reset password',
+    resend: 'Resend activation link',
     removeNotice: 'Input your email to confirm:',
     close: 'Close'
   }

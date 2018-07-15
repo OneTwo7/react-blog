@@ -20,8 +20,6 @@ const ModalPane = ({ type }) => (
       let modalBody;
       let paneClass = 'tab-pane fade';
       let submitButton = null;
-      let resetButton = null;
-      let resendButton = null;
 
       if (type === 'social') {
         paneClass += ' show active';
@@ -36,7 +34,7 @@ const ModalPane = ({ type }) => (
         let submitButtonClass = 'btn btn-primary';
         let clickHandler;
         let submitButtonText;
-        const inputs = [];
+        const fields = [];
         const emailInput = (
           <Input
             key="email"
@@ -93,50 +91,52 @@ const ModalPane = ({ type }) => (
           paneClass += ' show active';
           clickHandler = context.update;
           submitButtonText = strings[lang].update;
-          inputs.push(nameInput, passwordInput, confirmationInput);
+          fields.push(nameInput, passwordInput, confirmationInput);
         } else if (type === 'remove') {
           submitButtonClass = 'btn btn-danger';
           clickHandler = context.remove;
           submitButtonText = strings[lang].remove;
-          inputs.push(emailInput);
+          fields.push(emailInput);
         } else if (type === 'login') {
-          clickHandler = context.login;
-          submitButtonText = strings[lang].login;
-          inputs.push(emailInput, passwordInput);
-          resetButton = (
+          const resetLink = (
             <button
+              key="reset-password"
               type="button"
               data-action="reset-password"
-              className="btn btn-dark"
+              className="btn btn-link sender-btn"
               onClick={send}
             >
               {strings[lang].reset}
             </button>
           );
-          resendButton = (
+          const resendLink = (
             <button
+              key="resend-activation"
               type="button"
               data-action="resend-activation"
-              className="btn btn-dark"
+              className="btn btn-link sender-btn"
               onClick={send}
             >
               {strings[lang].resend}
             </button>
           );
+          clickHandler = context.login;
+          submitButtonText = strings[lang].login;
+          fields.push(emailInput, resetLink, resendLink, passwordInput);
         } else {
           clickHandler = context.signup;
           submitButtonText = strings[lang].signup;
-          inputs.push(emailInput, nameInput, passwordInput, confirmationInput);
+          fields.push(emailInput, nameInput, passwordInput, confirmationInput);
         }
         if (type === 'remove') {
           modalBody = (
             <React.Fragment>
               <div id="remove-notice">{strings[lang].removeNotice}</div>
-              <form>{inputs}</form>
+              <form>{fields}</form>
             </React.Fragment>
           );
         } else {
-          modalBody = <form>{inputs}</form>;
+          modalBody = <form>{fields}</form>;
         }
         submitButton = (
           <button
@@ -166,8 +166,6 @@ const ModalPane = ({ type }) => (
             >
               {strings[lang].close}
             </button>
-            {resetButton}
-            {resendButton}
             {submitButton}
           </div>
         </div>
