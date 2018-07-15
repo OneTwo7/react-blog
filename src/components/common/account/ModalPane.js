@@ -122,7 +122,7 @@ const ModalPane = ({ type }) => (
           );
           clickHandler = context.login;
           submitButtonText = strings[lang].login;
-          fields.push(emailInput, resetLink, resendLink, passwordInput);
+          fields.push(emailInput, passwordInput, resetLink, resendLink);
         } else {
           clickHandler = context.signup;
           submitButtonText = strings[lang].signup;
