@@ -13,10 +13,6 @@ header {
   }
 }
 
-.navbar-brand {
-  margin-right: 4rem;
-}
-
 .navbar-dark {
   .navbar-toggler {
     border-color: rgba(255,255,255,.5);
@@ -25,11 +21,12 @@ header {
 
 #home-selector-container {
   display: flex;
+  justify-content: space-between;
+  min-width: 16rem;
 }
 
 #language-selector {
   display: inline-block;
-  margin-right: 4rem;
   .dropdown-menu {
     padding: 0;
   }
@@ -45,6 +42,7 @@ header {
     background-color: $white;
     padding: .5rem .75rem .5rem 3.5rem;
     border-radius: .25rem;
+    min-width: 10rem;
     &:before {
       content: "";
       box-sizing: border-box;
@@ -65,4 +63,13 @@ header {
 #en-btn:before {
   background: url('/img/en.png') center center no-repeat;
   background-size: contain;
+}
+
+@media (min-width: 768px) {
+  #home-selector-container {
+    width: 18rem;
+  }
+  #navbar-menu {
+    margin-left: 2rem;
+  }
 }

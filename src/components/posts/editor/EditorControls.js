@@ -5,26 +5,45 @@ import PropTypes from 'prop-types';
 import strings from '../../../strings/components/posts/editor/editorControls';
 
 const EditorControls = ({ lang, id, addField, clearFields, cancelClear }) => {
-  const controls = id === 'text-controls' ? textControls : contentControls;
   const handlers = { addElement, addField, clearFields, cancelClear };
 
-  return (
-    <div id={id}>
-      {
-        controls.map(({ type, id }, idx) => (
-          <button
-            key={idx}
-            type="button"
-            id={id}
-            onMouseDown={handlers[type]}
-            className={btnClass[type]}
-          >
-            {strings[lang][id]}
-          </button>
-        ))
-      }
-    </div>
-  );
+  if (id === 'text-controls') {
+    return (
+      <div id={id}>
+        {
+          textControls.map(({ type, id }, idx) => (
+            <button
+              key={idx}
+              type="button"
+              id={id}
+              onMouseDown={handlers[type]}
+              className={btnClass[type]}
+            >
+              {strings[lang][id]}
+            </button>
+          ))
+        }
+      </div>
+    );
+  } else {
+    return (
+      <div id={id}>
+        {
+          contentControls.map(({ type, id }, idx) => (
+            <button
+              key={idx}
+              type="button"
+              id={id}
+              onClick={handlers[type]}
+              className={btnClass[type]}
+            >
+              {strings[lang][id]}
+            </button>
+          ))
+        }
+      </div>
+    );
+  }
 };
 
 EditorControls.propTypes = {

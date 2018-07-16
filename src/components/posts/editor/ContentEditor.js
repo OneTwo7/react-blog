@@ -58,8 +58,8 @@ class ContentEditor extends Component {
   }
 
   onBlur (event) {
-    const fields = [...this.props.fields];
     const { target } = event;
+    const fields = [...this.props.fields];
     const fieldId = this.getFieldId(target);
     fields.forEach(field => {
       if (field.id === fieldId) {
