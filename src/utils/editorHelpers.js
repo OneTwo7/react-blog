@@ -52,7 +52,7 @@ const getLine = (text, index) => {
 };
 
 const getTabs = (selection) => {
-  const text = selection.anchorNode.parentNode.innerHTML;
+  const text = selection.anchorNode.parentNode.innerText;
   const index = Math.min(selection.anchorOffset, selection.focusOffset);
   const tabs = getLine(text, index).match(/\t/g);
   return tabs ? tabs.length : 0;

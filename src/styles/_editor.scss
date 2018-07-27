@@ -4,6 +4,9 @@
 
 .text {
   border: 1px solid $light-grey;
+  ol, ul {
+    margin-top: 1rem;
+  }
 }
 
 .text, .code, .shell {

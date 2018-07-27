@@ -82,7 +82,9 @@ exports.uploadPictures = async (files, pictureFields, lang = 'ru') => {
           url: uploadedPicture.Location
         });
       } else {
-        const target = path.join(keys.uploadsPath, originalname);
+        const target = path.join(
+          __dirname, '../../src/img/uploads', originalname
+        );
 
         await rename(tempPath, target);
 

@@ -1,12 +1,14 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const dotenv = require('dotenv');
 
 const PORT = process.env.PORT || 3000;
 const environment = process.env.NODE_ENV || 'development';
 const mode = process.env.MODE || 'standard';
 
-require('dotenv').config();
+dotenv.config();
+dotenv.config({ path: './.env-dev' });
 
 const keys = require('./app/keys');
 

@@ -1,5 +1,5 @@
 node_modules/
 uploads/
-dev.js
 dist/
 .env
+.env-dev
