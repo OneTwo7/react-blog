@@ -2,6 +2,8 @@
 
 [English](#english)
 
+Приложение для создания статей текстов и постов.
+
 ### Используемые технологии
 
 * React/Redux
@@ -23,32 +25,36 @@
 2. Установить сторонние пакеты
 
 `cd react-blog`
+
 `npm install`
 
 3. Создать .env и .env-dev файлы и инициализировать в них переменные среды для запуска в режиме разработки и тестирования скомпилированного приложения (переменные Amazon S3 можно не указывать, картинки будут сохраняться в  локальном каталоге - /src/img/uploads)
 
-  - GOOGLE_CLIENT_ID,
-  - GOOGLE_CLIENT_SECRET,
-  - GITHUB_CLIENT_ID,
-  - GITHUB_CLIENT_SECRET,
-  - VK_CLIENT_ID,
-  - VK_CLIENT_SECRET,
-  - MONGO_URI,
-  - COOKIE_KEY,
-  - S3_ACCESS_KEY,
-  - S3_SECRET_KEY,
-  - S3_BUCKET,
-  - S3_REGION,
-  - SEND_GRID_KEY,
-  - APP_DOMAIN
+    - GOOGLE_CLIENT_ID,
+    - GOOGLE_CLIENT_SECRET,
+    - GITHUB_CLIENT_ID,
+    - GITHUB_CLIENT_SECRET,
+    - VK_CLIENT_ID,
+    - VK_CLIENT_SECRET,
+    - MONGO_URI,
+    - COOKIE_KEY,
+    - S3_ACCESS_KEY,
+    - S3_SECRET_KEY,
+    - S3_BUCKET,
+    - S3_REGION,
+    - SEND_GRID_KEY,
+    - APP_DOMAIN
 
 4. Запустить приложение
 
-в режиме разработки:
+    - в режиме разработки:
+
 `npm run dev`
 
-в режиме тестирования готового приложения:
+    - в режиме тестирования готового приложения:
+
 `npm run build`
+
 `npm run server:build`
 
 
@@ -78,30 +84,34 @@ In order to run this application on your local machine the next actions are requ
 2. Install dependencies
 
 `cd react-blog`
+
 `npm install`
 
 3. Create .env and .env-dev files and specify environment variables for production build test and development mode (Amazon S3 ones are optional)
 
-  - GOOGLE_CLIENT_ID,
-  - GOOGLE_CLIENT_SECRET,
-  - GITHUB_CLIENT_ID,
-  - GITHUB_CLIENT_SECRET,
-  - VK_CLIENT_ID,
-  - VK_CLIENT_SECRET,
-  - MONGO_URI,
-  - COOKIE_KEY,
-  - S3_ACCESS_KEY,
-  - S3_SECRET_KEY,
-  - S3_BUCKET,
-  - S3_REGION,
-  - SEND_GRID_KEY,
-  - APP_DOMAIN
+    - GOOGLE_CLIENT_ID,
+    - GOOGLE_CLIENT_SECRET,
+    - GITHUB_CLIENT_ID,
+    - GITHUB_CLIENT_SECRET,
+    - VK_CLIENT_ID,
+    - VK_CLIENT_SECRET,
+    - MONGO_URI,
+    - COOKIE_KEY,
+    - S3_ACCESS_KEY,
+    - S3_SECRET_KEY,
+    - S3_BUCKET,
+    - S3_REGION,
+    - SEND_GRID_KEY,
+    - APP_DOMAIN
 
 4. Run application
 
-in development mode:
+    - in development mode:
+
 `npm run dev`
 
-in production test mode:
+    - in production test mode:
+
 `npm run build`
+
 `npm run server:build`
