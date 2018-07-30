@@ -15,7 +15,7 @@ exports.getPosts = async (req, res) => {
   try {
     const dbPosts = await Post.find({}).populate('author', 'name')
     .sort({ created_at: -1 });
-    res.send(dbPosts.concat(posts).reverse());
+    res.send(posts.reverse().concat(dbPosts));
   } catch (e) {
     res.status(400);
     res.send({ reason: e.toString() });

@@ -7,7 +7,7 @@ exports.getCommentsByPostId = async (req, res) => {
 
   if (id.slice(0, 2) === 'id') {
     if (cookieComments) {
-      res.send(cookieComments);
+      res.send(cookieComments.reverse());
     } else {
       res.send([]);
     }
@@ -15,12 +15,13 @@ exports.getCommentsByPostId = async (req, res) => {
   }
 
   try {
-    let comments = await Comment.find({ post_id: req.params.id })
+    let dbComments = await Comment.find({ post_id: req.params.id })
     .populate('author', 'name').sort({ created_at: -1 });
     if (cookieComments) {
-      comments = comments.concat(cookieComments);
+      res.send(cookieComments.reverse().concat(dbComments));
+    } else {
+      res.send(dbComments);
     }
-    res.send(comments.reverse());
   } catch (e) {
     res.status(400);
     res.send({ reason: e.toString() });
