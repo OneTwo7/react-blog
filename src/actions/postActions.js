@@ -41,16 +41,18 @@ export const loadPosts = () => (async dispatch => {
 });
 
 export const savePost = (postData) => {
-  const postId = postData.has('_id');
+  const hasPostId = postData.has('_id');
   return (async dispatch => {
     dispatch(beginAjaxCall());
     try {
-      if (postId) {
-        const { data } = await axios.put(`/api/posts/${postId}`, postData);
+      if (hasPostId) {
+        const { data } = await axios.put(`/api/posts`, postData);
         dispatch(updatePostSuccess(data));
+        return data._id;
       } else {
         const { data } = await axios.post('/api/posts', postData);
         dispatch(createPostSuccess(data));
+        return data._id;
       }
     } catch (e) {
       dispatchAjaxCallError(e, dispatch);

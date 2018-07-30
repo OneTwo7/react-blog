@@ -114,8 +114,8 @@ class PostForm extends Component {
 
     formData.append('mainPicture', mainPicture);
 
-    savePost(formData).then(() => {
-      this.redirect();
+    savePost(formData).then(savedPostId => {
+      this.redirect(`/posts/${savedPostId}`);
       notifications.showSuccessMessage(strings[lang].saveMessage);
     }).catch(error => {
       post.tags = '';
@@ -127,8 +127,8 @@ class PostForm extends Component {
     this.redirect();
   }
 
-  redirect () {
-    this.props.history.push('/');
+  redirect (location = '/') {
+    this.props.history.push(location);
   }
 
   isFormValid () {

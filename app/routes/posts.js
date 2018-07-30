@@ -10,7 +10,7 @@ router.get('/', posts.getPosts);
 
 router.post('/', requiresAdmin, upload.array('pictures'), posts.createPost);
 
-router.put('/:id', requiresAdmin, upload.array('pictures'), posts.updatePost);
+router.put('/', requiresAdmin, upload.array('pictures'), posts.updatePost);
 
 router.delete('/:id', requiresAdmin, posts.deletePost);
 

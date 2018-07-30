@@ -59,9 +59,7 @@ $border-grey: 1px solid $light-grey;
   flex-basis: 100%;
   margin-bottom: 0;
   padding: 1rem;
-  border-right: $border-grey;
-  border-bottom: $border-grey;
-  border-left: $border-grey;
+  background-color: rgba(0,0,0,.0625);
   text-align: center;
   color: $dark-grey;
 }
