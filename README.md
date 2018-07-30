@@ -1,8 +1,10 @@
 # React-blog
 
-[English](#english)
+[English Translation](#english)
 
-Приложение для создания статей текстов и постов.
+Приложение для создания статей, текстов и постов.
+
+[Демо версия приложения](https://quiet-lake-79170.herokuapp.com/)
 
 ### Используемые технологии
 
@@ -62,6 +64,8 @@
 ## English
 
 A simple blog application created with React/Redux.
+
+[Application demo](https://quiet-lake-79170.herokuapp.com/)
 
 ### Technologies
 
