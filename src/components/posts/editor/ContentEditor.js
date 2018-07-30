@@ -78,20 +78,23 @@ class ContentEditor extends Component {
   }
 
   moveField (event) {
+    const { target } = event;
+    if (target.nodeName === 'DIV') {
+      return;
+    }
     const fields = [...this.props.fields];
     const { savedPictures, removedPictures } = this.state;
-    const { target } = event;
     const fieldId = this.getFieldId(target);
-    const type = this.getButtonType(target);
+    const action = this.getMoveAction(target);
     const idx = fields.findIndex(({ id }) => id === fieldId);
-    const { type: fieldType } = fields[idx];
-    if (type === 'swap-up') {
+    const { type } = fields[idx];
+    if (action === 'up') {
       fields[idx] = fields.splice(idx - 1, 1, fields[idx])[0];
-    } else if (type === 'swap-down') {
+    } else if (action === 'down') {
       fields[idx] = fields.splice(idx + 1, 1, fields[idx])[0];
     } else {
       fields.splice(idx, 1);
-      if (fieldType === 'text') {
+      if (type === 'text') {
         helpers.detachTextControls();
       }
       if (savedPictures.includes(fieldId)) {
@@ -111,12 +114,12 @@ class ContentEditor extends Component {
     return node.id;
   }
 
-  getButtonType (element) {
+  getMoveAction (element) {
     let target = element;
     while (target.nodeName !== 'BUTTON') {
       target = target.parentNode;
     }
-    return target.className.split(' ')[2];
+    return target.dataset.action;
   }
 
   addField (event) {

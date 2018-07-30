@@ -37,25 +37,25 @@ const Fields = (props) => {
                 onBlur={blur}
               />
             }
-            <div className="field-controls">
+            <div className="field-controls" onClick={move}>
               <button
                 type="button"
+                data-action="up"
                 className="btn btn-outline-dark swap-up"
-                onClick={move}
               >
                 <i className="fas fa-caret-up fa-lg" />
               </button>
               <button
                 type="button"
+                data-action="remove"
                 className="btn btn-outline-dark remove-btn"
-                onClick={move}
               >
                 <i className="fas fa-times fa-lg" />
               </button>
               <button
                 type="button"
+                data-action="down"
                 className="btn btn-outline-dark swap-down"
-                onClick={move}
               >
                 <i className="fas fa-caret-down fa-lg" />
               </button>
