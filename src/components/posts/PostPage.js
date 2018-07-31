@@ -30,13 +30,9 @@ class PostPage extends Component {
     setHeight();
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (this.props.post._id !== nextProps.post._id) {
-      this.insertContent(nextProps.post.content, nextProps.post.pictures);
-    }
-  }
-
   componentDidUpdate () {
+    const { content, pictures } = this.props.post;
+    this.insertContent(content, pictures);
     PR.prettyPrint();
     setHeight();
   }

@@ -13,6 +13,11 @@ class Comments extends Component {
   constructor (props) {
     super(props);
 
+    const { postId } = props;
+    if (postId) {
+      this.loadComments(postId);
+    }
+
     this.state = {
       comments: [],
       comment: { content: '' },
@@ -28,19 +33,9 @@ class Comments extends Component {
     this.confirm = this.confirm.bind(this);
   }
 
-  componentWillMount () {
-    const { postId } = this.props;
-    if (postId) {
-      this.loadComments(postId);
-    }
-  }
-
   componentWillReceiveProps (nextProps) {
     if (this.props.postId !== nextProps.postId) {
       this.loadComments(nextProps.postId);
-    }
-    if (this.props.comments !== nextProps.comments) {
-      this.setState({ comments: nextProps.comments });
     }
   }
 
