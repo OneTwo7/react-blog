@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import PostList from '../posts/PostList';
 import ConfirmationModal from '../common/modals/ConfirmationModal';
 import { showSuccessMessage, showReason } from '../../utils/notifications';
-import { setHeight, clipImage, reclipImages} from '../../utils/previewHelpers';
+import * as previewHelpers from '../../utils/previewHelpers';
 import strings from '../../strings/components/home/homePage';
 
 class HomePage extends Component {
@@ -26,6 +26,7 @@ class HomePage extends Component {
   }
 
   componentDidMount () {
+    const { setHeight, reclipImages } = previewHelpers;
     setHeight();
     $(document).scroll(this.loadPosts);
     $(window).resize(reclipImages);
@@ -38,7 +39,7 @@ class HomePage extends Component {
   }
 
   componentDidUpdate () {
-    setHeight();
+    previewHelpers.setHeight();
     const { postsPerPage, postsLength } = this.state;
     let page = this.state.page;
     if (postsLength > 0) {
@@ -55,11 +56,11 @@ class HomePage extends Component {
 
   componentWillUnmount () {
     $(document).off('scroll', this.loadPosts);
-    $(window).off('resize', reclipImages);
+    $(window).off('resize', previewHelpers.reclipImages);
   }
 
   onImageLoad (event) {
-    clipImage(event.target);
+    previewHelpers.clipImage(event.target);
   }
 
   onDeleteClick (event) {
@@ -70,6 +71,7 @@ class HomePage extends Component {
   confirm () {
     const { actions, lang } = this.props;
     actions.deletePost(this.state.postId).then(() => {
+      previewHelpers.unclipImages();
       showSuccessMessage(strings[lang].deleteMessage);
     }).catch(error => {
       showReason(error);
