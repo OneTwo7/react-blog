@@ -10,6 +10,7 @@ import ConfirmationModal from '../common/modals/ConfirmationModal';
 import { showSuccessMessage, showReason } from '../../utils/notifications';
 import PropTypes from 'prop-types';
 import strings from '../../strings/components/posts/postPage';
+import { Redirect } from 'react-router-dom';
 
 /* eslint-disable no-undef */
 
@@ -93,6 +94,10 @@ class PostPage extends Component {
   render () {
     const { post, recommended, auth, lang } = this.props;
 
+    if (post._id === '-1') {
+      return <Redirect to="/no_match" />;
+    }
+
     return (
       <div className="row">
         <Post post={post} auth={auth} lang={lang} onClick={this.remove} />
@@ -141,8 +146,12 @@ const mapStateToProps = (state, ownProps) => {
 
   if (postId && posts.length) {
     const postIndex = posts.findIndex(post => post._id === postId);
-    post = posts.splice(postIndex, 1)[0];
-    recommended = getRecommended(post, posts);
+    if (postIndex !== -1) {
+      post = posts.splice(postIndex, 1)[0];
+      recommended = getRecommended(post, posts);
+    } else {
+      post._id = '-1';
+    }
   }
 
   return {
