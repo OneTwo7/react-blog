@@ -19,7 +19,6 @@ class Comments extends Component {
     }
 
     this.state = {
-      comments: [],
       comment: { content: '' },
       commentId: '',
       errors: {}

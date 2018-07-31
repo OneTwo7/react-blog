@@ -22,13 +22,13 @@
 
 1. Клонировать репозиторий
 
-`git clone git@github.com:OneTwo7/react-blog.git`
+    `git clone git@github.com:OneTwo7/react-blog.git`
 
 2. Установить сторонние пакеты
 
-`cd react-blog`
+    `cd react-blog`
 
-`npm install`
+    `npm install`
 
 3. Создать .env и .env-dev файлы и инициализировать в них переменные среды для запуска в режиме разработки и тестирования скомпилированного приложения (переменные Amazon S3 можно не указывать, картинки будут сохраняться в  локальном каталоге - /src/img/uploads)
 
@@ -51,13 +51,13 @@
 
     - в режиме разработки:
 
-`npm run dev`
+        `npm run dev`
 
     - в режиме тестирования готового приложения:
 
-`npm run build`
+        `npm run build`
 
-`npm run server:build`
+        `npm run server:build`
 
 
 
@@ -83,13 +83,13 @@ In order to run this application on your local machine the next actions are requ
 
 1. Clone repository
 
-`git clone git@github.com:OneTwo7/react-blog.git`
+    `git clone git@github.com:OneTwo7/react-blog.git`
 
 2. Install dependencies
 
-`cd react-blog`
+    `cd react-blog`
 
-`npm install`
+    `npm install`
 
 3. Create .env and .env-dev files and specify environment variables for production build test and development mode (Amazon S3 ones are optional)
 
@@ -112,10 +112,10 @@ In order to run this application on your local machine the next actions are requ
 
     - in development mode:
 
-`npm run dev`
+        `npm run dev`
 
     - in production test mode:
 
-`npm run build`
+        `npm run build`
 
-`npm run server:build`
+        `npm run server:build`
