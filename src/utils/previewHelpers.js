@@ -6,6 +6,10 @@ export const setHeight = () => {
 
 export const clipImage = (img) => {
   const $img = $(img);
+  if (img.style.clip) {
+    $img.css('visibility', 'hidden').css('width', '100%').css('clip', 'auto')
+    .css('height', 'initial').css('left', 0);
+  }
   const $postPreview = $('.post-preview-top').eq(0);
   const width = $postPreview.width();
   const height = $postPreview.height();
@@ -23,8 +27,8 @@ export const reclipImages = () => {
   setHeight();
   const $images = $('.post-preview-top img');
   $images.css('visibility', 'hidden').css('width', '100%')
-  .css('clip', 'auto').css('height', 'initial');
+  .css('clip', 'auto').css('height', 'initial').css('left', 0);
   $images.each(idx => {
-    clipImage($images.eq(idx));
+    clipImage($images.get(idx));
   });
 };

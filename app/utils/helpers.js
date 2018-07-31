@@ -9,7 +9,7 @@ const rename = promisify(fs.rename);
 let s3;
 const strings = require('../strings/utils');
 
-if (keys.s3Region) {
+if (process.env.MODE !== 'demo' && keys.s3Region) {
   const AWS = require('aws-sdk');
   AWS.config.update({
     accessKeyId: keys.s3AccessKey,
@@ -83,7 +83,7 @@ exports.uploadPictures = async (files, pictureFields, lang = 'ru') => {
         });
       } else {
         const target = path.join(
-          __dirname, '../../src/img/uploads', originalname
+          __dirname, '../..', keys.uploadsPath, originalname
         );
 
         await rename(tempPath, target);

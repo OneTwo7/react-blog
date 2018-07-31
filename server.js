@@ -7,8 +7,11 @@ const PORT = process.env.PORT || 3000;
 const environment = process.env.NODE_ENV || 'development';
 const mode = process.env.MODE || 'standard';
 
-dotenv.config();
-dotenv.config({ path: './.env-dev' });
+if (environment === 'production') {
+  dotenv.config();
+} else {
+  dotenv.config({ path: './.env-dev' });
+}
 
 const keys = require('./app/keys');
 

@@ -14,5 +14,6 @@ module.exports = {
   s3Bucket: env.S3_BUCKET,
   s3Region: env.S3_REGION,
   sendGridKey: env.SEND_GRID_KEY,
-  domain: env.APP_DOMAIN
+  domain: env.APP_DOMAIN,
+  uploadsPath: env.UPLOADS_PATH
 };
