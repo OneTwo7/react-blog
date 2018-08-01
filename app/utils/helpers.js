@@ -69,9 +69,10 @@ exports.uploadPictures = async (files, pictureFields, lang = 'ru') => {
         throw strings[lang].helpers.tooBig(originalname);
       }
 
+      const name = `${Date.now()}-${filename + path.extname(originalname)}`;
+
       if (s3) {
-        const pictureName = filename + path.extname(originalname);
-        const target = path.join('blog', `${Date.now()}-${pictureName}`);
+        const target = path.join('blog', name);
 
         const data = await readFile(tempPath);
         const options = { Key: target, Body: data, ACL: 'public-read' };
@@ -82,15 +83,13 @@ exports.uploadPictures = async (files, pictureFields, lang = 'ru') => {
           url: uploadedPicture.Location
         });
       } else {
-        const target = path.join(
-          __dirname, '../..', keys.uploadsPath, originalname
-        );
+        const target = path.join(__dirname, '../..', keys.uploadsPath, name);
 
         await rename(tempPath, target);
 
         pictures.push({
           field: fields.shift(),
-          url: `/img/uploads/${originalname}`
+          url: `/img/uploads/${name}`
         });
       }
     }
