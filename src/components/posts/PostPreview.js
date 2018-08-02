@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { formatTitle } from '../../utils/formatText';
 import PropTypes from 'prop-types';
 import strings from '../../strings/components/posts/postPreview';
 
@@ -18,7 +17,7 @@ const PostPreview = ({ lang, post, auth, onClick, onLoad }) => {
             }
           </div>
           <div className="post-preview-bottom">
-            <h2 className="post-title">{formatTitle(title)}</h2>
+            <h2 className="post-title">{title}</h2>
           </div>
         </div>
       </Link>

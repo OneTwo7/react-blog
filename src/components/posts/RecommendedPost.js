@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { formatTitle } from '../../utils/formatText';
 import PropTypes from 'prop-types';
 import strings from '../../strings/components/posts/recommendedPost';
 
@@ -15,7 +14,7 @@ const RecommendedPost = ({ lang, post, type, tag, onLoad }) => (
           }
         </div>
         <div className="bottom">
-          <h3 className="post-title">{formatTitle(post.title)}</h3>
+          <h3 className="post-title">{post.title}</h3>
         </div>
         {
           type === 'tag' &&
