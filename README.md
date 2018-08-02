@@ -45,7 +45,8 @@
     - S3_BUCKET,
     - S3_REGION,
     - SEND_GRID_KEY,
-    - APP_DOMAIN
+    - APP_DOMAIN,
+    - UPLOADS_PATH
 
 4. Запустить приложение
 
@@ -106,7 +107,8 @@ In order to run this application on your local machine the next actions are requ
     - S3_BUCKET,
     - S3_REGION,
     - SEND_GRID_KEY,
-    - APP_DOMAIN
+    - APP_DOMAIN,
+    - UPLOADS_PATH
 
 4. Run application
 
