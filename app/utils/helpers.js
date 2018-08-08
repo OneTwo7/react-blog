@@ -45,6 +45,10 @@ exports.redirect = (req, res) => {
   res.redirect('/');
 };
 
+exports.socialLoginRedirect = (req, res) => {
+  res.redirect('/auth/success');
+};
+
 exports.uploadPictures = async (files, pictureFields, lang = 'ru') => {
   try {
     if (!pictureFields) {

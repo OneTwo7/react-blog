@@ -12,6 +12,7 @@ import * as notifications from '../../utils/notifications';
 import AccountContext from './AccountContext';
 import PropTypes from 'prop-types';
 import strings from '../../strings/components/common/header';
+import { getSpecs } from '../../utils/accountHelpers';
 
 class Header extends Component {
   constructor (props) {
@@ -29,6 +30,7 @@ class Header extends Component {
 
     this.onChange = this.onChange.bind(this);
     this.login = this.login.bind(this);
+    this.loginSocially = this.loginSocially.bind(this);
     this.logout = this.logout.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.signup = this.signup.bind(this);
@@ -42,7 +44,6 @@ class Header extends Component {
   }
 
   componentDidMount () {
-    this.props.actions.getCurrentUser();
     this.attachFocus();
   }
 
@@ -132,6 +133,22 @@ class Header extends Component {
       }).catch(error => {
         notifications.showReason(error);
       });
+    }
+  }
+
+  loginSocially (event) {
+    const { target } = event;
+    if (target.nodeName === 'BUTTON') {
+      const { actions, lang } = this.props;
+      const url = target.dataset.href;
+      const name = 'social_login';
+      const specs = getSpecs();
+      $('#account-modal').modal('hide');
+      window.open(url, name, specs).onbeforeunload = () => {
+        actions.getCurrentUser().then(() => {
+          notifications.showSuccessMessage(strings[lang].loginMessage);
+        });
+      };
     }
   }
 
@@ -273,6 +290,7 @@ class Header extends Component {
             update: this.update,
             remove: this.remove,
             send: this.send,
+            loginSocially: this.loginSocially,
             auth,
             lang,
             data,

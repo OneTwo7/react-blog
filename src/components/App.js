@@ -7,6 +7,7 @@ import PostPage from './posts/PostPage';
 import ResetForm from './home/ResetForm';
 import Footer from './common/Footer';
 import ProgressBar from './common/ProgressBar';
+import SocialLoginSuccess from './common/SocialLoginSuccess';
 import NoMatch from './common/NoMatch';
 import { NotificationContainer } from 'react-notifications';
 
@@ -20,6 +21,7 @@ const App = () => (
         <Route exact path="/posts/:id" component={PostPage} />
         <Route exact path="/posts/:id/edit" component={PostForm} />
         <Route path="/password_reset" component={ResetForm} />
+        <Route path="/auth/success" component={SocialLoginSuccess} />
         <Route component={NoMatch} />
       </Switch>
     </div>

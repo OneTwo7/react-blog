@@ -24,10 +24,16 @@ const ModalPane = ({ type }) => (
       if (type === 'social') {
         paneClass += ' show active';
         modalBody = (
-          <div id="social-login">
-            <a href="/auth/google" id="google-btn">{strings[lang].google}</a>
-            <a href="/auth/github" id="github-btn">{strings[lang].github}</a>
-            <a href="/auth/vk" id="vk-btn">{strings[lang].vk}</a>
+          <div id="social-login" onClick={context.loginSocially}>
+            <button data-href="/auth/google" id="google-btn">
+              {strings[lang].google}
+            </button>
+            <button data-href="/auth/github" id="github-btn">
+              {strings[lang].github}
+            </button>
+            <button data-href="/auth/vk" id="vk-btn">
+              {strings[lang].vk}
+            </button>
           </div>
         );
       } else {

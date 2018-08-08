@@ -1,29 +1,32 @@
 const router = require('express').Router();
 const passport = require('passport');
-const { redirect } = require('../utils/helpers');
+const { socialLoginRedirect } = require('../utils/helpers');
 
-router.get('/google', passport.authenticate('google', { scope: ['profile'] }));
+router.get('/google', passport.authenticate('google', {
+  scope: ['profile'],
+  display: 'popup'
+}));
 
-router.get('/github', passport.authenticate('github'));
+router.get('/github', passport.authenticate('github', { display: 'popup' }));
 
-router.get('/vk', passport.authenticate('vkontakte'));
+router.get('/vk', passport.authenticate('vkontakte', { display: 'popup' }));
 
 router.get(
   '/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
-  redirect
+  socialLoginRedirect
 );
 
 router.get(
   '/github/callback',
   passport.authenticate('github', { failureRedirect: '/' }),
-  redirect
+  socialLoginRedirect
 );
 
 router.get(
   '/vk/callback',
   passport.authenticate('vkontakte', { failureRedirect: '/' }),
-  redirect
+  socialLoginRedirect
 );
 
 module.exports = router;
