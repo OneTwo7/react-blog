@@ -70,7 +70,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^8.6.5",
-    "ava": "^2.1.0",
+    "ava": "^5.2.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
